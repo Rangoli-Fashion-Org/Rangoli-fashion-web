@@ -11,6 +11,11 @@ export async function fetchAdminApi<T = any>(
     headers.set('Content-Type', 'application/json');
   }
 
+  const token = typeof window !== 'undefined' ? localStorage.getItem('rf_admin_token') : null;
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
   try {
     const res = await fetch(url, {
       ...options,

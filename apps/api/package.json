@@ -13,7 +13,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:seed": "ts-node prisma/seed.ts",
-    "admin:create": "ts-node scripts/create-admin.ts"
+    "admin:create": "ts-node scripts/create-admin.ts",
+    "admin:reset-password": "ts-node scripts/reset-admin-password.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.15",

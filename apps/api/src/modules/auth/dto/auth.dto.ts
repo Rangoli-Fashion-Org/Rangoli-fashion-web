@@ -27,11 +27,15 @@ export class LoginDto {
 }
 
 export class AdminLoginDto {
-  @IsString({ message: 'Username is required' })
-  @IsNotEmpty({ message: 'Username is required' })
-  username!: string;
-
+  @IsOptional()
   @IsString()
+  username?: string;
+
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @IsString({ message: 'Password is required' })
   @IsNotEmpty({ message: 'Password is required' })
   password!: string;
 }

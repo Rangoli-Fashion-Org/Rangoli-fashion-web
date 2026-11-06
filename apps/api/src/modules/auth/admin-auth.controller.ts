@@ -25,3 +25,4 @@ export class AdminAuthController {
     return result;
   }
 }
+

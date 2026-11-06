@@ -51,12 +51,15 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   const login = async (username: string, password: string) => {
-    const res = await fetchAdminApi<{ user: AdminUser }>('/admin/login', {
+    const res = await fetchAdminApi<{ user: AdminUser; tokens?: { accessToken: string } }>('/admin/login', {
       method: 'POST',
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, email: username, password }),
     });
 
     if (res.success && res.data?.user) {
+      if (res.data.tokens?.accessToken && typeof window !== 'undefined') {
+        localStorage.setItem('rf_admin_token', res.data.tokens.accessToken);
+      }
       setUser(res.data.user);
       return { success: true };
     }
@@ -64,7 +67,10 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const logout = async () => {
-    await fetchAdminApi('/auth/logout', { method: 'POST' });
+    await fetchAdminApi('/auth/logout', { method: 'POST' }).catch(() => {});
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('rf_admin_token');
+    }
     setUser(null);
   };
 

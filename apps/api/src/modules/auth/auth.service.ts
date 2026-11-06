@@ -94,18 +94,23 @@ export class AuthService {
   }
 
   async loginAdmin(dto: AdminLoginDto) {
-    const username = dto.username?.trim();
+    const rawIdentifier = (dto.username || dto.email || '').trim();
+    const password = dto.password; // Preserve exact password without trimming
 
-    if (!username) {
+    if (!rawIdentifier) {
       throw new UnauthorizedException('Username is required');
     }
 
-    // Lookup user by username (case-insensitive) or email
+    if (!password) {
+      throw new UnauthorizedException('Password is required');
+    }
+
+    // Lookup user by username (case-insensitive) or email (case-insensitive)
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [
-          { username: { equals: username, mode: 'insensitive' } },
-          { email: { equals: username.toLowerCase() } },
+          { username: { equals: rawIdentifier, mode: 'insensitive' } },
+          { email: { equals: rawIdentifier.toLowerCase(), mode: 'insensitive' } },
         ],
       },
     });
@@ -124,12 +129,16 @@ export class AuthService {
       throw new UnauthorizedException('Admin account has been deactivated. Please contact support.');
     }
 
-    // Verify password using Argon2 or bcrypt
+    // Verify password using Argon2 (or fallback to bcrypt if legacy hash)
     let isMatch = false;
-    if (user.passwordHash.startsWith('$argon2')) {
-      isMatch = await argon2.verify(user.passwordHash, dto.password);
-    } else {
-      isMatch = await bcrypt.compare(dto.password, user.passwordHash);
+    try {
+      if (user.passwordHash.startsWith('$argon2')) {
+        isMatch = await argon2.verify(user.passwordHash, password);
+      } else {
+        isMatch = await bcrypt.compare(password, user.passwordHash);
+      }
+    } catch {
+      isMatch = false;
     }
 
     if (!isMatch) {
