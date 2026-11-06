@@ -20,6 +20,7 @@
     "prisma:generate": "npm run prisma:generate --workspace=@rangoli/api",
     "prisma:migrate": "npm run prisma:migrate --workspace=@rangoli/api",
     "prisma:seed": "npm run prisma:seed --workspace=@rangoli/api",
+    "admin:create": "npm run admin:create --workspace=@rangoli/api",
     "test": "npm run test --workspaces --if-present"
   },
   "devDependencies": {

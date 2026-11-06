@@ -38,3 +38,4 @@ export class HomepageController {
     return this.homepageService.updateSection(id, dto);
   }
 }
+

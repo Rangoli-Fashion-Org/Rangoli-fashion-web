@@ -47,3 +47,4 @@ export const BrandBenefits: React.FC = () => {
     </section>
   );
 };
+

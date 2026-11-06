@@ -467,3 +467,4 @@ export class ProductsService {
     return { success: true, message: `Updated status for ${ids.length} products` };
   }
 }
+

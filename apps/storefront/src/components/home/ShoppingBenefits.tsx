@@ -52,3 +52,4 @@ export const ShoppingBenefits: React.FC = () => {
     </section>
   );
 };
+

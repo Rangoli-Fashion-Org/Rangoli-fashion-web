@@ -27,8 +27,9 @@ export class LoginDto {
 }
 
 export class AdminLoginDto {
-  @IsEmail({}, { message: 'Please provide a valid admin email' })
-  email!: string;
+  @IsString({ message: 'Username is required' })
+  @IsNotEmpty({ message: 'Username is required' })
+  username!: string;
 
   @IsString()
   @IsNotEmpty({ message: 'Password is required' })
@@ -49,3 +50,4 @@ export class ResetPasswordDto {
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   newPassword!: string;
 }
+

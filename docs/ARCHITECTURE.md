@@ -59,3 +59,4 @@ All dynamic content loads from the database through NestJS APIs (`/api/v1/*`):
 - **Media Engine:** Cloudinary
 - Images are processed and uploaded via the `/api/v1/upload` endpoint with validation for file types (JPEG, PNG, WEBP, SVG) and 5MB size limits.
 - Secure URLs and Public IDs are saved in PostgreSQL.
+

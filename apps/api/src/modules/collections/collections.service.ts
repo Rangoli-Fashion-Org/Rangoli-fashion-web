@@ -101,3 +101,4 @@ export class CollectionsService {
     return { success: true, message: 'Collection deleted' };
   }
 }
+

@@ -56,3 +56,4 @@ export class CollectionsController {
     return this.collectionsService.delete(id);
   }
 }
+

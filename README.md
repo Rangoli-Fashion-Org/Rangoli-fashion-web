@@ -114,3 +114,4 @@ Blueprint configuration provided in `render.yaml`. Auto-deploys from the `develo
 ### Production (Railway)
 Configuration provided in `railway.json`. Deploys from the `main` branch to production PostgreSQL.
 - Controlled Prisma migrations executed during deployment: `npm run prisma:deploy`
+

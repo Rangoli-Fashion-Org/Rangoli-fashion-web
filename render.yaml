@@ -67,3 +67,4 @@ services:
         value: production
       - key: NEXT_PUBLIC_API_URL
         value: https://rangoli-api-staging.onrender.com/api/v1
+

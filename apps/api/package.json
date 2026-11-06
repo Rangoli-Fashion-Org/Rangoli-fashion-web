@@ -12,7 +12,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
-    "prisma:seed": "ts-node prisma/seed.ts"
+    "prisma:seed": "ts-node prisma/seed.ts",
+    "admin:create": "ts-node scripts/create-admin.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.15",
@@ -25,6 +26,7 @@
     "@prisma/client": "^5.22.0",
     "@rangoli/shared-types": "*",
     "@rangoli/validation": "*",
+    "argon2": "^0.45.2",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",

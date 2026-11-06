@@ -8,3 +8,4 @@ import { CollectionsController } from './collections.controller';
   exports: [CollectionsService],
 })
 export class CollectionsModule {}
+

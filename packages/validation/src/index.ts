@@ -40,3 +40,4 @@ export function calculateDiscount(regularPrice: number, salePrice?: number | nul
   if (!salePrice || salePrice >= regularPrice || regularPrice <= 0) return 0;
   return Math.round(((regularPrice - salePrice) / regularPrice) * 100);
 }
+

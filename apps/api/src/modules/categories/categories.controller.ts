@@ -56,3 +56,4 @@ export class CategoriesController {
     return this.categoriesService.delete(id);
   }
 }
+

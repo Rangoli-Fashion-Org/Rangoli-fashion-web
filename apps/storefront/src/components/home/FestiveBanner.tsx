@@ -44,3 +44,4 @@ export const FestiveBanner: React.FC = () => {
     </section>
   );
 };
+

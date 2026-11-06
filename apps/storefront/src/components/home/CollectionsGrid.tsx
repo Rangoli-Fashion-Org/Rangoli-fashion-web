@@ -78,3 +78,4 @@ export const CollectionsGrid: React.FC = () => {
     </section>
   );
 };
+

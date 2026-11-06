@@ -88,3 +88,4 @@ export const NewArrivals: React.FC = () => {
     </section>
   );
 };
+

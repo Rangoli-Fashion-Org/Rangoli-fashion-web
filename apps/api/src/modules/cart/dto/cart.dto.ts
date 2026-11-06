@@ -37,3 +37,4 @@ export class ApplyCouponDto {
   @IsOptional()
   sessionId?: string;
 }
+

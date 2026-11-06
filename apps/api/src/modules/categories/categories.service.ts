@@ -101,3 +101,4 @@ export class CategoriesService {
     return { success: true, message: 'Category deleted' };
   }
 }
+

@@ -92,3 +92,4 @@ export class SettingsController {
     return this.settingsService.updateAboutContent(body);
   }
 }
+

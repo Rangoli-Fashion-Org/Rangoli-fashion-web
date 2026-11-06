@@ -32,3 +32,4 @@ export class WishlistController {
     return this.wishlistService.toggleItem(userId, sessionId, productId);
   }
 }
+

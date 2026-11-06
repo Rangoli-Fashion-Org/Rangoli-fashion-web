@@ -72,3 +72,4 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
     </div>
   );
 };
+

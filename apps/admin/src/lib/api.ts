@@ -54,3 +54,4 @@ export async function uploadMedia(file: File, folder = 'rangoli-fashions'): Prom
   alert(res.message || 'Image upload failed');
   return null;
 }
+

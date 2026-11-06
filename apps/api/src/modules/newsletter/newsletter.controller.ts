@@ -40,3 +40,4 @@ export class NewsletterController {
     return this.newsletterService.adminUnsubscribe(id);
   }
 }
+

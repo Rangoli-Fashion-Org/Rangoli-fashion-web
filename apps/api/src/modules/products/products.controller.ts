@@ -86,3 +86,4 @@ export class ProductsController {
     return this.productsService.bulkUpdateStatus(body.ids, body.isActive);
   }
 }
+

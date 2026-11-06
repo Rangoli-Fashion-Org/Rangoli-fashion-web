@@ -55,3 +55,4 @@ export class NewsletterService {
     return { success: true, message: 'Subscriber deactivated' };
   }
 }
+

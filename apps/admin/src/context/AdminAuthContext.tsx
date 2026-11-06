@@ -5,7 +5,8 @@ import { fetchAdminApi } from '../lib/api';
 
 export interface AdminUser {
   id: string;
-  email: string;
+  username?: string;
+  email?: string;
   fullName: string;
   role: 'SUPER_ADMIN' | 'ADMIN' | 'MANAGER';
 }
@@ -13,7 +14,7 @@ export interface AdminUser {
 interface AdminAuthContextType {
   user: AdminUser | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  login: (username: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -49,10 +50,10 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     refreshUser();
   }, []);
 
-  const login = async (email: string, password: string) => {
-    const res = await fetchAdminApi<{ user: AdminUser }>('/auth/admin/login', {
+  const login = async (username: string, password: string) => {
+    const res = await fetchAdminApi<{ user: AdminUser }>('/admin/login', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ username, password }),
     });
 
     if (res.success && res.data?.user) {
@@ -75,3 +76,4 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 };
 
 export const useAdminAuth = () => useContext(AdminAuthContext);
+

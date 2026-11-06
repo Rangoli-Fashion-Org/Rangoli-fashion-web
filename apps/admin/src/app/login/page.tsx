@@ -10,7 +10,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { login } = useAdminAuth();
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function AdminLoginPage() {
     setError('');
     setIsLoading(true);
 
-    const res = await login(email, password);
+    const res = await login(username, password);
     if (res.success) {
       router.push('/dashboard');
     } else {
@@ -58,13 +58,13 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block text-[#191714] font-semibold mb-1">Admin Email Address</label>
+            <label className="block text-[#191714] font-semibold mb-1">Admin Username</label>
             <input
-              type="email"
+              type="text"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@rangolifashions.com"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="e.g. rangoliadmin"
               className="w-full bg-white border border-[#E8DFD0] rounded-lg p-3 text-[#191714] focus:outline-none focus:border-[#003D2D]"
             />
           </div>
@@ -98,3 +98,4 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+

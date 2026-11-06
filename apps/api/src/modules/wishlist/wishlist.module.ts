@@ -8,3 +8,4 @@ import { WishlistController } from './wishlist.controller';
   exports: [WishlistService],
 })
 export class WishlistModule {}
+

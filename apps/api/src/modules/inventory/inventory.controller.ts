@@ -33,3 +33,4 @@ export class InventoryController {
     return this.inventoryService.adjustStock(dto);
   }
 }
+

@@ -51,3 +51,4 @@ export class BannersController {
     return this.bannersService.delete(id);
   }
 }
+

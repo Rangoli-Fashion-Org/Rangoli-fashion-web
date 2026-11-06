@@ -68,3 +68,4 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 };
 
 export const useWishlist = () => useContext(WishlistContext);
+

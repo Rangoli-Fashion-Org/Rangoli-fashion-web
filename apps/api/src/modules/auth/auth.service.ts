@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../database/prisma.service';
 import * as bcrypt from 'bcryptjs';
+import * as argon2 from 'argon2';
 import { UserRole } from '@prisma/client';
 import { RegisterDto, LoginDto, AdminLoginDto, ResetPasswordDto } from './dto/auth.dto';
 import * as crypto from 'crypto';
@@ -93,35 +94,57 @@ export class AuthService {
   }
 
   async loginAdmin(dto: AdminLoginDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { email: dto.email.toLowerCase() },
+    const username = dto.username?.trim();
+
+    if (!username) {
+      throw new UnauthorizedException('Username is required');
+    }
+
+    // Lookup user by username (case-insensitive) or email
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { username: { equals: username, mode: 'insensitive' } },
+          { email: { equals: username.toLowerCase() } },
+        ],
+      },
     });
 
     if (!user) {
       throw new UnauthorizedException('Invalid admin credentials');
     }
 
+    // Reject non-admin / CUSTOMER accounts from admin login
     const allowedRoles: UserRole[] = [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MANAGER];
     if (!allowedRoles.includes(user.role)) {
       throw new UnauthorizedException('Access denied. Administrator privileges required.');
     }
 
     if (!user.isActive) {
-      throw new UnauthorizedException('Admin account has been deactivated.');
+      throw new UnauthorizedException('Admin account has been deactivated. Please contact support.');
     }
 
-    const isMatch = await bcrypt.compare(dto.password, user.passwordHash);
+    // Verify password using Argon2 or bcrypt
+    let isMatch = false;
+    if (user.passwordHash.startsWith('$argon2')) {
+      isMatch = await argon2.verify(user.passwordHash, dto.password);
+    } else {
+      isMatch = await bcrypt.compare(dto.password, user.passwordHash);
+    }
+
     if (!isMatch) {
       throw new UnauthorizedException('Invalid admin credentials');
     }
 
-    const tokens = await this.generateTokens(user.id, user.email, user.role);
+    const identifier = user.username || user.email || user.id;
+    const tokens = await this.generateTokens(user.id, identifier, user.role);
 
     return {
       user: {
         id: user.id,
+        username: user.username,
         email: user.email,
-        fullName: user.fullName,
+        fullName: user.fullName || user.username,
         phoneNumber: user.phoneNumber,
         role: user.role,
       },
@@ -193,6 +216,7 @@ export class AuthService {
       where: { id: userId },
       select: {
         id: true,
+        username: true,
         email: true,
         fullName: true,
         phoneNumber: true,
@@ -225,3 +249,4 @@ export class AuthService {
     };
   }
 }
+
