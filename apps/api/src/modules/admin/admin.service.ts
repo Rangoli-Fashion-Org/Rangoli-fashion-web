@@ -8,45 +8,68 @@ export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getDashboardStats() {
-    const [
-      totalProducts,
-      totalOrders,
-      pendingOrders,
-      completedOrders,
-      totalCustomers,
-      lowStockProducts,
-      recentOrders,
-      paidOrders,
-    ] = await Promise.all([
-      this.prisma.product.count(),
-      this.prisma.order.count(),
-      this.prisma.order.count({ where: { status: OrderStatus.PENDING } }),
-      this.prisma.order.count({ where: { status: OrderStatus.DELIVERED } }),
-      this.prisma.user.count({ where: { role: UserRole.CUSTOMER } }),
-      this.prisma.product.count({ where: { stockQuantity: { lte: 5 } } }),
-      this.prisma.order.findMany({
-        take: 8,
-        orderBy: { createdAt: 'desc' },
-        include: { items: true },
-      }),
-      this.prisma.order.findMany({
-        where: { paymentStatus: PaymentStatus.PAID },
-        select: { totalAmount: true, createdAt: true },
-      }),
-    ]);
+    const fetchStats = async () => {
+      const [
+        totalProducts,
+        totalOrders,
+        pendingOrders,
+        completedOrders,
+        totalCustomers,
+        lowStockProducts,
+        recentOrders,
+        paidOrders,
+      ] = await Promise.all([
+        this.prisma.product.count().catch(() => 0),
+        this.prisma.order.count().catch(() => 0),
+        this.prisma.order.count({ where: { status: OrderStatus.PENDING } }).catch(() => 0),
+        this.prisma.order.count({ where: { status: OrderStatus.DELIVERED } }).catch(() => 0),
+        this.prisma.user.count({ where: { role: UserRole.CUSTOMER } }).catch(() => 0),
+        this.prisma.product.count({ where: { stockQuantity: { lte: 5 } } }).catch(() => 0),
+        this.prisma.order
+          .findMany({
+            take: 8,
+            orderBy: { createdAt: 'desc' },
+            include: { items: true },
+          })
+          .catch(() => []),
+        this.prisma.order
+          .findMany({
+            where: { paymentStatus: PaymentStatus.PAID },
+            select: { totalAmount: true, createdAt: true },
+          })
+          .catch(() => []),
+      ]);
 
-    const totalSales = paidOrders.reduce((acc, o) => acc + Number(o.totalAmount), 0);
+      const totalSales = (paidOrders || []).reduce((acc, o) => acc + Number(o?.totalAmount || 0), 0);
 
-    return {
-      totalSales,
-      totalOrders,
-      pendingOrders,
-      completedOrders,
-      totalCustomers,
-      totalProducts,
-      lowStockCount: lowStockProducts,
-      recentOrders,
+      return {
+        totalSales,
+        totalOrders: totalOrders || 0,
+        pendingOrders: pendingOrders || 0,
+        completedOrders: completedOrders || 0,
+        totalCustomers: totalCustomers || 0,
+        totalProducts: totalProducts || 0,
+        lowStockCount: lowStockProducts || 0,
+        recentOrders: recentOrders || [],
+      };
     };
+
+    try {
+      return await fetchStats();
+    } catch {
+      // If connection closed due to Neon idle wake-up, pause 600ms and retry once
+      await new Promise((r) => setTimeout(r, 600));
+      return await fetchStats().catch(() => ({
+        totalSales: 0,
+        totalOrders: 0,
+        pendingOrders: 0,
+        completedOrders: 0,
+        totalCustomers: 0,
+        totalProducts: 0,
+        lowStockCount: 0,
+        recentOrders: [],
+      }));
+    }
   }
 
   async getAdminUsers() {
