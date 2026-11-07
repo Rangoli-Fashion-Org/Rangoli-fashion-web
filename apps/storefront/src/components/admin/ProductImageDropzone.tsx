@@ -33,7 +33,9 @@ export const ProductImageDropzone: React.FC<ProductImageDropzoneProps> = ({
     const validFiles: File[] = [];
     for (let i = 0; i < fileList.length; i++) {
       const file = fileList[i];
-      if (file.type.startsWith('image/')) {
+      const ext = file.name ? file.name.substring(file.name.lastIndexOf('.')).toLowerCase() : '';
+      const isImageExt = ['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif', '.jfif', '.pjpeg', '.avif'].includes(ext);
+      if (file.type.startsWith('image/') || isImageExt) {
         validFiles.push(file);
       }
     }

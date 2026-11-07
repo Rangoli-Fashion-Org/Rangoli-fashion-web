@@ -53,11 +53,12 @@ export async function uploadMedia(file: File, folder = 'rangoli-fashions'): Prom
     body: formData,
   });
 
-  if (res.success && res.data) {
+  if (res.success && res.data?.url) {
     return res.data;
   }
 
-  console.error('Image upload failed:', res.message);
-  return null;
+  const errMsg = res.message || 'Image upload failed. Please verify server connection.';
+  console.error('Image upload failed:', errMsg);
+  throw new Error(errMsg);
 }
 

@@ -50,5 +50,10 @@ export class UploadController {
     }
     return res.sendFile(filePath);
   }
+
+  @Get('file/:filename')
+  serveLocalUploadAlias(@Param('filename') filename: string, @Res() res: Response) {
+    return this.serveLocalUpload(filename, res);
+  }
 }
 

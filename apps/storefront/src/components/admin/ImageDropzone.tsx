@@ -28,8 +28,10 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      setUploadError('Please select a valid image file (JPG, PNG, WEBP).');
+    const ext = file.name ? file.name.substring(file.name.lastIndexOf('.')).toLowerCase() : '';
+    const isImageExt = ['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif', '.jfif', '.pjpeg', '.avif'].includes(ext);
+    if (!file.type.startsWith('image/') && !isImageExt) {
+      setUploadError('Please select a valid image file (JPG, PNG, WEBP, AVIF).');
       return;
     }
 
@@ -44,7 +46,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
         setUploadError('Failed to upload image. Please try again.');
       }
     } catch (err: any) {
-      setUploadError(err?.message || 'Upload error');
+      setUploadError(err?.message || 'Failed to upload image. Please try again.');
     } finally {
       setIsUploading(false);
     }

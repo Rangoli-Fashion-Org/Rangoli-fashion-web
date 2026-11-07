@@ -3,6 +3,9 @@ import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
+import * as path from 'path';
+import * as fs from 'fs';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
@@ -11,6 +14,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     rawBody: true, // Needed for Razorpay webhook signature verification
   });
+
+  // Ensure local uploads directory exists and is statically served
+  const uploadsDir = path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  app.use('/uploads', express.static(uploadsDir));
+  app.use('/api/v1/uploads', express.static(uploadsDir));
 
   const port = process.env.PORT || 4000;
 

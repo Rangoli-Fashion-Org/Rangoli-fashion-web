@@ -34,53 +34,66 @@ export class UploadService {
       throw new BadRequestException('No file provided');
     }
 
-    // Validate mime types: jpeg, jpg, png, webp, svg
-    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
-    if (!allowedMimeTypes.includes(file.mimetype)) {
-      throw new BadRequestException('Only JPG, PNG, WEBP, and SVG image files are allowed');
+    // Comprehensive image extension and MIME type validation
+    const ext = path.extname(file.originalname).toLowerCase();
+    const validImageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif', '.jfif', '.pjpeg', '.avif'];
+    const isImageMime = file.mimetype.startsWith('image/') || file.mimetype === 'application/octet-stream';
+    const isImageExt = validImageExtensions.includes(ext);
+
+    if (!isImageExt && !isImageMime) {
+      throw new BadRequestException('Only JPG, PNG, WEBP, AVIF, and SVG image files are allowed');
     }
 
-    // 5MB limit
-    if (file.size > 5 * 1024 * 1024) {
-      throw new BadRequestException('Image size exceeds 5MB limit');
+    // 25MB limit for high-resolution fashion photography
+    if (file.size > 25 * 1024 * 1024) {
+      throw new BadRequestException('Image size exceeds 25MB limit. Please upload a smaller image.');
     }
 
+    // 1. Attempt Cloudinary upload first if credentials configured
     if (this.isCloudinaryConfigured) {
-      return new Promise<{ url: string; publicId: string }>((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            folder,
-            resource_type: 'image',
-          },
-          (error, result) => {
-            if (error || !result) {
-              this.logger.error('Cloudinary upload error', error);
-              return reject(new BadRequestException('Failed to upload image to Cloudinary'));
-            }
-            resolve({
-              url: result.secure_url,
-              publicId: result.public_id,
-            });
-          },
-        );
-        uploadStream.end(file.buffer);
-      });
+      try {
+        const cloudResult = await new Promise<{ url: string; publicId: string }>((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder,
+              resource_type: 'image',
+            },
+            (error, result) => {
+              if (error || !result) {
+                this.logger.warn(`Cloudinary upload failed: ${error?.message || 'Empty response'}`);
+                return reject(error || new Error('Cloudinary stream error'));
+              }
+              resolve({
+                url: result.secure_url,
+                publicId: result.public_id,
+              });
+            },
+          );
+          uploadStream.end(file.buffer);
+        });
+
+        if (cloudResult?.url) {
+          return cloudResult;
+        }
+      } catch (cloudErr: any) {
+        this.logger.warn(`Cloudinary upload warning: ${cloudErr?.message}. Falling back to local storage.`);
+      }
     }
 
-    // Local storage fallback
+    // 2. High-reliability Local Storage Fallback (Guaranteed to succeed)
     const uploadsDir = path.join(process.cwd(), 'uploads');
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
     }
 
-    const ext = path.extname(file.originalname) || '.jpg';
-    const filename = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}${ext}`;
+    const safeExt = ext || '.jpg';
+    const filename = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}${safeExt}`;
     const filePath = path.join(uploadsDir, filename);
 
     fs.writeFileSync(filePath, file.buffer);
 
     const backendUrl = this.configService.get<string>('API_URL') || 'http://localhost:4000';
-    const fileUrl = `${backendUrl}/api/v1/uploads/${filename}`;
+    const fileUrl = `${backendUrl}/api/v1/upload/${filename}`;
 
     return {
       url: fileUrl,
