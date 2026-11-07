@@ -87,24 +87,15 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="relative w-9 h-9 rounded-sm overflow-hidden bg-white/10 p-0.5 border border-[#C9A34A]/40 flex items-center justify-center">
+          <Link href="/" className="flex items-center group">
+            <div className="relative h-11 sm:h-12 w-36 sm:w-44 flex items-center">
               <Image
-                src="/brand/rf-monogram.jpg"
-                alt="Rangoli Fashions RF Logo"
-                width={36}
-                height={36}
-                className="object-contain"
+                src="/brand/company-logo.png"
+                alt="Rangoli Fashions"
+                fill
                 priority
+                className="object-contain object-left group-hover:brightness-110 transition-all"
               />
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="font-serif text-lg tracking-[0.2em] font-bold text-white group-hover:text-[#DFC37A] transition-colors leading-tight">
-                RANGOLI
-              </span>
-              <span className="text-[9px] tracking-[0.3em] font-medium text-[#C9A34A] leading-none uppercase">
-                FASHIONS
-              </span>
             </div>
           </Link>
 
@@ -221,17 +212,13 @@ export const Header: React.FC = () => {
           <div className="relative bg-[#002D21] w-4/5 max-w-sm h-full shadow-2xl z-10 flex flex-col justify-between py-6 px-6 text-[#FFF8ED]">
             <div>
               <div className="flex items-center justify-between pb-6 border-b border-[#0B5940]">
-                <div className="flex items-center space-x-2">
+                <div className="relative h-10 w-36 flex items-center">
                   <Image
-                    src="/brand/rf-monogram.jpg"
+                    src="/brand/company-logo.png"
                     alt="Rangoli Fashions"
-                    width={32}
-                    height={32}
-                    className="rounded-sm"
+                    fill
+                    className="object-contain object-left"
                   />
-                  <span className="font-serif text-lg font-bold tracking-widest text-[#FFF8ED]">
-                    RANGOLI
-                  </span>
                 </div>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}

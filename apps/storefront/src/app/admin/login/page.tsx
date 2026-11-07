@@ -70,13 +70,12 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-[#002D21] flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-[#FAF6F0] rounded-2xl shadow-2xl p-8 sm:p-10 border border-[#C9A34A]/50">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 mx-auto rounded-xl bg-[#003D2D] p-2 border border-[#C9A34A] shadow-md mb-4 flex items-center justify-center">
+          <div className="relative h-20 w-52 mx-auto mb-4 flex items-center justify-center p-2 rounded-xl bg-[#002D21] border border-[#C9A34A]/50 shadow-md">
             <Image
-              src="/brand/rf-monogram.jpg"
+              src="/brand/company-logo.png"
               alt="Rangoli Fashions"
-              width={40}
-              height={40}
-              className="object-contain"
+              fill
+              className="object-contain p-2"
             />
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#191714]">

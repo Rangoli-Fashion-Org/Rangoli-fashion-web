@@ -19,23 +19,14 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-5">
-            <Link href="/" className="inline-flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-sm overflow-hidden bg-white/10 p-0.5 border border-[#C9A34A]/50">
+            <Link href="/" className="inline-flex items-center">
+              <div className="relative h-12 w-44">
                 <Image
-                  src="/brand/rf-monogram.jpg"
+                  src="/brand/company-logo.png"
                   alt="Rangoli Fashions"
-                  width={36}
-                  height={36}
-                  className="object-contain"
+                  fill
+                  className="object-contain object-left"
                 />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-serif text-xl tracking-[0.2em] font-bold text-white">
-                  RANGOLI
-                </span>
-                <span className="text-[10px] tracking-[0.3em] font-medium text-[#C9A34A] uppercase">
-                  FASHIONS
-                </span>
               </div>
             </Link>
 

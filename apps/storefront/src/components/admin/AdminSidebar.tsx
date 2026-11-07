@@ -87,24 +87,18 @@ export const AdminSidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = 
         } border-r border-[#0B5940]`}
       >
         {/* Brand Header */}
-        <div className="p-5 border-b border-[#0B5940] flex items-center space-x-3 bg-[#00251B]">
-          <div className="w-8 h-8 rounded bg-white/10 p-0.5 border border-[#C9A34A]/50 shrink-0">
+        <div className="p-4 border-b border-[#0B5940] flex items-center justify-between bg-[#00251B]">
+          <Link href="/admin/dashboard" className="relative h-11 w-44 flex items-center">
             <Image
-              src="/brand/rf-monogram.jpg"
+              src="/brand/company-logo.png"
               alt="Rangoli Admin"
-              width={32}
-              height={32}
-              className="object-contain"
+              fill
+              className="object-contain object-left"
             />
-          </div>
-          <div>
-            <span className="font-serif text-base font-bold tracking-widest text-white block leading-tight">
-              RANGOLI
-            </span>
-            <span className="text-[9px] tracking-[0.25em] text-[#C9A34A] uppercase font-semibold">
-              ADMIN CONSOLE
-            </span>
-          </div>
+          </Link>
+          <span className="text-[9px] tracking-wider text-[#C9A34A] border border-[#C9A34A]/40 px-1.5 py-0.5 rounded font-mono uppercase shrink-0">
+            ADMIN
+          </span>
         </div>
 
         {/* Navigation Items */}
