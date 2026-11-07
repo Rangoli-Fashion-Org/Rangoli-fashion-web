@@ -11,7 +11,9 @@ import {
   ShoppingBag,
   Menu,
   X,
-  ChevronDown,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -27,17 +29,9 @@ export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [categories, setCategories] = useState<any[]>([]);
-  const [announcement, setAnnouncement] = useState('Free Shipping on Orders Above ₹1,999');
+  const [announcement, setAnnouncement] = useState('Complimentary Express Delivery on Orders Above ₹1,999');
 
   useEffect(() => {
-    // Fetch dynamic categories from API
-    fetchApi<any[]>('/categories').then((res) => {
-      if (res.success && res.data && res.data.length > 0) {
-        setCategories(res.data);
-      }
-    });
-
     // Fetch store settings for announcement
     fetchApi<Record<string, string>>('/settings/public').then((res) => {
       if (res.success && res.data?.announcement_bar_text) {
@@ -56,37 +50,42 @@ export const Header: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full shadow-sm">
-      {/* Top Announcement Bar */}
-      <div className="bg-[#FAF6F0] border-b border-[#E8DFD0] py-1.5 px-4 text-xs font-medium text-[#191714]">
+    <header className="sticky top-0 z-50 w-full shadow-md">
+      {/* Top Luxury Announcement Bar */}
+      <div className="bg-[#00271D] text-[#FAF6F0] py-2 px-4 text-xs font-medium tracking-wide border-b border-[#0B5940]/80">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="text-[#C9A34A]">🚚</span>
-            <span>{announcement}</span>
+          <div className="flex items-center space-x-2 text-[11px] sm:text-xs">
+            <Sparkles size={12} className="text-[#C9A34A] animate-pulse" />
+            <span className="font-light">{announcement}</span>
           </div>
-          <div className="hidden sm:flex items-center space-x-6 text-[#746D62]">
-            <span>Easy Returns</span>
-            <span className="h-3 w-px bg-[#E8DFD0]" />
-            <span>Secure Payments</span>
+          <div className="hidden sm:flex items-center space-x-6 text-[11px] text-[#FAF6F0]/80">
+            <span className="flex items-center space-x-1">
+              <ShieldCheck size={12} className="text-[#C9A34A]" />
+              <span>100% Authentic Handloom</span>
+            </span>
+            <span className="h-3 w-px bg-[#0B5940]" />
+            <span>Hassle-Free Returns</span>
+            <span className="h-3 w-px bg-[#0B5940]" />
+            <span>Secure UPI &amp; Cards</span>
           </div>
         </div>
       </div>
 
       {/* Main Navbar */}
-      <nav className="bg-[#003D2D] text-white px-4 lg:px-8 py-3.5 transition-all duration-200">
+      <nav className="bg-[#003D2D]/95 backdrop-blur-md text-white px-4 lg:px-8 py-3.5 border-b border-[#0B5940]/60 transition-all duration-200">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Mobile Menu Button */}
           <div className="flex items-center lg:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-1.5 text-[#F5EBDD] hover:text-[#C9A34A] focus:outline-none"
+              className="p-1.5 text-[#F5EBDD] hover:text-[#C9A34A] focus:outline-none rounded-lg hover:bg-white/5 transition-colors"
               aria-label="Toggle navigation menu"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
 
-          {/* Brand Logo */}
+          {/* Official Company Logo */}
           <Link href="/" className="flex items-center group">
             <div className="relative h-11 sm:h-12 w-36 sm:w-44 flex items-center">
               <Image
@@ -107,7 +106,7 @@ export const Header: React.FC = () => {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className={`transition-colors py-1 relative ${
+                  className={`transition-colors py-1 relative text-[13px] tracking-wide ${
                     isActive
                       ? 'text-[#C9A34A] font-semibold'
                       : 'text-[#FFF8ED]/90 hover:text-[#DFC37A]'
@@ -115,7 +114,7 @@ export const Header: React.FC = () => {
                 >
                   {link.label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#C9A34A]" />
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#C9A34A] rounded-full" />
                   )}
                 </Link>
               );
@@ -123,34 +122,34 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Right Action Icons */}
-          <div className="flex items-center space-x-4 sm:space-x-5 text-[#FFF8ED]">
+          <div className="flex items-center space-x-3 sm:space-x-4 text-[#FFF8ED]">
             {/* Search Trigger */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="hover:text-[#C9A34A] transition-colors p-1"
+              className="p-2 rounded-full hover:bg-white/10 hover:text-[#C9A34A] transition-colors"
               aria-label="Search catalog"
             >
-              <Search size={20} />
+              <Search size={19} />
             </button>
 
             {/* Account Icon */}
             <Link
               href={user ? '/account' : '/account/login'}
-              className="hover:text-[#C9A34A] transition-colors p-1"
+              className="p-2 rounded-full hover:bg-white/10 hover:text-[#C9A34A] transition-colors"
               aria-label="Customer account"
             >
-              <User size={20} />
+              <User size={19} />
             </Link>
 
             {/* Wishlist Icon */}
             <Link
               href="/account#wishlist"
-              className="hover:text-[#C9A34A] transition-colors p-1 relative hidden sm:block"
+              className="p-2 rounded-full hover:bg-white/10 hover:text-[#C9A34A] transition-colors relative hidden sm:block"
               aria-label="Wishlist"
             >
-              <Heart size={20} />
+              <Heart size={19} />
               {wishlistIds.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#C9A34A] text-[#191714] text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                <span className="absolute top-1 right-1 bg-[#C9A34A] text-[#002D21] text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-xs">
                   {wishlistIds.length}
                 </span>
               )}
@@ -159,20 +158,20 @@ export const Header: React.FC = () => {
             {/* Shopping Cart Button */}
             <button
               onClick={openDrawer}
-              className="hover:text-[#C9A34A] transition-colors p-1 relative flex items-center"
+              className="p-2 rounded-full hover:bg-white/10 hover:text-[#C9A34A] transition-colors relative flex items-center"
               aria-label="Shopping bag"
             >
-              <ShoppingBag size={20} />
-              <span className="ml-1.5 bg-[#C9A34A] text-[#002D21] text-[11px] font-bold rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center">
+              <ShoppingBag size={19} />
+              <span className="ml-1.5 bg-[#C9A34A] text-[#002D21] text-[11px] font-bold rounded-full h-4 min-w-[16px] px-1.5 flex items-center justify-center shadow-xs">
                 {itemCount}
               </span>
             </button>
           </div>
         </div>
 
-        {/* Expandable Search Bar */}
+        {/* Expandable Luxury Search Drawer */}
         {isSearchOpen && (
-          <div className="max-w-3xl mx-auto pt-3 pb-1 transition-all">
+          <div className="max-w-3xl mx-auto pt-3 pb-2 transition-all">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -184,29 +183,36 @@ export const Header: React.FC = () => {
             >
               <input
                 type="text"
-                placeholder="Search kurtis, cord sets, festive wear..."
+                autoFocus
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#002D21] border border-[#C9A34A]/50 rounded-full py-2 pl-4 pr-10 text-sm text-[#FFF8ED] placeholder-[#FFF8ED]/50 focus:outline-none focus:border-[#C9A34A]"
-                autoFocus
+                placeholder="Search kurti sets, co-ords, chanderi silks, festive wear..."
+                className="w-full pl-11 pr-12 py-3 bg-[#FAF6F0] rounded-full text-xs text-[#191714] placeholder-[#746D62] focus:outline-none focus:ring-2 focus:ring-[#C9A34A] shadow-lg"
+              />
+              <Search
+                size={16}
+                className="absolute left-4 text-[#746D62] pointer-events-none"
               />
               <button
-                type="submit"
-                className="absolute right-3 text-[#C9A34A] hover:text-[#DFC37A]"
-                aria-label="Submit search"
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setIsSearchOpen(false);
+                }}
+                className="absolute right-4 text-[#746D62] hover:text-[#191714] p-1"
               >
-                <Search size={18} />
+                <X size={15} />
               </button>
             </form>
           </div>
         )}
       </nav>
 
-      {/* Mobile Navigation Drawer */}
+      {/* Mobile Drawer Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
+        <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <div className="relative bg-[#002D21] w-4/5 max-w-sm h-full shadow-2xl z-10 flex flex-col justify-between py-6 px-6 text-[#FFF8ED]">
@@ -228,35 +234,37 @@ export const Header: React.FC = () => {
                 </button>
               </div>
 
-              <div className="flex flex-col space-y-4 py-6 text-base font-medium">
+              <div className="flex flex-col space-y-4 pt-6">
                 {navLinks.map((link) => (
                   <Link
                     key={link.label}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="hover:text-[#C9A34A] transition-colors py-1.5 border-b border-[#0B5940]/50"
+                    className="text-base font-serif tracking-wide hover:text-[#C9A34A] transition-colors py-1 flex items-center justify-between"
                   >
-                    {link.label}
+                    <span>{link.label}</span>
+                    <ArrowRight size={14} className="text-[#C9A34A]/60" />
                   </Link>
                 ))}
-                <Link
-                  href="/track-order"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="hover:text-[#C9A34A] transition-colors py-1.5"
-                >
-                  Track Order
-                </Link>
               </div>
             </div>
 
-            <div className="pt-6 border-t border-[#0B5940] flex flex-col space-y-3 text-sm">
+            <div className="pt-6 border-t border-[#0B5940] space-y-3">
               <Link
-                href={user ? '/account' : '/account/login'}
+                href="/account"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center space-x-2 text-[#C9A34A] hover:text-white"
+                className="flex items-center space-x-2.5 text-sm text-[#FFF8ED] hover:text-[#C9A34A] py-1"
               >
                 <User size={18} />
-                <span>{user ? `Account (${user.fullName})` : 'Sign In / Register'}</span>
+                <span>{user ? `My Account (${user.fullName || 'User'})` : 'Sign In / Register'}</span>
+              </Link>
+              <Link
+                href="/account#wishlist"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center space-x-2.5 text-sm text-[#FFF8ED] hover:text-[#C9A34A] py-1"
+              >
+                <Heart size={18} />
+                <span>My Wishlist ({wishlistIds.length})</span>
               </Link>
             </div>
           </div>
@@ -265,4 +273,3 @@ export const Header: React.FC = () => {
     </header>
   );
 };
-
