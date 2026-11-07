@@ -72,7 +72,7 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Main Navbar */}
-      <nav className="bg-[#003D2D]/95 backdrop-blur-md text-white px-4 lg:px-8 py-3.5 border-b border-[#0B5940]/60 transition-all duration-200">
+      <nav className="bg-[#003D2D]/95 backdrop-blur-md text-white px-4 lg:px-8 py-2 sm:py-2.5 border-b border-[#0B5940]/60 transition-all duration-200">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Mobile Menu Button */}
           <div className="flex items-center lg:hidden">
@@ -85,15 +85,15 @@ export const Header: React.FC = () => {
             </button>
           </div>
 
-          {/* Official Company Logo */}
-          <Link href="/" className="flex items-center group">
-            <div className="relative h-11 sm:h-12 w-36 sm:w-44 flex items-center">
+          {/* Official Company Logo - Maximized visual scale without expanding navbar */}
+          <Link href="/" className="flex items-center group py-0.5">
+            <div className="relative h-14 sm:h-16 md:h-[68px] w-44 sm:w-52 md:w-64 flex items-center -my-2 sm:-my-3">
               <Image
                 src="/brand/company-logo.png"
                 alt="Rangoli Fashions"
                 fill
                 priority
-                className="object-contain object-left group-hover:brightness-110 transition-all"
+                className="object-contain object-left group-hover:brightness-110 transition-all drop-shadow-sm scale-110 sm:scale-120 origin-left"
               />
             </div>
           </Link>
@@ -218,12 +218,12 @@ export const Header: React.FC = () => {
           <div className="relative bg-[#002D21] w-4/5 max-w-sm h-full shadow-2xl z-10 flex flex-col justify-between py-6 px-6 text-[#FFF8ED]">
             <div>
               <div className="flex items-center justify-between pb-6 border-b border-[#0B5940]">
-                <div className="relative h-10 w-36 flex items-center">
+                <div className="relative h-14 w-44 flex items-center">
                   <Image
                     src="/brand/company-logo.png"
                     alt="Rangoli Fashions"
                     fill
-                    className="object-contain object-left"
+                    className="object-contain object-left scale-110 origin-left"
                   />
                 </div>
                 <button
