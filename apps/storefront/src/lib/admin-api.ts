@@ -56,6 +56,20 @@ export async function uploadMedia(file: File, folder = 'rangoli-fashions'): Prom
   if (res.success && res.data) {
     return res.data;
   }
+
+  const isAuthError =
+    res.message?.toLowerCase().includes('authentication') ||
+    res.message?.toLowerCase().includes('unauthorized') ||
+    res.message?.includes('401');
+
+  if (isAuthError) {
+    alert('Your admin session has expired. Please sign in to the Admin Console to upload images.');
+    if (typeof window !== 'undefined') {
+      window.location.href = '/admin/login';
+    }
+    return null;
+  }
+
   alert(res.message || 'Image upload failed');
   return null;
 }

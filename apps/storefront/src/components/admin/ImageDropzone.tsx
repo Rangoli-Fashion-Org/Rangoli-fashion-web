@@ -175,3 +175,4 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
     </div>
   );
 };
+
