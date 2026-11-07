@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Upload, Trash2, Plus, Check } from 'lucide-react';
-import { fetchAdminApi, uploadMedia } from '@/lib/admin-api';
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { fetchAdminApi } from '@/lib/admin-api';
+import { SmartProductAutoFill, ParsedProductData } from '@/components/admin/SmartProductAutoFill';
+import { ProductImageDropzone, ProductImageItem } from '@/components/admin/ProductImageDropzone';
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -28,9 +29,8 @@ export default function NewProductPage() {
   const [isFeatured, setIsFeatured] = useState(false);
   const [isActive, setIsActive] = useState(true);
 
-  // Images
-  const [images, setImages] = useState<Array<{ url: string; publicId: string; isPrimary: boolean }>>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  // Images with Drag & Drop
+  const [images, setImages] = useState<ProductImageItem[]>([]);
 
   // Variants (Size, Color, Stock, SKU)
   const [variants, setVariants] = useState<Array<{
@@ -58,29 +58,24 @@ export default function NewProductPage() {
     });
   }, []);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const handleAutoFill = (parsed: ParsedProductData, matchedCategoryId?: string, matchedCollectionId?: string) => {
+    if (parsed.name) setName(parsed.name);
+    if (parsed.sku) setSku(parsed.sku);
+    if (parsed.regularPrice !== '') setRegularPrice(parsed.regularPrice);
+    if (parsed.salePrice !== '') setSalePrice(parsed.salePrice);
+    if (parsed.material) setMaterial(parsed.material);
+    if (parsed.careInstructions) setCareInstructions(parsed.careInstructions);
+    if (parsed.shortDescription) setShortDescription(parsed.shortDescription);
+    if (parsed.description) setDescription(parsed.description);
+    if (matchedCategoryId) setCategoryId(matchedCategoryId);
+    if (matchedCollectionId) setCollectionId(matchedCollectionId);
+    setIsNewArrival(parsed.isNewArrival);
+    setIsFeatured(parsed.isFeatured);
+    setIsActive(parsed.isActive);
 
-    setIsUploading(true);
-    for (let i = 0; i < files.length; i++) {
-      const uploaded = await uploadMedia(files[i]);
-      if (uploaded) {
-        setImages((prev) => [
-          ...prev,
-          {
-            url: uploaded.url,
-            publicId: uploaded.publicId,
-            isPrimary: prev.length === 0,
-          },
-        ]);
-      }
+    if (parsed.variants && parsed.variants.length > 0) {
+      setVariants(parsed.variants);
     }
-    setIsUploading(false);
-  };
-
-  const handleRemoveImage = (index: number) => {
-    setImages(images.filter((_, idx) => idx !== index));
   };
 
   const handleAddVariant = () => {
@@ -104,7 +99,7 @@ export default function NewProductPage() {
     }
 
     if (images.length === 0) {
-      setError('Please upload at least one product image');
+      setError('Please upload at least one product image using the drag & drop area');
       return;
     }
 
@@ -153,13 +148,14 @@ export default function NewProductPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-12">
+      {/* Page Header */}
       <div className="flex items-center space-x-3">
         <Link href="/admin/dashboard/products" className="p-2 bg-white rounded-lg border border-[#E8DFD0] text-[#746D62] hover:text-[#003D2D]">
           <ArrowLeft size={16} />
         </Link>
         <div>
           <h1 className="font-serif text-2xl font-semibold text-[#191714]">Add New Product</h1>
-          <p className="text-xs text-[#746D62]">All product details and variants persist directly in PostgreSQL</p>
+          <p className="text-xs text-[#746D62]">All product details, variants and high-res images persist directly in PostgreSQL</p>
         </div>
       </div>
 
@@ -168,6 +164,13 @@ export default function NewProductPage() {
           {error}
         </div>
       )}
+
+      {/* 1. Smart Copy-Paste Auto-Fill Box */}
+      <SmartProductAutoFill
+        categories={categories}
+        collections={collections}
+        onAutoFill={handleAutoFill}
+      />
 
       <form onSubmit={handleSubmit} className="space-y-6 text-xs">
         {/* Basic Details */}
@@ -181,7 +184,7 @@ export default function NewProductPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Embroidered Anarkali Kurti Set"
+                placeholder="e.g. ADYORA Beige Linen Blend Shirt"
                 className="w-full border border-[#E8DFD0] rounded-md p-2.5 text-[#191714] focus:outline-none focus:border-[#003D2D]"
               />
             </div>
@@ -192,7 +195,7 @@ export default function NewProductPage() {
                 required
                 value={sku}
                 onChange={(e) => setSku(e.target.value.toUpperCase())}
-                placeholder="e.g. RF-KURTI-001"
+                placeholder="e.g. RF-LINEN-001"
                 className="w-full border border-[#E8DFD0] rounded-md p-2.5 font-mono text-[#191714] focus:outline-none focus:border-[#003D2D]"
               />
             </div>
@@ -204,7 +207,7 @@ export default function NewProductPage() {
                 min="0"
                 value={regularPrice}
                 onChange={(e) => setRegularPrice(e.target.value ? Number(e.target.value) : '')}
-                placeholder="1999"
+                placeholder="2499"
                 className="w-full border border-[#E8DFD0] rounded-md p-2.5 text-[#191714] focus:outline-none focus:border-[#003D2D]"
               />
             </div>
@@ -215,7 +218,7 @@ export default function NewProductPage() {
                 min="0"
                 value={salePrice}
                 onChange={(e) => setSalePrice(e.target.value ? Number(e.target.value) : '')}
-                placeholder="1499"
+                placeholder="1799"
                 className="w-full border border-[#E8DFD0] rounded-md p-2.5 text-[#191714] focus:outline-none focus:border-[#003D2D]"
               />
             </div>
@@ -227,7 +230,7 @@ export default function NewProductPage() {
               type="text"
               value={shortDescription}
               onChange={(e) => setShortDescription(e.target.value)}
-              placeholder="e.g. Elegant co-ord and kurti set for a refined look."
+              placeholder="e.g. Minimalist linen blend shirt offering effortless contemporary elegance."
               className="w-full border border-[#E8DFD0] rounded-md p-2.5 text-[#191714] focus:outline-none focus:border-[#003D2D]"
             />
           </div>
@@ -326,47 +329,31 @@ export default function NewProductPage() {
           </div>
         </div>
 
-        {/* Media & Images */}
+        {/* Media & Images with Drag & Drop */}
         <div className="bg-white p-6 rounded-xl border border-[#E8DFD0] shadow-xs space-y-4">
-          <h2 className="font-serif text-base font-semibold text-[#191714]">Product Images</h2>
-          <div className="flex flex-wrap gap-4">
-            {images.map((img, idx) => (
-              <div key={idx} className="relative w-24 h-32 rounded-lg overflow-hidden border-2 border-[#003D2D] bg-[#FAF6F0] group">
-                <Image src={img.url} alt="Uploaded" fill className="object-cover" />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(idx)}
-                  className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-80 hover:opacity-100"
-                >
-                  <Trash2 size={12} />
-                </button>
-                {idx === 0 && (
-                  <span className="absolute bottom-0 inset-x-0 bg-[#003D2D] text-white text-[9px] text-center font-bold py-0.5">
-                    Cover
-                  </span>
-                )}
-              </div>
-            ))}
-
-            <label className="w-24 h-32 border-2 border-dashed border-[#C9A34A] rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-[#FFF8ED] transition-colors text-center p-2">
-              <Upload size={18} className="text-[#003D2D] mb-1" />
-              <span className="text-[10px] text-[#746D62]">{isUploading ? 'Uploading...' : 'Add Image'}</span>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageUpload}
-                disabled={isUploading}
-                className="hidden"
-              />
-            </label>
+          <div>
+            <h2 className="font-serif text-base font-semibold text-[#191714]">Product Images</h2>
+            <p className="text-[11px] text-[#746D62] mt-0.5">
+              Drag &amp; drop images directly into the area below, set cover photo, or reorder.
+            </p>
           </div>
+
+          <ProductImageDropzone
+            images={images}
+            onImagesChange={setImages}
+            maxFiles={12}
+          />
         </div>
 
         {/* Variants & Inventory */}
         <div className="bg-white p-6 rounded-xl border border-[#E8DFD0] shadow-xs space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="font-serif text-base font-semibold text-[#191714]">Size &amp; Color Variants</h2>
+            <div>
+              <h2 className="font-serif text-base font-semibold text-[#191714]">Size &amp; Color Variants</h2>
+              <p className="text-[11px] text-[#746D62] mt-0.5">
+                Auto-generated from your sizes, colors, and stock per size
+              </p>
+            </div>
             <button
               type="button"
               onClick={handleAddVariant}
@@ -474,4 +461,3 @@ export default function NewProductPage() {
     </div>
   );
 }
-

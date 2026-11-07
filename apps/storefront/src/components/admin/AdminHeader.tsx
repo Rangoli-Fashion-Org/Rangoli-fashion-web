@@ -53,3 +53,4 @@ export const AdminHeader: React.FC<{ onToggleSidebar: () => void }> = ({ onToggl
     </header>
   );
 };
+

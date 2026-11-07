@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Upload, Trash2, Plus } from 'lucide-react';
-import { fetchAdminApi, uploadMedia } from '../../../../lib/api';
+import { ArrowLeft, X, Plus, Trash2 } from 'lucide-react';
+import { fetchAdminApi } from '@/lib/api';
+import { SmartProductAutoFill, ParsedProductData } from '@/components/SmartProductAutoFill';
+import { ProductImageDropzone, ProductImageItem } from '@/components/ProductImageDropzone';
 
 export default function EditProductPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -29,9 +30,8 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   const [isFeatured, setIsFeatured] = useState(false);
   const [isActive, setIsActive] = useState(true);
 
-  // Images
-  const [images, setImages] = useState<Array<{ url: string; publicId: string; isPrimary: boolean }>>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  // Images with Drag & Drop
+  const [images, setImages] = useState<ProductImageItem[]>([]);
 
   // Variants
   const [variants, setVariants] = useState<any[]>([]);
@@ -63,36 +63,37 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
         setIsNewArrival(p.isNewArrival);
         setIsFeatured(p.isFeatured);
         setIsActive(p.isActive);
-        setImages(p.images || []);
+        setImages(
+          (p.images || []).map((img: any, idx: number) => ({
+            url: img.url,
+            publicId: img.publicId || `img-${idx}`,
+            isPrimary: img.isPrimary !== undefined ? img.isPrimary : idx === 0,
+          }))
+        );
         setVariants(p.variants || []);
       }
       setIsLoading(false);
     });
   }, [params.id]);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const handleAutoFill = (parsed: ParsedProductData, matchedCategoryId?: string, matchedCollectionId?: string) => {
+    if (parsed.name) setName(parsed.name);
+    if (parsed.sku) setSku(parsed.sku);
+    if (parsed.regularPrice !== '') setRegularPrice(parsed.regularPrice);
+    if (parsed.salePrice !== '') setSalePrice(parsed.salePrice);
+    if (parsed.material) setMaterial(parsed.material);
+    if (parsed.careInstructions) setCareInstructions(parsed.careInstructions);
+    if (parsed.shortDescription) setShortDescription(parsed.shortDescription);
+    if (parsed.description) setDescription(parsed.description);
+    if (matchedCategoryId) setCategoryId(matchedCategoryId);
+    if (matchedCollectionId) setCollectionId(matchedCollectionId);
+    setIsNewArrival(parsed.isNewArrival);
+    setIsFeatured(parsed.isFeatured);
+    setIsActive(parsed.isActive);
 
-    setIsUploading(true);
-    for (let i = 0; i < files.length; i++) {
-      const uploaded = await uploadMedia(files[i]);
-      if (uploaded) {
-        setImages((prev) => [
-          ...prev,
-          {
-            url: uploaded.url,
-            publicId: uploaded.publicId,
-            isPrimary: prev.length === 0,
-          },
-        ]);
-      }
+    if (parsed.variants && parsed.variants.length > 0) {
+      setVariants(parsed.variants);
     }
-    setIsUploading(false);
-  };
-
-  const handleRemoveImage = (index: number) => {
-    setImages(images.filter((_, idx) => idx !== index));
   };
 
   const handleAddVariant = () => {
@@ -109,6 +110,16 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!name.trim() || !sku.trim() || !description.trim() || !regularPrice) {
+      setError('Please fill in required fields: Name, SKU, Description, and Regular Price');
+      return;
+    }
+
+    if (images.length === 0) {
+      setError('Please upload at least one product image');
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -158,14 +169,23 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-12">
-      <div className="flex items-center space-x-3">
-        <Link href="/dashboard/products" className="p-2 bg-white rounded-lg border border-[#E8DFD0] text-[#746D62] hover:text-[#003D2D]">
-          <ArrowLeft size={16} />
-        </Link>
-        <div>
-          <h1 className="font-serif text-2xl font-semibold text-[#191714]">Edit Product</h1>
-          <p className="text-xs text-[#746D62]">Update details, pricing, stock and images</p>
+      {/* Page Header matching user screenshot */}
+      <div className="flex items-center justify-between pb-2 border-b border-[#E8DFD0]">
+        <div className="flex items-center space-x-3">
+          <Link href="/dashboard/products" className="p-1.5 bg-white rounded-lg border border-[#E8DFD0] text-[#746D62] hover:text-[#003D2D]">
+            <ArrowLeft size={16} />
+          </Link>
+          <h1 className="font-sans font-bold text-base sm:text-lg text-[#191714] tracking-tight uppercase">
+            EDIT PRODUCT: {name || 'UNTITLED PRODUCT'}
+          </h1>
         </div>
+        <Link
+          href="/dashboard/products"
+          className="p-1.5 text-neutral-400 hover:text-neutral-700 transition-colors"
+          title="Close"
+        >
+          <X size={20} />
+        </Link>
       </div>
 
       {error && (
@@ -173,6 +193,13 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
           {error}
         </div>
       )}
+
+      {/* 1. Smart Copy-Paste Auto-Fill Box */}
+      <SmartProductAutoFill
+        categories={categories}
+        collections={collections}
+        onAutoFill={handleAutoFill}
+      />
 
       <form onSubmit={handleSubmit} className="space-y-6 text-xs">
         {/* Basic Details */}
@@ -274,6 +301,24 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                 ))}
               </select>
             </div>
+            <div>
+              <label className="block text-[#746D62] mb-1 font-medium">Fabric Material</label>
+              <input
+                type="text"
+                value={material}
+                onChange={(e) => setMaterial(e.target.value)}
+                className="w-full border border-[#E8DFD0] rounded-md p-2.5 text-[#191714] focus:outline-none focus:border-[#003D2D]"
+              />
+            </div>
+            <div>
+              <label className="block text-[#746D62] mb-1 font-medium">Care Instructions</label>
+              <input
+                type="text"
+                value={careInstructions}
+                onChange={(e) => setCareInstructions(e.target.value)}
+                className="w-full border border-[#E8DFD0] rounded-md p-2.5 text-[#191714] focus:outline-none focus:border-[#003D2D]"
+              />
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-6 pt-3">
@@ -307,42 +352,31 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
           </div>
         </div>
 
-        {/* Images */}
+        {/* Product Images with Drag & Drop */}
         <div className="bg-white p-6 rounded-xl border border-[#E8DFD0] shadow-xs space-y-4">
-          <h2 className="font-serif text-base font-semibold text-[#191714]">Product Images</h2>
-          <div className="flex flex-wrap gap-4">
-            {images.map((img, idx) => (
-              <div key={idx} className="relative w-24 h-32 rounded-lg overflow-hidden border-2 border-[#003D2D] bg-[#FAF6F0] group">
-                <Image src={img.url} alt="Uploaded" fill className="object-cover" />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(idx)}
-                  className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-80 hover:opacity-100"
-                >
-                  <Trash2 size={12} />
-                </button>
-              </div>
-            ))}
-
-            <label className="w-24 h-32 border-2 border-dashed border-[#C9A34A] rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-[#FFF8ED] transition-colors text-center p-2">
-              <Upload size={18} className="text-[#003D2D] mb-1" />
-              <span className="text-[10px] text-[#746D62]">{isUploading ? 'Uploading...' : 'Add Image'}</span>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageUpload}
-                disabled={isUploading}
-                className="hidden"
-              />
-            </label>
+          <div>
+            <h2 className="font-serif text-base font-semibold text-[#191714]">Product Images</h2>
+            <p className="text-[11px] text-[#746D62] mt-0.5">
+              Drag &amp; drop images directly into the area below, set cover photo, or reorder.
+            </p>
           </div>
+
+          <ProductImageDropzone
+            images={images}
+            onImagesChange={setImages}
+            maxFiles={12}
+          />
         </div>
 
         {/* Variants */}
         <div className="bg-white p-6 rounded-xl border border-[#E8DFD0] shadow-xs space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="font-serif text-base font-semibold text-[#191714]">Variants &amp; Inventory</h2>
+            <div>
+              <h2 className="font-serif text-base font-semibold text-[#191714]">Variants &amp; Inventory</h2>
+              <p className="text-[11px] text-[#746D62] mt-0.5">
+                Auto-generated from your sizes, colors, and stock per size
+              </p>
+            </div>
             <button
               type="button"
               onClick={handleAddVariant}
@@ -446,4 +480,3 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     </div>
   );
 }
-

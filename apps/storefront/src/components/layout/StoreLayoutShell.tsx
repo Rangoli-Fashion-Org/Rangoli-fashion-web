@@ -37,3 +37,4 @@ export const StoreLayoutShell: React.FC<{ children: React.ReactNode }> = ({ chil
     </AuthProvider>
   );
 };
+
