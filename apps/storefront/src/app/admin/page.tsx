@@ -9,12 +9,14 @@ export default function AdminRootPage() {
   const { user, isLoading } = useAdminAuth();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (user) {
-        router.replace('/admin/dashboard');
-      } else {
-        router.replace('/admin/login');
-      }
+    const hasLocal = typeof window !== 'undefined' && localStorage.getItem('rf_admin_user');
+    if (user || hasLocal) {
+      router.replace('/admin/dashboard');
+      return;
+    }
+
+    if (!isLoading && !user && !hasLocal) {
+      router.replace('/admin/login');
     }
   }, [user, isLoading, router]);
 

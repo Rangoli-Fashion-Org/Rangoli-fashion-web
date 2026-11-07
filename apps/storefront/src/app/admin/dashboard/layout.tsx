@@ -12,12 +12,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/admin/login');
+    if (!isLoading) {
+      const hasSavedSession = typeof window !== 'undefined' && localStorage.getItem('rf_admin_user');
+      if (!user && !hasSavedSession) {
+        router.replace('/admin/login');
+      }
     }
   }, [user, isLoading, router]);
 
-  if (isLoading || !user) {
+  const hasSavedSession = typeof window !== 'undefined' && localStorage.getItem('rf_admin_user');
+  if (isLoading && !user && !hasSavedSession) {
     return (
       <div className="min-h-screen bg-[#002D21] flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-[#C9A34A] border-t-transparent rounded-full animate-spin" />
@@ -37,4 +41,3 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
-

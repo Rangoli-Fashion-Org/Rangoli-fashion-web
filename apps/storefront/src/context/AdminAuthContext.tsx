@@ -28,41 +28,29 @@ const AdminAuthContext = createContext<AdminAuthContextType>({
 });
 
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Initialize user immediately from persistent storage to prevent redirect loops on refresh
-  const [user, setUser] = useState<AdminUser | null>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const savedToken = localStorage.getItem('rf_admin_token');
-        const savedUser = localStorage.getItem('rf_admin_user');
-        if (savedToken && savedUser) {
-          return JSON.parse(savedUser);
-        }
-      } catch {
-        // Ignore parse error
-      }
-    }
-    return null;
-  });
+  // Initialize state from localStorage if available
+  const [user, setUser] = useState<AdminUser | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const [isLoading, setIsLoading] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const savedToken = localStorage.getItem('rf_admin_token');
-        const savedUser = localStorage.getItem('rf_admin_user');
-        if (savedToken && savedUser) {
-          return false; // Instant session restore: prevents asking for login on every refresh
-        }
-      } catch {}
+  // Restore session immediately on client mount
+  useEffect(() => {
+    try {
+      const savedUser = localStorage.getItem('rf_admin_user');
+      const savedToken = localStorage.getItem('rf_admin_token');
+      if (savedUser && savedToken) {
+        const parsed = JSON.parse(savedUser);
+        setUser(parsed);
+      }
+    } catch (e) {
+      console.warn('Failed to parse cached admin session', e);
+    } finally {
+      setIsLoading(false);
     }
-    return true;
-  });
+  }, []);
 
   const refreshUser = async () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('rf_admin_token') : null;
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
+    if (!token) return;
 
     try {
       const res = await fetchAdminApi<AdminUser>('/auth/me');
@@ -72,21 +60,14 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           localStorage.setItem('rf_admin_user', JSON.stringify(res.data));
         }
       }
-      // Never wipe out admin credentials on background refresh - keep permanent session
     } catch {
-      // Keep existing session intact
-    } finally {
-      setIsLoading(false);
+      // Keep existing persistent session on network drop or offline
     }
   };
 
-  useEffect(() => {
-    refreshUser();
-  }, []);
-
   const login = async (username: string, password: string) => {
     const cleanUsername = username.trim();
-    const cleanPassword = password; // Do not trim password to preserve exact credentials
+    const cleanPassword = password; // Preserve exact password
 
     // Try /admin/login endpoint, fallback to /auth/admin/login
     let res = await fetchAdminApi<{ user: AdminUser; tokens?: { accessToken: string } }>('/admin/login', {
@@ -105,11 +86,12 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const adminUser = res.data.user;
       const accessToken = res.data.tokens?.accessToken;
 
-      if (accessToken && typeof window !== 'undefined') {
-        localStorage.setItem('rf_admin_token', accessToken);
-      }
       if (typeof window !== 'undefined') {
+        if (accessToken) {
+          localStorage.setItem('rf_admin_token', accessToken);
+        }
         localStorage.setItem('rf_admin_user', JSON.stringify(adminUser));
+        document.cookie = 'rf_admin_active=true; path=/; max-age=3153600000';
       }
 
       setUser(adminUser);
@@ -128,6 +110,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (typeof window !== 'undefined') {
       localStorage.removeItem('rf_admin_token');
       localStorage.removeItem('rf_admin_user');
+      document.cookie = 'rf_admin_active=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
     setUser(null);
   };

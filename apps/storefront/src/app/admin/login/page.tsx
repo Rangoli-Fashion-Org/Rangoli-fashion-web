@@ -1,19 +1,36 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/context/AdminAuthContext';
-import { ShieldAlert, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const { login } = useAdminAuth();
+  const { user, isLoading: authLoading, login } = useAdminAuth();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // If already logged in, redirect immediately to dashboard without showing login form
+  useEffect(() => {
+    const hasLocalSession = typeof window !== 'undefined' && localStorage.getItem('rf_admin_user');
+    if (user || hasLocalSession) {
+      router.replace('/admin/dashboard');
+    }
+  }, [user, router]);
+
+  // Don't render login form if already authenticated
+  if (user || (typeof window !== 'undefined' && localStorage.getItem('rf_admin_user'))) {
+    return (
+      <div className="min-h-screen bg-[#002D21] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#C9A34A] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +39,7 @@ export default function AdminLoginPage() {
 
     const res = await login(username, password);
     if (res.success) {
-      router.push('/admin/dashboard');
+      router.replace('/admin/dashboard');
     } else {
       let msg = res.message || 'Invalid admin credentials';
       if (msg.toLowerCase().includes('failed to fetch') || msg.toLowerCase().includes('network')) {
