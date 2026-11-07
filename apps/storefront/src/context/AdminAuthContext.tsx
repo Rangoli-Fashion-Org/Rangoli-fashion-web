@@ -28,25 +28,10 @@ const AdminAuthContext = createContext<AdminAuthContextType>({
 });
 
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Synchronous initialization from localStorage prevents flash of login screen
-  const [user, setUser] = useState<AdminUser | null>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('rf_admin_user');
-        if (saved) return JSON.parse(saved);
-      } catch {}
-    }
-    return null;
-  });
+  const [user, setUser] = useState<AdminUser | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const [isLoading, setIsLoading] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return !localStorage.getItem('rf_admin_user') && !localStorage.getItem('rf_admin_token');
-    }
-    return true;
-  });
-
-  // Restore session immediately on client mount
+  // Restore session cleanly on client mount after hydration
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem('rf_admin_user');

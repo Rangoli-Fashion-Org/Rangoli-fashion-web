@@ -10,21 +10,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const { user, isLoading } = useAdminAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (!isLoading) {
-      const hasSavedSession = typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token'));
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && !isLoading) {
+      const hasSavedSession = localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token');
       if (!user && !hasSavedSession) {
         router.replace('/admin/login');
       }
     }
-  }, [user, isLoading, router]);
+  }, [isMounted, user, isLoading, router]);
 
-  const hasSavedSession = typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token'));
-  if (isLoading && !user && !hasSavedSession) {
+  // Server & initial client render match identically (no hydration mismatch)
+  if (!isMounted || (isLoading && !user)) {
     return (
-      <div className="min-h-screen bg-[#002D21] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#C9A34A] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#003D2D] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

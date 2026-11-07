@@ -14,17 +14,33 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('Rangolifashion@2026');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // If already logged in, redirect immediately to dashboard without showing login form
   useEffect(() => {
-    const hasLocalSession = typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token'));
-    if (user || hasLocalSession) {
-      router.replace('/admin/dashboard');
+    if (isMounted) {
+      const hasLocalSession = localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token');
+      if (user || hasLocalSession) {
+        router.replace('/admin/dashboard');
+      }
     }
-  }, [user, router]);
+  }, [isMounted, user, router]);
 
-  // Don't render login form if already authenticated
-  if (user || (typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token')))) {
+  // Prevent flash or hydration mismatch before client mount
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-[#002D21] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#C9A34A] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // If authenticated on client, show loading while redirect takes place
+  if (user || localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token')) {
     return (
       <div className="min-h-screen bg-[#002D21] flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-[#C9A34A] border-t-transparent rounded-full animate-spin" />

@@ -1,24 +1,31 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 
 export default function AdminRootPage() {
   const router = useRouter();
   const { user, isLoading } = useAdminAuth();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const hasLocal = typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token'));
-    if (user || hasLocal) {
-      router.replace('/admin/dashboard');
-      return;
-    }
+    setIsMounted(true);
+  }, []);
 
-    if (!isLoading && !user && !hasLocal) {
-      router.replace('/admin/login');
+  useEffect(() => {
+    if (isMounted) {
+      const hasLocal = localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token');
+      if (user || hasLocal) {
+        router.replace('/admin/dashboard');
+        return;
+      }
+
+      if (!isLoading && !user && !hasLocal) {
+        router.replace('/admin/login');
+      }
     }
-  }, [user, isLoading, router]);
+  }, [isMounted, user, isLoading, router]);
 
   return (
     <div className="min-h-screen bg-[#002D21] flex items-center justify-center">
