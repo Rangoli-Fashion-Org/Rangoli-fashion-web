@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently -n \"API,STORE,ADMIN\" -c \"blue,green,magenta\" \"npm run dev:api\" \"npm run dev:storefront\" \"npm run dev:admin\"",
+    "dev": "concurrently -n \"API,STORE\" -c \"blue,green\" \"npm run dev:api\" \"npm run dev:storefront\"",
     "dev:api": "npm run start:dev --workspace=@rangoli/api",
     "dev:storefront": "npm run dev --workspace=@rangoli/storefront",
     "dev:admin": "npm run dev --workspace=@rangoli/admin",
