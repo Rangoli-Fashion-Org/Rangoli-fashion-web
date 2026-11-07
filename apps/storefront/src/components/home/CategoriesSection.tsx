@@ -50,6 +50,20 @@ export const CategoriesSection: React.FC = () => {
   return (
     <section className="py-12 sm:py-16 md:py-20 bg-[#FFF8ED]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Heading */}
+        <div className="flex flex-col items-center justify-center text-center mb-8 sm:mb-12 space-y-1.5">
+          <div className="flex items-center justify-center space-x-3 sm:space-x-4">
+            <div className="h-px w-10 sm:w-16 bg-[#C9A34A]/60" />
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#191714] font-medium tracking-tight">
+              Shop by Category
+            </h2>
+            <div className="h-px w-10 sm:w-16 bg-[#C9A34A]/60" />
+          </div>
+          <p className="text-xs sm:text-sm text-[#746D62] max-w-lg">
+            Discover handcrafted styles, breathable cottons, and celebratory ethnic ensembles.
+          </p>
+        </div>
+
         {/* 4 Cards Responsive Grid matching user's reference design */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
           {categories.map((category) => (
