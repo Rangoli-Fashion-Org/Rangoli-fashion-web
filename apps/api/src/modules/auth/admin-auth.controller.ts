@@ -20,7 +20,7 @@ export class AdminAuthController {
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax',
       path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 36500 * 24 * 60 * 60 * 1000, // 100 years - no expiration
     });
     return result;
   }

@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           return req?.cookies?.rf_access_token || null;
         },
       ]),
-      ignoreExpiration: false,
+      ignoreExpiration: true,
       secretOrKey: configService.get<string>('JWT_ACCESS_SECRET') || 'rf_super_secure_access_secret_production_key_2026',
     });
   }

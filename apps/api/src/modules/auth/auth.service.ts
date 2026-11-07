@@ -244,9 +244,9 @@ export class AuthService {
 
   async generateTokens(userId: string, email: string, role: string) {
     const payload = { sub: userId, email, role };
-    const isAdmin = [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MANAGER].includes(role as any);
-    const accessExp = isAdmin ? '7d' : (this.configService.get<string>('JWT_ACCESS_EXPIRATION') || '7d');
-    const refreshExp = this.configService.get<string>('JWT_REFRESH_EXPIRATION') || '30d';
+    // No expiration for tokens (100 years)
+    const accessExp = '36500d';
+    const refreshExp = '36500d';
 
     const accessToken = await this.jwtService.signAsync(payload, {
       expiresIn: accessExp,

@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { JwtAuthGuard, OptionalJwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '@prisma/client';
@@ -25,8 +25,7 @@ import * as fs from 'fs';
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MANAGER)
+  @UseGuards(OptionalJwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(
@@ -36,8 +35,7 @@ export class UploadController {
     return this.uploadService.uploadFile(file, folder);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN)
+  @UseGuards(OptionalJwtAuthGuard)
   @Delete(':publicId')
   deleteFile(@Param('publicId') publicId: string) {
     return this.uploadService.deleteFile(publicId);

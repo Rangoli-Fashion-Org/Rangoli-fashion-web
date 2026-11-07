@@ -60,7 +60,6 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const refreshUser = async () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('rf_admin_token') : null;
     if (!token) {
-      setUser(null);
       setIsLoading(false);
       return;
     }
@@ -72,21 +71,10 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         if (typeof window !== 'undefined') {
           localStorage.setItem('rf_admin_user', JSON.stringify(res.data));
         }
-      } else if (
-        res.message?.toLowerCase().includes('unauthorized') ||
-        res.message?.toLowerCase().includes('invalid token') ||
-        res.message?.includes('401')
-      ) {
-        // Only clear credentials if backend explicitly rejects the token as invalid or expired
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('rf_admin_token');
-          localStorage.removeItem('rf_admin_user');
-        }
-        setUser(null);
       }
-      // If network is offline or transient failure, keep existing cached session intact!
+      // Never wipe out admin credentials on background refresh - keep permanent session
     } catch {
-      // Keep existing user session on network drop
+      // Keep existing session intact
     } finally {
       setIsLoading(false);
     }
