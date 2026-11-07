@@ -57,7 +57,7 @@ export const HeroBanner: React.FC = () => {
 
   if (isLoading) {
     return (
-      <section className="relative w-full h-[520px] sm:h-[620px] lg:h-[720px] bg-[#002D21]/15 animate-pulse flex items-center justify-center">
+      <section className="relative w-full h-[420px] sm:h-[480px] lg:h-[580px] bg-[#002D21]/15 animate-pulse flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-[#C9A34A] border-t-transparent rounded-full animate-spin" />
       </section>
     );
@@ -74,7 +74,7 @@ export const HeroBanner: React.FC = () => {
     <section
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative w-full h-[540px] sm:h-[620px] md:h-[680px] lg:h-[760px] xl:h-[820px] overflow-hidden bg-[#002D21]"
+      className="relative w-full h-[420px] sm:h-[480px] md:h-[520px] lg:h-[580px] xl:h-[620px] overflow-hidden bg-[#002D21]"
     >
       {/* 1. Full-Width Background Banner Image (Supports desktop & mobile optimized) */}
       <div className="absolute inset-0 w-full h-full">
@@ -112,34 +112,34 @@ export const HeroBanner: React.FC = () => {
 
       {/* 3. Text and CTA Placed Directly On Top of the Full-Width Banner */}
       <div className="relative z-10 w-full h-full flex flex-col justify-end sm:justify-center">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full pb-16 sm:pb-0">
-          <div className="max-w-2xl sm:max-w-3xl space-y-4 sm:space-y-6 text-left">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full pb-10 sm:pb-0">
+          <div className="max-w-2xl sm:max-w-3xl space-y-3 sm:space-y-4 text-left">
             {/* Editorial Eyebrow Tag */}
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-[#FFF8ED] text-[11px] sm:text-xs font-medium uppercase tracking-widest shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-[#E5C158] animate-pulse" />
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-[#FFF8ED] text-[10px] sm:text-xs font-medium uppercase tracking-widest shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#E5C158] animate-pulse" />
               <span>Festive &amp; Everyday Elegance</span>
             </div>
 
             {/* Headline Title */}
-            <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-normal leading-[1.12] sm:leading-[1.1] tracking-tight drop-shadow-md whitespace-pre-line">
+            <h1 className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-normal leading-[1.15] sm:leading-[1.12] tracking-tight drop-shadow-md whitespace-pre-line">
               {activeBanner.title}
             </h1>
 
             {/* Subtitle / Description */}
             {activeBanner.subtitle && (
-              <p className="text-sm sm:text-base md:text-lg text-white/90 max-w-xl leading-relaxed font-light drop-shadow">
+              <p className="text-xs sm:text-sm md:text-base text-white/90 max-w-xl leading-relaxed font-light drop-shadow">
                 {activeBanner.subtitle}
               </p>
             )}
 
             {/* Call-to-Action Button */}
-            <div className="pt-2 sm:pt-4">
+            <div className="pt-2">
               <Link
                 href={activeBanner.ctaUrl || '/shop'}
-                className="inline-flex items-center space-x-3 px-8 py-4 bg-[#FFF8ED] text-[#003D2D] hover:bg-[#C9A34A] hover:text-[#002D21] rounded-full text-xs sm:text-sm font-semibold uppercase tracking-widest shadow-2xl hover:shadow-[#C9A34A]/40 transition-all duration-300 group"
+                className="inline-flex items-center space-x-2.5 px-6 sm:px-7 py-3 sm:py-3.5 bg-[#FFF8ED] text-[#003D2D] hover:bg-[#C9A34A] hover:text-[#002D21] rounded-full text-xs font-semibold uppercase tracking-widest shadow-xl hover:shadow-[#C9A34A]/40 transition-all duration-300 group"
               >
                 <span>{activeBanner.ctaText || 'Shop the Collection'}</span>
-                <ArrowRight size={17} className="group-hover:translate-x-1.5 transition-transform" />
+                <ArrowRight size={15} className="group-hover:translate-x-1.5 transition-transform" />
               </Link>
             </div>
           </div>
