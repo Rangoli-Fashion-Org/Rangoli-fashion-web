@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useAdminAuth } from '../../context/AdminAuthContext';
+import { useAdminAuth } from '@/context/AdminAuthContext';
 import { ShieldAlert, ArrowRight } from 'lucide-react';
 
 export default function AdminLoginPage() {
@@ -24,7 +24,11 @@ export default function AdminLoginPage() {
     if (res.success) {
       router.push('/dashboard');
     } else {
-      setError(res.message || 'Invalid admin credentials');
+      let msg = res.message || 'Invalid admin credentials';
+      if (msg.toLowerCase().includes('failed to fetch') || msg.toLowerCase().includes('network')) {
+        msg = 'Cannot connect to backend API at http://localhost:4000. Please ensure the API is running in Terminal 2 (npm run dev:api).';
+      }
+      setError(msg);
       setIsLoading(false);
     }
   };
@@ -98,4 +102,3 @@ export default function AdminLoginPage() {
     </div>
   );
 }
-

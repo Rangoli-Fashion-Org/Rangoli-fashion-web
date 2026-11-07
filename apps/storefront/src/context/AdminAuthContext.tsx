@@ -28,19 +28,65 @@ const AdminAuthContext = createContext<AdminAuthContextType>({
 });
 
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<AdminUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // Initialize user immediately from persistent storage to prevent redirect loops on refresh
+  const [user, setUser] = useState<AdminUser | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedToken = localStorage.getItem('rf_admin_token');
+        const savedUser = localStorage.getItem('rf_admin_user');
+        if (savedToken && savedUser) {
+          return JSON.parse(savedUser);
+        }
+      } catch {
+        // Ignore parse error
+      }
+    }
+    return null;
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedToken = localStorage.getItem('rf_admin_token');
+        const savedUser = localStorage.getItem('rf_admin_user');
+        if (savedToken && savedUser) {
+          return false; // Instant session restore: prevents asking for login on every refresh
+        }
+      } catch {}
+    }
+    return true;
+  });
 
   const refreshUser = async () => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('rf_admin_token') : null;
+    if (!token) {
+      setUser(null);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const res = await fetchAdminApi<AdminUser>('/auth/me');
       if (res.success && res.data && ['SUPER_ADMIN', 'ADMIN', 'MANAGER'].includes(res.data.role)) {
         setUser(res.data);
-      } else {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('rf_admin_user', JSON.stringify(res.data));
+        }
+      } else if (
+        res.message?.toLowerCase().includes('unauthorized') ||
+        res.message?.toLowerCase().includes('invalid token') ||
+        res.message?.includes('401')
+      ) {
+        // Only clear credentials if backend explicitly rejects the token as invalid or expired
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('rf_admin_token');
+          localStorage.removeItem('rf_admin_user');
+        }
         setUser(null);
       }
+      // If network is offline or transient failure, keep existing cached session intact!
     } catch {
-      setUser(null);
+      // Keep existing user session on network drop
     } finally {
       setIsLoading(false);
     }
@@ -51,25 +97,49 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   const login = async (username: string, password: string) => {
-    const res = await fetchAdminApi<{ user: AdminUser; tokens?: { accessToken: string } }>('/admin/login', {
+    const cleanUsername = username.trim();
+    const cleanPassword = password; // Do not trim password to preserve exact credentials
+
+    // Try /admin/login endpoint, fallback to /auth/admin/login
+    let res = await fetchAdminApi<{ user: AdminUser; tokens?: { accessToken: string } }>('/admin/login', {
       method: 'POST',
-      body: JSON.stringify({ username, email: username, password }),
+      body: JSON.stringify({ username: cleanUsername, email: cleanUsername, password: cleanPassword }),
     });
 
+    if (!res.success && (res.message?.includes('404') || res.message?.includes('Not Found'))) {
+      res = await fetchAdminApi<{ user: AdminUser; tokens?: { accessToken: string } }>('/auth/admin/login', {
+        method: 'POST',
+        body: JSON.stringify({ username: cleanUsername, email: cleanUsername, password: cleanPassword }),
+      });
+    }
+
     if (res.success && res.data?.user) {
-      if (res.data.tokens?.accessToken && typeof window !== 'undefined') {
-        localStorage.setItem('rf_admin_token', res.data.tokens.accessToken);
+      const adminUser = res.data.user;
+      const accessToken = res.data.tokens?.accessToken;
+
+      if (accessToken && typeof window !== 'undefined') {
+        localStorage.setItem('rf_admin_token', accessToken);
       }
-      setUser(res.data.user);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('rf_admin_user', JSON.stringify(adminUser));
+      }
+
+      setUser(adminUser);
+      setIsLoading(false);
       return { success: true };
     }
-    return { success: false, message: res.message || 'Invalid admin credentials' };
+
+    return {
+      success: false,
+      message: res.message || 'Invalid admin credentials',
+    };
   };
 
   const logout = async () => {
     await fetchAdminApi('/auth/logout', { method: 'POST' }).catch(() => {});
     if (typeof window !== 'undefined') {
       localStorage.removeItem('rf_admin_token');
+      localStorage.removeItem('rf_admin_user');
     }
     setUser(null);
   };
@@ -82,4 +152,3 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 };
 
 export const useAdminAuth = () => useContext(AdminAuthContext);
-
