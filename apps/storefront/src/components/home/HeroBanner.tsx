@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
 
 interface BannerItem {
@@ -20,6 +20,8 @@ export const HeroBanner: React.FC = () => {
   const [banners, setBanners] = useState<BannerItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetchApi<BannerItem[]>('/banners').then((res) => {
@@ -30,12 +32,33 @@ export const HeroBanner: React.FC = () => {
     });
   }, []);
 
+  // Auto-advance slides every 6 seconds when not hovered and multiple banners exist
+  useEffect(() => {
+    if (banners.length <= 1 || isHovered) return;
+
+    timerRef.current = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % banners.length);
+    }, 6000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [banners.length, isHovered, currentIndex]);
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setCurrentIndex((prev) => (prev + 1) % banners.length);
+  };
+
   if (isLoading) {
     return (
-      <section className="relative w-full bg-[#FFF8ED] py-16 sm:py-24 animate-pulse">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="h-64 sm:h-96 rounded-2xl bg-[#E8DFD0]/40" />
-        </div>
+      <section className="relative w-full h-[520px] sm:h-[620px] lg:h-[720px] bg-[#002D21]/15 animate-pulse flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-[#C9A34A] border-t-transparent rounded-full animate-spin" />
       </section>
     );
   }
@@ -48,66 +71,118 @@ export const HeroBanner: React.FC = () => {
   const activeBanner = banners[currentIndex];
 
   return (
-    <section className="relative w-full bg-[#FFF8ED] overflow-hidden border-b border-[#E8DFD0]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left Text Column */}
-          <div className="lg:col-span-6 flex flex-col items-start space-y-6 z-10 text-left">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 bg-[#F5EBDD] rounded-full border border-[#C9A34A]/40 text-xs font-medium text-[#003D2D]">
-              <span className="w-2 h-2 rounded-full bg-[#C9A34A]" />
+    <section
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative w-full h-[540px] sm:h-[620px] md:h-[680px] lg:h-[760px] xl:h-[820px] overflow-hidden bg-[#002D21]"
+    >
+      {/* 1. Full-Width Background Banner Image (Supports desktop & mobile optimized) */}
+      <div className="absolute inset-0 w-full h-full">
+        {/* Desktop Image */}
+        <div className="relative w-full h-full hidden sm:block">
+          <Image
+            key={`desktop-${activeBanner.id}-${currentIndex}`}
+            src={activeBanner.desktopImageUrl}
+            alt={activeBanner.title}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center transition-transform duration-1000 ease-out scale-100 hover:scale-[1.02]"
+          />
+        </div>
+
+        {/* Mobile Image (Falls back to desktop image if mobile not uploaded) */}
+        <div className="relative w-full h-full sm:hidden">
+          <Image
+            key={`mobile-${activeBanner.id}-${currentIndex}`}
+            src={activeBanner.mobileImageUrl || activeBanner.desktopImageUrl}
+            alt={activeBanner.title}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
+
+        {/* 2. Editorial Luxury Scrim & Contrast Gradient Overlay */}
+        {/* Dark left/bottom gradient ensures text is 100% readable regardless of image brightness */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/20 sm:bg-gradient-to-r sm:from-black/80 sm:via-black/50 sm:to-black/10 pointer-events-none" />
+        <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+      </div>
+
+      {/* 3. Text and CTA Placed Directly On Top of the Full-Width Banner */}
+      <div className="relative z-10 w-full h-full flex flex-col justify-end sm:justify-center">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full pb-16 sm:pb-0">
+          <div className="max-w-2xl sm:max-w-3xl space-y-4 sm:space-y-6 text-left">
+            {/* Editorial Eyebrow Tag */}
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-[#FFF8ED] text-[11px] sm:text-xs font-medium uppercase tracking-widest shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[#E5C158] animate-pulse" />
               <span>Festive &amp; Everyday Elegance</span>
             </div>
 
-            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#191714] font-normal leading-[1.15] tracking-tight whitespace-pre-line">
+            {/* Headline Title */}
+            <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-normal leading-[1.12] sm:leading-[1.1] tracking-tight drop-shadow-md whitespace-pre-line">
               {activeBanner.title}
             </h1>
 
+            {/* Subtitle / Description */}
             {activeBanner.subtitle && (
-              <p className="text-sm sm:text-base md:text-lg text-[#746D62] max-w-lg leading-relaxed font-normal">
+              <p className="text-sm sm:text-base md:text-lg text-white/90 max-w-xl leading-relaxed font-light drop-shadow">
                 {activeBanner.subtitle}
               </p>
             )}
 
-            <Link
-              href={activeBanner.ctaUrl || '/shop'}
-              className="inline-flex items-center space-x-2.5 px-7 py-3.5 bg-[#003D2D] text-[#FFF8ED] hover:bg-[#0B5940] rounded-full text-sm font-medium tracking-wide shadow-md hover:shadow-lg transition-all duration-300 group"
-            >
-              <span>{activeBanner.ctaText || 'Shop the Collection'}</span>
-              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
-
-            {/* Slider Dots */}
-            {banners.length > 1 && (
-              <div className="flex items-center space-x-2 pt-4">
-                {banners.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentIndex(idx)}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${
-                      idx === currentIndex ? 'w-8 bg-[#003D2D]' : 'w-2.5 bg-[#003D2D]/20 hover:bg-[#003D2D]/50'
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Right Image / Hero Visual */}
-          <div className="lg:col-span-6 relative flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-md sm:max-w-lg aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/60 bg-[#F5EBDD]">
-              <Image
-                src={activeBanner.desktopImageUrl}
-                alt={activeBanner.title}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover object-top"
-              />
+            {/* Call-to-Action Button */}
+            <div className="pt-2 sm:pt-4">
+              <Link
+                href={activeBanner.ctaUrl || '/shop'}
+                className="inline-flex items-center space-x-3 px-8 py-4 bg-[#FFF8ED] text-[#003D2D] hover:bg-[#C9A34A] hover:text-[#002D21] rounded-full text-xs sm:text-sm font-semibold uppercase tracking-widest shadow-2xl hover:shadow-[#C9A34A]/40 transition-all duration-300 group"
+              >
+                <span>{activeBanner.ctaText || 'Shop the Collection'}</span>
+                <ArrowRight size={17} className="group-hover:translate-x-1.5 transition-transform" />
+              </Link>
             </div>
           </div>
         </div>
       </div>
+
+      {/* 4. Left & Right Slider Arrow Controls (Rendered if multiple banners) */}
+      {banners.length > 1 && (
+        <>
+          <button
+            onClick={handlePrev}
+            aria-label="Previous Banner"
+            className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/30 hover:bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all duration-200 hover:scale-105"
+          >
+            <ChevronLeft size={22} />
+          </button>
+          <button
+            onClick={handleNext}
+            aria-label="Next Banner"
+            className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/30 hover:bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all duration-200 hover:scale-105"
+          >
+            <ChevronRight size={22} />
+          </button>
+        </>
+      )}
+
+      {/* 5. Bottom Carousel Slide Indicators / Dots */}
+      {banners.length > 1 && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-2.5">
+          {banners.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                idx === currentIndex
+                  ? 'w-9 bg-[#E5C158] shadow-lg shadow-[#E5C158]/50'
+                  : 'w-2.5 bg-white/40 hover:bg-white/80'
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };
