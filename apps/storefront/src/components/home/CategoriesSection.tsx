@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
 
 interface CategoryItem {
@@ -30,15 +30,11 @@ export const CategoriesSection: React.FC = () => {
 
   if (isLoading) {
     return (
-      <section className="py-12 sm:py-16 bg-[#FFF8ED] border-b border-[#E8DFD0]">
+      <section className="py-12 sm:py-16 bg-[#FFF8ED]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-center space-y-3 mb-10">
-            <div className="h-4 w-32 bg-[#E8DFD0]/60 rounded-full animate-pulse" />
-            <div className="h-8 w-64 bg-[#E8DFD0]/80 rounded-md animate-pulse" />
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="aspect-[4/5] bg-[#E8DFD0]/50 rounded-2xl animate-pulse" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="aspect-[3/5] bg-[#E8DFD0]/40 rounded-2xl animate-pulse" />
             ))}
           </div>
         </div>
@@ -46,80 +42,56 @@ export const CategoriesSection: React.FC = () => {
     );
   }
 
-  // If no categories exist in admin, do not render empty section
+  // If no categories exist, return null
   if (categories.length === 0) {
     return null;
   }
 
   return (
-    <section className="py-14 sm:py-20 bg-[#FAF6F0] border-b border-[#E8DFD0]">
+    <section className="py-12 sm:py-16 md:py-20 bg-[#FFF8ED]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Heading with Decorative Accents */}
-        <div className="flex flex-col items-center justify-center text-center mb-10 sm:mb-14 space-y-2">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#003D2D]/5 border border-[#C9A34A]/40 text-[#003D2D] text-xs font-semibold uppercase tracking-widest">
-            <Sparkles size={12} className="text-[#C9A34A]" />
-            <span>Curated Silhouettes</span>
-          </div>
-
-          <div className="flex items-center justify-center space-x-4 pt-1">
-            <div className="h-px w-10 sm:w-16 bg-[#C9A34A]/60" />
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#191714] font-medium tracking-tight">
-              Shop by Category
-            </h2>
-            <div className="h-px w-10 sm:w-16 bg-[#C9A34A]/60" />
-          </div>
-
-          <p className="text-xs sm:text-sm text-[#746D62] max-w-lg mt-1">
-            Explore handcrafted ethnic wear, everyday cotton sets, and statement festive ensembles tailored for modern elegance.
-          </p>
-        </div>
-
-        {/* Dynamic Category Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
+        {/* 4 Cards Responsive Grid matching user's reference design */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
           {categories.map((category) => (
             <Link
               key={category.id}
               href={`/shop?category=${encodeURIComponent(category.slug)}`}
-              className="group flex flex-col items-center text-center bg-white rounded-2xl p-3 sm:p-4 border border-[#E8DFD0] hover:border-[#C9A34A] shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group relative aspect-[3/5] rounded-2xl sm:rounded-[22px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 block bg-[#002D21]"
             >
-              {/* Card Image Container */}
-              <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-[#FAF6F0] border border-[#E8DFD0]/60 mb-3 sm:mb-4">
-                {category.imageUrl ? (
-                  <Image
-                    src={category.imageUrl}
-                    alt={category.name}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
-                    className="object-cover object-top group-hover:scale-108 transition-transform duration-500 ease-out"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center p-4 text-[#C9A34A] bg-[#FFF8ED]">
-                    <div className="w-12 h-12 rounded-full bg-[#003D2D]/10 flex items-center justify-center mb-2">
-                      <Sparkles size={22} className="text-[#003D2D]" />
-                    </div>
-                    <span className="font-serif text-xs font-semibold text-[#191714] line-clamp-1">{category.name}</span>
+              {/* Full-Card Background Image */}
+              {category.imageUrl ? (
+                <Image
+                  src={category.imageUrl}
+                  alt={category.name}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-b from-[#003D2D] to-[#002018] flex flex-col items-center justify-center p-6 text-center">
+                  <div className="w-12 h-12 rounded-full border border-[#C9A34A]/50 flex items-center justify-center mb-3">
+                    <span className="font-serif text-[#C9A34A] text-lg font-bold">RF</span>
                   </div>
-                )}
-
-                {/* Subtle Hover Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-              </div>
-
-              {/* Title & Action */}
-              <h3 className="font-serif text-sm sm:text-base font-semibold text-[#191714] group-hover:text-[#003D2D] transition-colors line-clamp-1 mb-1">
-                {category.name}
-              </h3>
-
-              {category.description && (
-                <p className="text-[11px] text-[#746D62] line-clamp-1 mb-2 px-1">
-                  {category.description}
-                </p>
+                  <span className="text-white/60 text-[11px] uppercase tracking-widest font-semibold">
+                    Upload image in Admin
+                  </span>
+                </div>
               )}
 
-              <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-[#C9A34A] group-hover:text-[#003D2D] transition-colors uppercase tracking-wider mt-auto pt-1">
-                <span>Explore</span>
-                <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-              </span>
+              {/* Bottom Dark Gradient Vignette Overlay for Text Legibility */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
+
+              {/* Text Overlay: Serif Title and "Explore →" aligned at bottom-left */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-10 flex flex-col items-start text-left">
+                <h3 className="font-serif text-lg sm:text-xl md:text-2xl text-white font-normal sm:font-medium leading-tight drop-shadow-sm whitespace-pre-line">
+                  {category.name}
+                </h3>
+
+                <div className="inline-flex items-center space-x-1.5 text-white/95 group-hover:text-[#E5C158] text-xs sm:text-sm font-medium tracking-wide mt-2 sm:mt-2.5 transition-colors">
+                  <span>Explore</span>
+                  <ArrowRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-200" />
+                </div>
+              </div>
             </Link>
           ))}
         </div>
