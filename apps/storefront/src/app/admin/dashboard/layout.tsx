@@ -13,14 +13,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (!isLoading) {
-      const hasSavedSession = typeof window !== 'undefined' && localStorage.getItem('rf_admin_user');
+      const hasSavedSession = typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token'));
       if (!user && !hasSavedSession) {
         router.replace('/admin/login');
       }
     }
   }, [user, isLoading, router]);
 
-  const hasSavedSession = typeof window !== 'undefined' && localStorage.getItem('rf_admin_user');
+  const hasSavedSession = typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token'));
   if (isLoading && !user && !hasSavedSession) {
     return (
       <div className="min-h-screen bg-[#002D21] flex items-center justify-center">

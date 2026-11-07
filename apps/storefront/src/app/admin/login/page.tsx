@@ -10,21 +10,21 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { user, isLoading: authLoading, login } = useAdminAuth();
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('rangoliadmin');
+  const [password, setPassword] = useState('Rangolifashion@2026');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   // If already logged in, redirect immediately to dashboard without showing login form
   useEffect(() => {
-    const hasLocalSession = typeof window !== 'undefined' && localStorage.getItem('rf_admin_user');
+    const hasLocalSession = typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token'));
     if (user || hasLocalSession) {
       router.replace('/admin/dashboard');
     }
   }, [user, router]);
 
   // Don't render login form if already authenticated
-  if (user || (typeof window !== 'undefined' && localStorage.getItem('rf_admin_user'))) {
+  if (user || (typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token')))) {
     return (
       <div className="min-h-screen bg-[#002D21] flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-[#C9A34A] border-t-transparent rounded-full animate-spin" />

@@ -9,7 +9,7 @@ export default function AdminRootPage() {
   const { user, isLoading } = useAdminAuth();
 
   useEffect(() => {
-    const hasLocal = typeof window !== 'undefined' && localStorage.getItem('rf_admin_user');
+    const hasLocal = typeof window !== 'undefined' && (localStorage.getItem('rf_admin_user') || localStorage.getItem('rf_admin_token'));
     if (user || hasLocal) {
       router.replace('/admin/dashboard');
       return;

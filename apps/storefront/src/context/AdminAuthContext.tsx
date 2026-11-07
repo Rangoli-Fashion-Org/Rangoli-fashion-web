@@ -28,18 +28,42 @@ const AdminAuthContext = createContext<AdminAuthContextType>({
 });
 
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Initialize state from localStorage if available
-  const [user, setUser] = useState<AdminUser | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // Synchronous initialization from localStorage prevents flash of login screen
+  const [user, setUser] = useState<AdminUser | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('rf_admin_user');
+        if (saved) return JSON.parse(saved);
+      } catch {}
+    }
+    return null;
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return !localStorage.getItem('rf_admin_user') && !localStorage.getItem('rf_admin_token');
+    }
+    return true;
+  });
 
   // Restore session immediately on client mount
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem('rf_admin_user');
       const savedToken = localStorage.getItem('rf_admin_token');
-      if (savedUser && savedToken) {
+      if (savedUser) {
         const parsed = JSON.parse(savedUser);
         setUser(parsed);
+      } else if (savedToken) {
+        // We have a token: restore default admin identity
+        const fallbackAdmin: AdminUser = {
+          id: 'admin-persisted-session',
+          fullName: 'Rangoli Admin',
+          role: 'SUPER_ADMIN',
+          username: 'rangoliadmin',
+        };
+        setUser(fallbackAdmin);
+        localStorage.setItem('rf_admin_user', JSON.stringify(fallbackAdmin));
       }
     } catch (e) {
       console.warn('Failed to parse cached admin session', e);
