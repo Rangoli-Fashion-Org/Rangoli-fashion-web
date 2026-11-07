@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Plus, Edit2, Trash2, Upload, CheckCircle2 } from 'lucide-react';
-import { fetchAdminApi, uploadMedia } from '@/lib/admin-api';
+import { fetchAdminApi } from '@/lib/admin-api';
+import { ImageDropzone } from '@/components/admin/ImageDropzone';
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -17,7 +18,6 @@ export default function AdminCategoriesPage() {
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [displayOrder, setDisplayOrder] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
 
   const loadCategories = async () => {
     setIsLoading(true);
@@ -50,15 +50,6 @@ export default function AdminCategoriesPage() {
     setImageUrl(c.imageUrl || '');
     setDisplayOrder(c.displayOrder);
     setIsEditing(true);
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setIsUploading(true);
-    const res = await uploadMedia(file, 'categories');
-    if (res) setImageUrl(res.url);
-    setIsUploading(false);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -154,18 +145,14 @@ export default function AdminCategoriesPage() {
           </div>
 
           <div>
-            <label className="block text-[#746D62] mb-1 font-medium">Cover Image</label>
-            <div className="flex items-center space-x-4">
-              {imageUrl && (
-                <div className="relative w-16 h-20 rounded border overflow-hidden">
-                  <Image src={imageUrl} alt="Category" fill className="object-cover" />
-                </div>
-              )}
-              <label className="px-4 py-2 border border-[#C9A34A] rounded-md cursor-pointer hover:bg-[#FFF8ED] text-[#003D2D] font-semibold">
-                {isUploading ? 'Uploading...' : 'Upload Image'}
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-              </label>
-            </div>
+            <ImageDropzone
+              label="Category Thumbnail Image"
+              helperText="Drag & drop category thumbnail image here (JPG, PNG, WEBP)"
+              value={imageUrl}
+              onChange={setImageUrl}
+              folder="categories"
+              aspectRatio="aspect-[4/3]"
+            />
           </div>
 
           <div className="flex justify-end space-x-2 pt-2">

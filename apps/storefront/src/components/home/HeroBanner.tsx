@@ -19,23 +19,33 @@ interface BannerItem {
 export const HeroBanner: React.FC = () => {
   const [banners, setBanners] = useState<BannerItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchApi<BannerItem[]>('/banners').then((res) => {
       if (res.success && res.data && res.data.length > 0) {
         setBanners(res.data);
       }
+      setIsLoading(false);
     });
   }, []);
 
-  const activeBanner = banners[currentIndex] || {
-    id: 'default-hero',
-    title: 'Style for Every Occasion',
-    subtitle: 'Discover elegant and comfortable styles for everyday and special moments.',
-    ctaText: 'Shop the Collection',
-    ctaUrl: '/shop',
-    desktopImageUrl: '/brand/rangoli-logo.jpg',
-  };
+  if (isLoading) {
+    return (
+      <section className="relative w-full bg-[#FFF8ED] py-16 sm:py-24 animate-pulse">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="h-64 sm:h-96 rounded-2xl bg-[#E8DFD0]/40" />
+        </div>
+      </section>
+    );
+  }
+
+  // If no banners configured in admin, return null
+  if (banners.length === 0) {
+    return null;
+  }
+
+  const activeBanner = banners[currentIndex];
 
   return (
     <section className="relative w-full bg-[#FFF8ED] overflow-hidden border-b border-[#E8DFD0]">
@@ -45,23 +55,18 @@ export const HeroBanner: React.FC = () => {
           <div className="lg:col-span-6 flex flex-col items-start space-y-6 z-10 text-left">
             <div className="inline-flex items-center space-x-2 px-3 py-1 bg-[#F5EBDD] rounded-full border border-[#C9A34A]/40 text-xs font-medium text-[#003D2D]">
               <span className="w-2 h-2 rounded-full bg-[#C9A34A]" />
-              <span>Festive & Everyday Elegance</span>
+              <span>Festive &amp; Everyday Elegance</span>
             </div>
 
-            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#191714] font-normal leading-[1.15] tracking-tight">
-              {activeBanner.title.includes('Every Occasion') ? (
-                <>
-                  Style for <br />
-                  <span className="italic font-normal">Every Occasion</span>
-                </>
-              ) : (
-                activeBanner.title
-              )}
+            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#191714] font-normal leading-[1.15] tracking-tight whitespace-pre-line">
+              {activeBanner.title}
             </h1>
 
-            <p className="text-sm sm:text-base md:text-lg text-[#746D62] max-w-lg leading-relaxed font-normal">
-              {activeBanner.subtitle || 'Discover elegant and comfortable styles for everyday and special moments.'}
-            </p>
+            {activeBanner.subtitle && (
+              <p className="text-sm sm:text-base md:text-lg text-[#746D62] max-w-lg leading-relaxed font-normal">
+                {activeBanner.subtitle}
+              </p>
+            )}
 
             <Link
               href={activeBanner.ctaUrl || '/shop'}
@@ -99,16 +104,10 @@ export const HeroBanner: React.FC = () => {
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover object-top"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
             </div>
-
-            {/* Gold Decorative Corner Motif */}
-            <div className="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-[#C9A34A]/50 rounded-bl-3xl pointer-events-none hidden sm:block" />
-            <div className="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-[#C9A34A]/50 rounded-tr-3xl pointer-events-none hidden sm:block" />
           </div>
         </div>
       </div>
     </section>
   );
 };
-

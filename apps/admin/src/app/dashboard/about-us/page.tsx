@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Save, Upload } from 'lucide-react';
-import { fetchAdminApi, uploadMedia } from '../../../lib/api';
+import { fetchAdminApi } from '@/lib/api';
+import { ImageDropzone } from '@/components/ImageDropzone';
 
 export default function AdminAboutUsPage() {
   const [heading, setHeading] = useState('Crafting Timeless Indian Elegance');
@@ -11,7 +12,6 @@ export default function AdminAboutUsPage() {
   const [mission, setMission] = useState('');
   const [vision, setVision] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
 
@@ -26,15 +26,6 @@ export default function AdminAboutUsPage() {
       }
     });
   }, []);
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setIsUploading(true);
-    const res = await uploadMedia(file, 'about');
-    if (res) setImageUrl(res.url);
-    setIsUploading(false);
-  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,18 +107,14 @@ export default function AdminAboutUsPage() {
         </div>
 
         <div>
-          <label className="block text-[#746D62] mb-1 font-medium">Story Banner Image</label>
-          <div className="flex items-center space-x-4">
-            {imageUrl && (
-              <div className="relative w-28 h-20 rounded border overflow-hidden">
-                <Image src={imageUrl} alt="About Us" fill className="object-cover" />
-              </div>
-            )}
-            <label className="px-4 py-2 border border-[#C9A34A] rounded-md cursor-pointer hover:bg-[#FFF8ED] text-[#003D2D] font-semibold">
-              {isUploading ? 'Uploading...' : 'Upload Image'}
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-            </label>
-          </div>
+          <ImageDropzone
+            label="Story Banner Image"
+            helperText="Drag & drop brand editorial story image here (JPG, PNG, WEBP)"
+            value={imageUrl}
+            onChange={setImageUrl}
+            folder="about"
+            aspectRatio="aspect-[16/9]"
+          />
         </div>
 
         <div className="pt-4 flex justify-end">
