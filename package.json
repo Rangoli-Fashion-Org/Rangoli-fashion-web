@@ -8,10 +8,10 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently -n \"API,STORE\" -c \"blue,green\" \"npm run dev:api\" \"npm run dev:storefront\"",
-    "dev:api": "npm run start:dev --workspace=@rangoli/api",
+    "dev": "npm run dev --workspace=@rangoli/storefront",
     "dev:storefront": "npm run dev --workspace=@rangoli/storefront",
-    "dev:admin": "npm run dev --workspace=@rangoli/admin",
+    "dev:api": "npm run start:dev --workspace=@rangoli/api",
+    "dev:all": "concurrently -n \"API,STORE\" -c \"blue,green\" \"npm run dev:api\" \"npm run dev:storefront\"",
     "build:packages": "npm run build --workspaces --if-present",
     "build:api": "npm run build --workspace=@rangoli/api",
     "build:storefront": "npm run build --workspace=@rangoli/storefront",
