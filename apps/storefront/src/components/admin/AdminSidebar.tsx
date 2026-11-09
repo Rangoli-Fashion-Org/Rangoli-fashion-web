@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   Shirt,
   FolderTree,
-  Sparkles,
   Boxes,
   ShoppingCart,
   Users,
@@ -19,12 +18,8 @@ import {
   FileText,
   Share2,
   MapPin,
-  Mail,
   Truck,
   Settings,
-  ShieldAlert,
-  BarChart3,
-  Award,
 } from 'lucide-react';
 
 export const AdminSidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
@@ -40,8 +35,6 @@ export const AdminSidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = 
         { label: 'Dashboard', href: '/admin/dashboard', icon: <LayoutDashboard size={18} /> },
         { label: 'Products', href: '/admin/dashboard/products', icon: <Shirt size={18} /> },
         { label: 'Categories', href: '/admin/dashboard/categories', icon: <FolderTree size={18} /> },
-        { label: 'Collections', href: '/admin/dashboard/collections', icon: <Sparkles size={18} /> },
-        { label: 'Brands', href: '/admin/dashboard/brands', icon: <Award size={18} /> },
         { label: 'Inventory', href: '/admin/dashboard/inventory', icon: <Boxes size={18} /> },
         { label: 'Orders', href: '/admin/dashboard/orders', icon: <ShoppingCart size={18} /> },
         { label: 'Customers', href: '/admin/dashboard/customers', icon: <Users size={18} /> },
@@ -57,7 +50,6 @@ export const AdminSidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = 
         { label: 'About Us', href: '/admin/dashboard/about-us', icon: <FileText size={18} /> },
         { label: 'Social Links', href: '/admin/dashboard/social-links', icon: <Share2 size={18} /> },
         { label: 'Contact & Address', href: '/admin/dashboard/contact', icon: <MapPin size={18} /> },
-        { label: 'Newsletter Subscribers', href: '/admin/dashboard/subscribers', icon: <Mail size={18} /> },
       ],
     },
     {
@@ -65,8 +57,6 @@ export const AdminSidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = 
       items: [
         { label: 'Shipping Settings', href: '/admin/dashboard/shipping', icon: <Truck size={18} /> },
         { label: 'Store Settings', href: '/admin/dashboard/settings', icon: <Settings size={18} /> },
-        { label: 'Admin Users', href: '/admin/dashboard/users', icon: <ShieldAlert size={18} /> },
-        { label: 'Reports & Analytics', href: '/admin/dashboard/reports', icon: <BarChart3 size={18} /> },
       ],
     },
   ];

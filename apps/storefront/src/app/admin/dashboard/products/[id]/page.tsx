@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, X, Plus, Trash2 } from 'lucide-react';
 import { fetchAdminApi } from '@/lib/admin-api';
 import { SmartProductAutoFill, ParsedProductData } from '@/components/admin/SmartProductAutoFill';
@@ -10,6 +10,8 @@ import { ProductImageDropzone, ProductImageItem } from '@/components/admin/Produ
 
 export default function EditProductPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const routeParams = useParams();
+  const productId = (routeParams?.id as string) || params?.id;
 
   const [categories, setCategories] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
@@ -47,7 +49,9 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       if (res.success && res.data) setCollections(res.data);
     });
 
-    fetchAdminApi<any>(`/products/admin/${params.id}`).then((res) => {
+    if (!productId) return;
+
+    fetchAdminApi<any>(`/products/admin/${productId}`).then((res) => {
       if (res.success && res.data) {
         const p = res.data;
         setName(p.name);
@@ -74,7 +78,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       }
       setIsLoading(false);
     });
-  }, [params.id]);
+  }, [productId]);
 
   const handleAutoFill = (parsed: ParsedProductData, matchedCategoryId?: string, matchedCollectionId?: string) => {
     if (parsed.name) setName(parsed.name);
@@ -129,7 +133,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       stockQuantity: Number(v.stockQuantity) || 0,
     }));
 
-    const res = await fetchAdminApi(`/products/${params.id}`, {
+    const res = await fetchAdminApi(`/products/${productId}`, {
       method: 'PUT',
       body: JSON.stringify({
         name,
@@ -149,7 +153,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
           url: img.url,
           publicId: img.publicId,
           displayOrder: idx,
-          isPrimary: idx === 0,
+          isPrimary: img.isPrimary !== undefined ? img.isPrimary : idx === 0,
         })),
         variants: processedVariants,
       }),
@@ -352,19 +356,19 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
           </div>
         </div>
 
-        {/* Product Images with Drag & Drop */}
+        {/* Product Images (1 Primary + 4 Sub-images) */}
         <div className="bg-white p-6 rounded-xl border border-[#E8DFD0] shadow-xs space-y-4">
           <div>
-            <h2 className="font-serif text-base font-semibold text-[#191714]">Product Images</h2>
+            <h2 className="font-serif text-base font-semibold text-[#191714]">Product Images (1 Primary + 4 Sub-Images)</h2>
             <p className="text-[11px] text-[#746D62] mt-0.5">
-              Drag &amp; drop images directly into the area below, set cover photo, or reorder.
+              Upload 1 Primary cover image and up to 4 Sub-images for alternative angles, fabric details, and styling shots.
             </p>
           </div>
 
           <ProductImageDropzone
             images={images}
             onImagesChange={setImages}
-            maxFiles={12}
+            maxFiles={5}
           />
         </div>
 

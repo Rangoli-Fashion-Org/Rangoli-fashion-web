@@ -173,7 +173,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="p-3 text-right space-x-2">
                       <Link
-                        href={`/dashboard/products/${p.id}`}
+                        href={`/admin/dashboard/products/${p.id}`}
                         className="inline-block p-1 text-[#003D2D] hover:bg-[#FAF6F0] rounded"
                         title="Edit Product"
                       >

@@ -164,7 +164,7 @@ export default function DashboardOverviewPage() {
                     </td>
                     <td className="p-3 text-right">
                       <Link
-                        href={`/dashboard/orders/${ord.id}`}
+                        href={`/admin/dashboard/orders/${ord.id}`}
                         className="text-[#003D2D] font-semibold hover:underline"
                       >
                         Manage

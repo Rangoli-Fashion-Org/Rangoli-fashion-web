@@ -113,7 +113,7 @@ export default function AdminOrdersPage() {
                     </td>
                     <td className="p-3 text-right">
                       <Link
-                        href={`/dashboard/orders/${ord.id}`}
+                        href={`/admin/dashboard/orders/${ord.id}`}
                         className="inline-flex items-center space-x-1 px-3 py-1 bg-[#FAF6F0] border border-[#003D2D] text-[#003D2D] hover:bg-[#003D2D] hover:text-white rounded text-[11px] font-semibold transition-colors"
                       >
                         <Eye size={13} />

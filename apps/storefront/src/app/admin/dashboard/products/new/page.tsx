@@ -132,7 +132,7 @@ export default function NewProductPage() {
           url: img.url,
           publicId: img.publicId,
           displayOrder: idx,
-          isPrimary: idx === 0,
+          isPrimary: img.isPrimary !== undefined ? img.isPrimary : idx === 0,
         })),
         variants: processedVariants,
       }),
@@ -329,19 +329,19 @@ export default function NewProductPage() {
           </div>
         </div>
 
-        {/* Media & Images with Drag & Drop */}
+        {/* Product Images (1 Primary + 4 Sub-images) */}
         <div className="bg-white p-6 rounded-xl border border-[#E8DFD0] shadow-xs space-y-4">
           <div>
-            <h2 className="font-serif text-base font-semibold text-[#191714]">Product Images</h2>
+            <h2 className="font-serif text-base font-semibold text-[#191714]">Product Images (1 Primary + 4 Sub-Images)</h2>
             <p className="text-[11px] text-[#746D62] mt-0.5">
-              Drag &amp; drop images directly into the area below, set cover photo, or reorder.
+              Upload 1 Primary cover image and up to 4 Sub-images for alternative angles, fabric details, and styling shots.
             </p>
           </div>
 
           <ProductImageDropzone
             images={images}
             onImagesChange={setImages}
-            maxFiles={12}
+            maxFiles={5}
           />
         </div>
 
