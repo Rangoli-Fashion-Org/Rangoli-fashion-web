@@ -72,25 +72,25 @@ export const CategoriesSection: React.FC = () => {
         aria-hidden="true"
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+      <div className="relative max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 z-10">
         {/* Royal Section Heading with Gold Filigree Flourishes */}
-        <div className="flex flex-col items-center justify-center text-center mb-7 sm:mb-9 space-y-1.5">
-          <div className="flex items-center justify-center space-x-3 sm:space-x-4">
-            <span className="text-[#C9A34A] text-sm sm:text-base">✦</span>
-            <div className="h-px w-10 sm:w-20 bg-gradient-to-r from-transparent to-[#C9A34A]" />
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#191714] font-medium tracking-tight">
+        <div className="flex flex-col items-center justify-center text-center mb-6 sm:mb-9 space-y-1.5">
+          <div className="flex items-center justify-center space-x-2 sm:space-x-4">
+            <span className="text-[#C9A34A] text-xs sm:text-base shrink-0">✦</span>
+            <div className="h-px w-8 sm:w-20 bg-gradient-to-r from-transparent to-[#C9A34A] shrink-0" />
+            <h2 className="font-serif text-xl sm:text-3xl md:text-4xl text-[#191714] font-medium tracking-tight">
               Shop by Category
             </h2>
-            <div className="h-px w-10 sm:w-20 bg-gradient-to-l from-transparent to-[#C9A34A]" />
-            <span className="text-[#C9A34A] text-sm sm:text-base">✦</span>
+            <div className="h-px w-8 sm:w-20 bg-gradient-to-l from-transparent to-[#C9A34A] shrink-0" />
+            <span className="text-[#C9A34A] text-xs sm:text-base shrink-0">✦</span>
           </div>
-          <p className="text-xs sm:text-sm text-[#746D62] max-w-lg">
+          <p className="text-[11px] sm:text-sm text-[#746D62] max-w-md sm:max-w-lg px-2">
             Discover handcrafted styles, timeless traditions, and contemporary ethnic essentials.
           </p>
         </div>
 
         {/* 4 Royal Jharokha Arched Category Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5 lg:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
           {categories.map((category) => (
             <Link
               key={category.id}
@@ -98,9 +98,9 @@ export const CategoriesSection: React.FC = () => {
               className="block group select-none"
             >
               {/* Outer Warm Arch Niche / Royal Halo */}
-              <div className="p-1.5 sm:p-2 bg-[#F3E6D6] rounded-t-[76px] sm:rounded-t-[96px] md:rounded-t-[116px] rounded-b-2xl sm:rounded-b-3xl shadow-xs border border-[#E6D5BE]">
+              <div className="p-1 sm:p-2 bg-[#F3E6D6] rounded-t-[64px] sm:rounded-t-[96px] md:rounded-t-[116px] rounded-b-xl sm:rounded-b-3xl shadow-xs border border-[#E6D5BE]">
                 {/* Inner Arched Card */}
-                <div className="relative aspect-[3/4.6] w-full rounded-t-[70px] sm:rounded-t-[90px] md:rounded-t-[110px] rounded-b-xl sm:rounded-b-2xl overflow-hidden bg-[#002D21]">
+                <div className="relative aspect-[3/4.5] sm:aspect-[3/4.6] w-full rounded-t-[58px] sm:rounded-t-[90px] md:rounded-t-[110px] rounded-b-lg sm:rounded-b-2xl overflow-hidden bg-[#002D21]">
                   {/* Category Image */}
                   {category.imageUrl ? (
                     <Image
@@ -111,28 +111,28 @@ export const CategoriesSection: React.FC = () => {
                       className="object-cover object-top"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-b from-[#003D2D] to-[#002018] flex flex-col items-center justify-center p-6 text-center">
-                      <div className="w-12 h-12 rounded-full border border-[#C9A34A]/50 flex items-center justify-center mb-3">
-                        <span className="font-serif text-[#C9A34A] text-lg font-bold">RF</span>
+                    <div className="w-full h-full bg-gradient-to-b from-[#003D2D] to-[#002018] flex flex-col items-center justify-center p-4 sm:p-6 text-center">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-[#C9A34A]/50 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
+                        <span className="font-serif text-[#C9A34A] text-base sm:text-lg font-bold">RF</span>
                       </div>
-                      <span className="text-white/60 text-[11px] uppercase tracking-widest font-semibold">
+                      <span className="text-white/60 text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold">
                         {category.name}
                       </span>
                     </div>
                   )}
 
                   {/* Bottom-Only Rich Espresso Vignette so model stays bright and text has high contrast */}
-                  <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-[#140C08]/95 via-[#140C08]/65 to-transparent pointer-events-none" />
+                  <div className="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-[#140C08]/95 via-[#140C08]/65 to-transparent pointer-events-none" />
 
                   {/* Centered Editorial Category Title & Gold Circle Arrow */}
-                  <div className="absolute bottom-0 inset-x-0 px-3 pb-3.5 sm:pb-4 pt-6 z-10 flex flex-col items-center justify-end text-center">
-                    <h3 className="font-serif text-base sm:text-lg md:text-xl lg:text-[22px] text-[#FFF8ED] font-normal tracking-wide leading-[1.2] drop-shadow-[0_2px_6px_rgba(0,0,0,0.75)] whitespace-pre-line">
+                  <div className="absolute bottom-0 inset-x-0 px-2 sm:px-3 pb-2.5 sm:pb-4 pt-5 z-10 flex flex-col items-center justify-end text-center">
+                    <h3 className="font-serif text-sm sm:text-lg md:text-xl lg:text-[22px] text-[#FFF8ED] font-normal tracking-wide leading-[1.18] drop-shadow-[0_2px_6px_rgba(0,0,0,0.75)] whitespace-pre-line">
                       {formatCategoryTitle(category.name)}
                     </h3>
 
                     {/* Circular Gold Arrow Button */}
-                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-[#C9A34A] via-[#E5C158] to-[#F5DF98] text-[#00251B] flex items-center justify-center mt-2 shadow-md">
-                      <ArrowRight size={13} className="stroke-[2.5]" />
+                    <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-[#C9A34A] via-[#E5C158] to-[#F5DF98] text-[#00251B] flex items-center justify-center mt-1.5 sm:mt-2 shadow-md shrink-0">
+                      <ArrowRight size={11} className="sm:w-[13px] sm:h-[13px] stroke-[2.5]" />
                     </div>
                   </div>
                 </div>
