@@ -71,7 +71,7 @@ export default function HomepageCmsPage() {
         sec.customData?.description ||
           'Receive private seasonal previews, hand-picked festive edits, and exclusive offers straight to your inbox.'
       );
-      setCtaText(sec.customData?.ctaText || 'Join Prime');
+      setCtaText(sec.customData?.ctaText && !/join\s*prime/i.test(sec.customData.ctaText) ? sec.customData.ctaText : 'Subscribe');
       setCtaUrl('');
       setImageUrl(sec.customData?.imageUrl || '');
       setPillars([]);

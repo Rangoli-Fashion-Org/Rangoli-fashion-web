@@ -39,27 +39,27 @@ export const NewArrivals: React.FC = () => {
         aria-hidden="true"
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+      <div className="relative max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 z-10">
         {/* Section Heading */}
-        <div className="flex flex-col items-center justify-center text-center mb-7 sm:mb-9 space-y-2">
-          <div className="inline-flex items-center space-x-2 px-4 py-1 rounded-full bg-[#F4E6CF] border border-[#C9A34A]/50 text-[#7A520C] text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-2xs">
+        <div className="flex flex-col items-center justify-center text-center mb-6 sm:mb-9 space-y-1.5 sm:space-y-2">
+          <div className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-1 rounded-full bg-[#F4E6CF] border border-[#C9A34A]/50 text-[#7A520C] text-[9px] sm:text-xs font-bold uppercase tracking-widest shadow-2xs">
             <span>✦</span>
             <span>Fresh Off The Loom</span>
             <span>✦</span>
           </div>
 
-          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#191714] font-semibold tracking-tight">
+          <h2 className="font-serif text-xl sm:text-3xl md:text-4xl text-[#191714] font-semibold tracking-tight">
             New Arrivals
           </h2>
 
-          <p className="text-xs sm:text-sm text-[#746D62] max-w-lg">
+          <p className="text-[11px] sm:text-sm text-[#746D62] max-w-md sm:max-w-lg px-2">
             Our latest hand-picked silhouettes, celebratory palettes, and breathable festive luxury.
           </p>
         </div>
 
         {/* Product Grid with Carousel Controls */}
         {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
             {[1, 2, 3, 4].map((n) => (
               <div key={n} className="aspect-[3/4] bg-[#FAF6F0] animate-pulse rounded-2xl" />
             ))}
@@ -86,7 +86,7 @@ export const NewArrivals: React.FC = () => {
               </>
             )}
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
               {(displayedProducts.length > 0 ? displayedProducts : products.slice(0, 4)).map((p) => (
                 <ProductCard
                   key={p.id}
@@ -134,10 +134,10 @@ export const NewArrivals: React.FC = () => {
         <div className="mt-6 sm:mt-7 text-center">
           <Link
             href="/shop?filter=new_arrivals"
-            className="inline-flex items-center space-x-2 px-7 py-2.5 bg-white hover:bg-[#003D2D] border border-[#C9A34A] hover:border-[#003D2D] text-[#191714] hover:text-[#FFF8ED] rounded-full text-xs sm:text-sm font-semibold tracking-wide transition-colors duration-200 shadow-2xs"
+            className="inline-flex items-center space-x-2 px-6 sm:px-7 py-2.5 bg-white hover:bg-[#003D2D] border border-[#C9A34A] hover:border-[#003D2D] text-[#191714] hover:text-[#FFF8ED] rounded-full text-xs sm:text-sm font-semibold tracking-wide transition-colors duration-200 shadow-2xs"
           >
             <span>View All New Arrivals</span>
-            <ArrowRight size={14} />
+            <ArrowRight size={14} className="shrink-0" />
           </Link>
         </div>
       </div>
