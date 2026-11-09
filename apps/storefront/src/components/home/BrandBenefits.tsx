@@ -106,8 +106,8 @@ export const BrandBenefits: React.FC = () => {
       {/* 1. "WHY CHOOSE RANGOLI" EMERALD SECTION */}
       {showWhyChoose && (
         <section className="py-5 sm:py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#002219] via-[#003527] to-[#002219] border border-[#C9A34A]/50 shadow-xl px-6 py-8 sm:px-12 sm:py-10">
+          <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
+            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-r from-[#002219] via-[#003527] to-[#002219] border border-[#C9A34A]/50 shadow-xl px-4 py-7 sm:px-12 sm:py-10">
               {whyChooseImageUrl && (
                 <>
                   <Image
@@ -122,25 +122,25 @@ export const BrandBenefits: React.FC = () => {
               )}
 
               <div className="relative z-10">
-                <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#FFF8ED] text-center font-normal tracking-tight mb-8 sm:mb-10">
+                <h2 className="font-serif text-xl sm:text-3xl md:text-4xl text-[#FFF8ED] text-center font-normal tracking-tight mb-6 sm:mb-10">
                   {whyChooseTitle}
                 </h2>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 divide-y sm:divide-y-0 lg:divide-x divide-[#C9A34A]/25">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-6 sm:gap-8 lg:divide-x divide-[#C9A34A]/25">
                   {whyChooseItems.map((pillar: any, idx: number) => (
                     <div
                       key={idx}
-                      className={`flex flex-col items-center text-center px-3 ${
-                        idx !== 0 ? 'pt-5 sm:pt-0 lg:pl-6' : ''
+                      className={`flex flex-col items-center text-center px-1 sm:px-3 ${
+                        idx !== 0 ? 'lg:pl-6' : ''
                       }`}
                     >
-                      <div className="w-12 h-12 rounded-full bg-[#004231]/90 backdrop-blur-xs border border-[#C9A34A]/40 flex items-center justify-center mb-3 shadow-inner">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#004231]/90 backdrop-blur-xs border border-[#C9A34A]/40 flex items-center justify-center mb-2 sm:mb-3 shadow-inner shrink-0 [&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6">
                         {pillarIcons[idx]}
                       </div>
-                      <h3 className="font-serif text-sm sm:text-base font-semibold text-[#FFF8ED] mb-1">
+                      <h3 className="font-serif text-[13px] sm:text-base font-semibold text-[#FFF8ED] mb-1 leading-snug">
                         {pillar.title}
                       </h3>
-                      <p className="text-[11px] sm:text-xs text-[#FFF8ED]/80 max-w-[200px] leading-relaxed">
+                      <p className="text-[10px] sm:text-xs text-[#FFF8ED]/80 max-w-[200px] leading-relaxed">
                         {pillar.subtitle}
                       </p>
                     </div>
@@ -154,35 +154,35 @@ export const BrandBenefits: React.FC = () => {
 
       {/* 2. "THE RANGOLI HALLMARK" — DESIGNED WITH DEVOTION, MADE TO CHERISH */}
       {showHallmark && (
-        <section className="py-8 sm:py-10 md:py-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center justify-center text-center mb-7 sm:mb-9 space-y-2">
-              <div className="inline-flex items-center space-x-2 px-4 py-1 rounded-full bg-[#F4E6CF] border border-[#C9A34A]/50 text-[#7A520C] text-[10px] sm:text-xs font-bold uppercase tracking-widest">
+        <section className="py-7 sm:py-10 md:py-12">
+          <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center justify-center text-center mb-6 sm:mb-9 space-y-1.5 sm:space-y-2">
+              <div className="inline-flex items-center space-x-2 px-3 sm:px-4 py-1 rounded-full bg-[#F4E6CF] border border-[#C9A34A]/50 text-[#7A520C] text-[9px] sm:text-xs font-bold uppercase tracking-widest">
                 <span>{hallmarkBadge}</span>
               </div>
 
-              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#191714] font-semibold tracking-tight">
+              <h2 className="font-serif text-xl sm:text-3xl md:text-4xl text-[#191714] font-semibold tracking-tight px-2">
                 {hallmarkTitle}
               </h2>
 
-              <p className="text-xs sm:text-sm text-[#746D62] max-w-lg">
+              <p className="text-[11px] sm:text-sm text-[#746D62] max-w-md sm:max-w-lg px-2">
                 {hallmarkDescription}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {hallmarkItems.map((h: any, idx: number) => (
                 <div
                   key={idx}
-                  className="flex flex-col items-center text-center p-6 rounded-2xl bg-white border border-[#E6D5BE] shadow-xs"
+                  className="flex flex-col items-center text-center p-3.5 sm:p-6 rounded-xl sm:rounded-2xl bg-white border border-[#E6D5BE] shadow-xs"
                 >
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFFDF9] to-[#F4E7D3] border border-[#C9A34A]/45 flex items-center justify-center mb-3.5 shadow-2xs">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#FFFDF9] to-[#F4E7D3] border border-[#C9A34A]/45 flex items-center justify-center mb-2.5 sm:mb-3.5 shadow-2xs shrink-0 [&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6">
                     {hallmarkIcons[idx]}
                   </div>
-                  <h3 className="font-serif text-sm sm:text-base font-semibold text-[#191714] mb-1.5">
+                  <h3 className="font-serif text-[13px] sm:text-base font-semibold text-[#191714] mb-1 sm:mb-1.5 leading-snug">
                     {h.title}
                   </h3>
-                  <p className="text-xs text-[#746D62] leading-relaxed">
+                  <p className="text-[10px] sm:text-xs text-[#746D62] leading-relaxed">
                     {h.subtitle}
                   </p>
                 </div>

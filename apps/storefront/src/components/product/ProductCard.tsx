@@ -49,9 +49,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const secondaryUrl = secondaryImg?.url || null;
 
   return (
-    <div className="group relative flex flex-col bg-white rounded-2xl border border-[#E8DFD0] p-2.5 shadow-2xs select-none">
+    <div className="group relative flex flex-col bg-white rounded-xl sm:rounded-2xl border border-[#E8DFD0] p-1.5 sm:p-2.5 shadow-2xs select-none">
       {/* Product Image Frame */}
-      <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-[#FAF6F0]">
+      <div className="relative aspect-[3/4] w-full rounded-lg sm:rounded-xl overflow-hidden bg-[#FAF6F0]">
         <Link href={`/products/${slug}`} className="relative block w-full h-full">
           {/* Primary Cover Image */}
           <Image
@@ -77,14 +77,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </Link>
 
         {/* Top-Left Badges (New & Discount) */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 pointer-events-none z-10">
+        <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 flex flex-col gap-1 pointer-events-none z-10">
           {isNewArrival && (
-            <span className="px-2.5 py-0.5 bg-[#003D2D] text-[#FFF8ED] text-[10px] font-bold uppercase tracking-wider rounded shadow-xs text-center">
+            <span className="px-1.5 sm:px-2.5 py-0.5 bg-[#003D2D] text-[#FFF8ED] text-[8px] sm:text-[10px] font-bold uppercase tracking-wider rounded shadow-xs text-center">
               NEW
             </span>
           )}
           {discount && discount > 0 && (
-            <span className="px-2 py-0.5 bg-[#DFC37A] text-[#191714] text-[10px] font-bold uppercase tracking-wider rounded shadow-xs text-center">
+            <span className="px-1.5 sm:px-2 py-0.5 bg-[#DFC37A] text-[#191714] text-[8px] sm:text-[10px] font-bold uppercase tracking-wider rounded shadow-xs text-center">
               {discount}% OFF
             </span>
           )}
@@ -96,33 +96,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             e.preventDefault();
             toggleWishlist(id);
           }}
-          className={`absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-colors shadow-xs z-10 ${
+          className={`absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-colors shadow-xs z-10 ${
             wishlisted
               ? 'bg-red-50 text-red-500 border border-red-200'
               : 'bg-white/90 hover:bg-white text-[#746D62] hover:text-red-500 border border-[#E8DFD0]'
           }`}
           aria-label="Wishlist toggle"
         >
-          <Heart size={14} fill={wishlisted ? 'currentColor' : 'none'} />
+          <Heart size={13} fill={wishlisted ? 'currentColor' : 'none'} />
         </button>
       </div>
 
       {/* Product Details Block */}
-      <div className="pt-3 px-1 pb-1 flex flex-col flex-1 justify-between space-y-2.5">
+      <div className="pt-2 sm:pt-3 px-0.5 sm:px-1 pb-0.5 sm:pb-1 flex flex-col flex-1 justify-between space-y-2 sm:space-y-2.5">
         <div>
           <Link href={`/products/${slug}`} className="block">
-            <h3 className="font-serif text-xs sm:text-sm font-semibold text-[#191714] line-clamp-2 leading-snug">
+            <h3 className="font-serif text-[11px] sm:text-sm font-semibold text-[#191714] line-clamp-2 leading-snug">
               {name}
             </h3>
           </Link>
 
           {/* Pricing Display */}
-          <div className="mt-1.5 flex items-baseline gap-2">
-            <span className="font-bold text-[#191714] text-sm sm:text-base font-sans">
+          <div className="mt-1 sm:mt-1.5 flex flex-wrap items-baseline gap-x-1.5 sm:gap-x-2">
+            <span className="font-bold text-[#191714] text-[13px] sm:text-base font-sans">
               {formatINR(displayPrice)}
             </span>
             {originalPrice && (
-              <span className="line-through text-[#746D62] text-[11px] sm:text-xs">
+              <span className="line-through text-[#746D62] text-[10px] sm:text-xs">
                 {formatINR(originalPrice)}
               </span>
             )}
@@ -132,9 +132,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Full-Width Add to Bag Pill Button matching reference */}
         <button
           onClick={() => addToCart(id, null, 1)}
-          className="w-full py-2 px-3 rounded-lg bg-[#F5EADC] hover:bg-[#003D2D] text-[#191714] hover:text-[#FFF8ED] border border-[#E6D5BE] hover:border-[#003D2D] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors duration-200"
+          className="w-full py-1.5 sm:py-2 px-2 sm:px-3 rounded-md sm:rounded-lg bg-[#F5EADC] hover:bg-[#003D2D] text-[#191714] hover:text-[#FFF8ED] border border-[#E6D5BE] hover:border-[#003D2D] text-[11px] sm:text-xs font-semibold flex items-center justify-center space-x-1 sm:space-x-1.5 transition-colors duration-200"
         >
-          <ShoppingBag size={13} />
+          <ShoppingBag size={12} className="shrink-0" />
           <span>Add to Bag</span>
         </button>
       </div>
