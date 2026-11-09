@@ -1,70 +1,196 @@
-import React from 'react';
-import { Sparkles, Feather, Award, HeartHandshake } from 'lucide-react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { Gem, Sparkles, Feather, Award, Crown, Scissors, Heart } from 'lucide-react';
+import { fetchApi } from '../../lib/api';
 
 export const BrandBenefits: React.FC = () => {
-  const hallmarks = [
+  const [whyChooseSection, setWhyChooseSection] = useState<any>(null);
+  const [hallmarkSection, setHallmarkSection] = useState<any>(null);
+
+  useEffect(() => {
+    fetchApi<any[]>('/homepage/sections').then((res) => {
+      if (res.success && res.data) {
+        const whySec = res.data.find((s: any) => s.sectionKey === 'why_choose_us');
+        const hallSec = res.data.find((s: any) => s.sectionKey === 'brand_benefits');
+        if (whySec) setWhyChooseSection(whySec);
+        if (hallSec) setHallmarkSection(hallSec);
+      }
+    });
+  }, []);
+
+  const pillarIcons = [
+    <Gem key="0" className="w-6 h-6 text-[#DFC37A]" />,
+    <Scissors key="1" className="w-6 h-6 text-[#DFC37A]" />,
+    <Feather key="2" className="w-6 h-6 text-[#DFC37A]" />,
+    <Award key="3" className="w-6 h-6 text-[#DFC37A]" />,
+  ];
+
+  const hallmarkIcons = [
+    <Crown key="0" className="w-6 h-6 text-[#C9A34A]" />,
+    <Feather key="1" className="w-6 h-6 text-[#C9A34A]" />,
+    <Sparkles key="2" className="w-6 h-6 text-[#C9A34A]" />,
+    <Heart key="3" className="w-6 h-6 text-[#C9A34A]" />,
+  ];
+
+  const defaultWhyChoosePillars = [
     {
-      icon: <Sparkles className="w-6 h-6 text-[#C9A34A]" />,
-      title: 'Artisanal Heritage',
-      subtitle: 'Celebrated Indian weaves, Jaipur block prints, and royal zari embroidery.',
+      title: 'Premium Fabrics',
+      subtitle: 'Breathable, comfortable and long-lasting.',
     },
     {
-      icon: <Feather className="w-6 h-6 text-[#C9A34A]" />,
-      title: 'Pure Comfort Fabrics',
-      subtitle: 'Breathable combed mulmul, pure cotton, chanderi, and lustrous silk blends.',
+      title: 'Exclusive Designs',
+      subtitle: 'Timeless styles with a modern touch.',
     },
     {
-      icon: <Award className="w-6 h-6 text-[#C9A34A]" />,
-      title: 'Bespoke Tailoring',
-      subtitle: 'Precision sizing designed to flatter every body shape effortlessly.',
+      title: 'Crafted with Care',
+      subtitle: 'Attention to every detail and finish.',
     },
     {
-      icon: <HeartHandshake className="w-6 h-6 text-[#C9A34A]" />,
-      title: 'Ethical Craftsmanship',
-      subtitle: 'Sustainably crafted in small artisanal batches with direct artisan support.',
+      title: 'Trusted Quality',
+      subtitle: 'Loved by thousands across India.',
     },
   ];
 
+  const defaultHallmarks = [
+    {
+      title: 'Artisanal Heritage',
+      subtitle: 'Celebrating Indian artistry, passed down through generations.',
+    },
+    {
+      title: 'Pure Comfort Fabrics',
+      subtitle: 'Breathable, skin-friendly materials that blend tradition with everyday ease.',
+    },
+    {
+      title: 'Bespoke Tailoring',
+      subtitle: 'Thoughtfully designed silhouettes with a flattering, modern fit.',
+    },
+    {
+      title: 'Ethical Craftsmanship',
+      subtitle: 'Sustainably created with care for people, fabric and tradition.',
+    },
+  ];
+
+  const showWhyChoose = whyChooseSection ? whyChooseSection.isVisible : true;
+  const showHallmark = hallmarkSection ? hallmarkSection.isVisible : true;
+
+  const whyChooseTitle = whyChooseSection?.title || 'Why Choose Rangoli';
+  const whyChooseImageUrl = whyChooseSection?.customData?.imageUrl || '';
+  const whyChooseItems =
+    Array.isArray(whyChooseSection?.customData?.items) &&
+    whyChooseSection.customData.items.length === 4
+      ? whyChooseSection.customData.items
+      : defaultWhyChoosePillars;
+
+  const hallmarkBadge =
+    hallmarkSection?.customData?.badgeText || 'The Rangoli Hallmark';
+  const hallmarkTitle =
+    hallmarkSection?.title || 'Designed with Devotion, Made to Cherish';
+  const hallmarkDescription =
+    hallmarkSection?.customData?.description ||
+    hallmarkSection?.subtitle ||
+    'Finely finished, woven with patience, every stitch a part of a rich tradition.';
+  const hallmarkItems =
+    Array.isArray(hallmarkSection?.customData?.items) &&
+    hallmarkSection.customData.items.length === 4
+      ? hallmarkSection.customData.items
+      : defaultHallmarks;
+
+  if (!showWhyChoose && !showHallmark) {
+    return null;
+  }
+
   return (
-    <section className="bg-[#FAF6F0] py-14 sm:py-20 border-b border-[#E8DFD0]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-center text-center mb-12 sm:mb-16 space-y-2">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#003D2D]/5 border border-[#C9A34A]/40 text-[#003D2D] text-xs font-semibold uppercase tracking-widest">
-            <span>The Rangoli Hallmark</span>
-          </div>
+    <div className="bg-gradient-to-b from-[#F6ECE0] via-[#FDF7EE] to-[#F7EDE0]">
+      {/* 1. "WHY CHOOSE RANGOLI" EMERALD SECTION */}
+      {showWhyChoose && (
+        <section className="py-5 sm:py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#002219] via-[#003527] to-[#002219] border border-[#C9A34A]/50 shadow-xl px-6 py-8 sm:px-12 sm:py-10">
+              {whyChooseImageUrl && (
+                <>
+                  <Image
+                    src={whyChooseImageUrl}
+                    alt={whyChooseTitle}
+                    fill
+                    sizes="(max-width: 1280px) 100vw, 1280px"
+                    className="object-cover object-center"
+                  />
+                  <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                </>
+              )}
 
-          <div className="flex items-center justify-center space-x-3 sm:space-x-4">
-            <div className="h-px w-10 sm:w-16 bg-[#C9A34A]/60" />
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#191714] font-medium tracking-tight">
-              Designed with Devotion, Made to Cherish
-            </h2>
-            <div className="h-px w-10 sm:w-16 bg-[#C9A34A]/60" />
-          </div>
+              <div className="relative z-10">
+                <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#FFF8ED] text-center font-normal tracking-tight mb-8 sm:mb-10">
+                  {whyChooseTitle}
+                </h2>
 
-          <p className="text-xs sm:text-sm text-[#746D62] max-w-lg">
-            Every thread woven with patience, every stitch placed with intention.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {hallmarks.map((h, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col items-center text-center p-6 rounded-2xl bg-white border border-[#E8DFD0] hover:border-[#C9A34A] shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-[#FFF8ED] border border-[#C9A34A]/40 group-hover:border-[#C9A34A] flex items-center justify-center mb-4 shadow-2xs group-hover:scale-110 transition-all duration-300">
-                {h.icon}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 divide-y sm:divide-y-0 lg:divide-x divide-[#C9A34A]/25">
+                  {whyChooseItems.map((pillar: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className={`flex flex-col items-center text-center px-3 ${
+                        idx !== 0 ? 'pt-5 sm:pt-0 lg:pl-6' : ''
+                      }`}
+                    >
+                      <div className="w-12 h-12 rounded-full bg-[#004231]/90 backdrop-blur-xs border border-[#C9A34A]/40 flex items-center justify-center mb-3 shadow-inner">
+                        {pillarIcons[idx]}
+                      </div>
+                      <h3 className="font-serif text-sm sm:text-base font-semibold text-[#FFF8ED] mb-1">
+                        {pillar.title}
+                      </h3>
+                      <p className="text-[11px] sm:text-xs text-[#FFF8ED]/80 max-w-[200px] leading-relaxed">
+                        {pillar.subtitle}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <h3 className="font-serif text-base sm:text-lg font-semibold text-[#191714] mb-2">
-                {h.title}
-              </h3>
-              <p className="text-xs text-[#746D62] leading-relaxed">
-                {h.subtitle}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 2. "THE RANGOLI HALLMARK" — DESIGNED WITH DEVOTION, MADE TO CHERISH */}
+      {showHallmark && (
+        <section className="py-8 sm:py-10 md:py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center justify-center text-center mb-7 sm:mb-9 space-y-2">
+              <div className="inline-flex items-center space-x-2 px-4 py-1 rounded-full bg-[#F4E6CF] border border-[#C9A34A]/50 text-[#7A520C] text-[10px] sm:text-xs font-bold uppercase tracking-widest">
+                <span>{hallmarkBadge}</span>
+              </div>
+
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#191714] font-semibold tracking-tight">
+                {hallmarkTitle}
+              </h2>
+
+              <p className="text-xs sm:text-sm text-[#746D62] max-w-lg">
+                {hallmarkDescription}
               </p>
             </div>
-          ))}
-        </div>
-      </div>
-    </section>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+              {hallmarkItems.map((h: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="flex flex-col items-center text-center p-6 rounded-2xl bg-white border border-[#E6D5BE] shadow-xs"
+                >
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFFDF9] to-[#F4E7D3] border border-[#C9A34A]/45 flex items-center justify-center mb-3.5 shadow-2xs">
+                    {hallmarkIcons[idx]}
+                  </div>
+                  <h3 className="font-serif text-sm sm:text-base font-semibold text-[#191714] mb-1.5">
+                    {h.title}
+                  </h3>
+                  <p className="text-xs text-[#746D62] leading-relaxed">
+                    {h.subtitle}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
   );
 };

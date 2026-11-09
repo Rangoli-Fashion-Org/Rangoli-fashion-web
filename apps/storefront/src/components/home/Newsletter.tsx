@@ -1,13 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { ArrowRight, Crown, Mail, CheckCircle2 } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
 
 export const Newsletter: React.FC = () => {
+  const [sectionData, setSectionData] = useState<any>(null);
+  const [isVisible, setIsVisible] = useState(true);
+
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    fetchApi<any[]>('/homepage/sections').then((res) => {
+      if (res.success && res.data) {
+        const primeSec = res.data.find(
+          (s: any) =>
+            s.sectionKey === 'rangoli_prime_circle' || s.sectionKey === 'newsletter_signup'
+        );
+        if (primeSec) {
+          setIsVisible(primeSec.isVisible);
+          setSectionData(primeSec);
+        }
+      }
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +40,9 @@ export const Newsletter: React.FC = () => {
 
     if (res.success) {
       setStatus('success');
-      setMessage(res.message || 'Welcome to the Privé Circle. Check your inbox for your ₹500 voucher code!');
+      setMessage(
+        res.message || 'Welcome to the Prime Circle. Check your inbox for your exclusive offers!'
+      );
       setEmail('');
     } else {
       setStatus('error');
@@ -29,65 +50,94 @@ export const Newsletter: React.FC = () => {
     }
   };
 
+  if (!isVisible) {
+    return null;
+  }
+
+  const badgeText =
+    sectionData?.customData?.badgeText || 'The Rangoli Prime Circle';
+  const headline =
+    sectionData?.customData?.headline ||
+    (sectionData?.title && sectionData.title !== 'The Rangoli Prime Circle'
+      ? sectionData.title
+      : 'Curated Elegance,\nDelivered to Your Inbox');
+  const description =
+    sectionData?.customData?.description ||
+    'Receive private seasonal previews, hand-picked festive edits, and exclusive offers straight to your inbox.';
+  const ctaText = sectionData?.customData?.ctaText || 'Join Prime';
+  const imageUrl = sectionData?.customData?.imageUrl || '';
+
   return (
-    <section className="bg-[#FAF6F0] py-14 md:py-24">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl bg-gradient-to-br from-[#002D21] via-[#003829] to-[#002319] text-[#FFF8ED] px-6 sm:px-14 py-14 sm:py-20 text-center shadow-2xl overflow-hidden border border-[#C9A34A]/50">
-          {/* Subtle Ambient Gold Glow */}
-          <div className="absolute -top-16 -left-16 w-64 h-64 bg-[#C9A34A]/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-[#C9A34A]/15 rounded-full blur-3xl pointer-events-none" />
+    <section className="bg-gradient-to-b from-[#F7EDE0] to-[#F0E3D1] pt-4 pb-10 sm:pt-6 sm:pb-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden min-h-[260px] sm:min-h-[320px] md:min-h-[370px] lg:min-h-[410px] flex items-center justify-center bg-gradient-to-r from-[#002219] via-[#003224] to-[#002219] text-[#FFF8ED] px-6 sm:px-12 md:px-16 py-10 sm:py-12 shadow-xl border border-[#C9A34A]/50 text-center">
+          {imageUrl && (
+            <>
+              <Image
+                src={imageUrl}
+                alt={headline}
+                fill
+                priority
+                sizes="(max-width: 1280px) 100vw, 1280px"
+                className="object-cover object-center"
+              />
+              {/* Very light center vignette only so background artwork (vase & leaves) remains bright and fully visible */}
+              <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+            </>
+          )}
 
-          {/* Decorative Corner Filigrees */}
-          <div className="absolute top-4 left-4 w-12 h-12 border-t-2 border-l-2 border-[#C9A34A]/40 rounded-tl-xl pointer-events-none" />
-          <div className="absolute bottom-4 right-4 w-12 h-12 border-b-2 border-r-2 border-[#C9A34A]/40 rounded-br-xl pointer-events-none" />
-
-          <div className="relative z-10 max-w-xl mx-auto space-y-4">
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-[#C9A34A]/40 text-[#E5C158] text-[11px] sm:text-xs font-semibold uppercase tracking-widest">
-              <Sparkles size={12} className="animate-pulse" />
-              <span>The Rangoli Privé Circle</span>
+          <div className="relative z-10 max-w-xl mx-auto md:pl-16 lg:pl-20 space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-black/25 backdrop-blur-xs border border-[#C9A34A]/50 text-[#E5C158] text-[10px] sm:text-xs font-semibold uppercase tracking-widest">
+              <Crown size={12} className="text-[#E5C158]" />
+              <span>{badgeText}</span>
             </div>
 
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-white font-normal tracking-tight leading-tight">
-              Curated Elegance, Delivered to Your Inbox
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[42px] text-white font-normal tracking-tight leading-[1.18] drop-shadow-md whitespace-pre-line">
+              {headline}
             </h2>
 
-            <p className="text-xs sm:text-sm text-white/85 leading-relaxed font-light max-w-md mx-auto">
-              Receive private seasonal previews, handpicked festive edits, and enjoy an exclusive <strong>₹500 welcome voucher</strong> on your first order.
+            <p className="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md mx-auto drop-shadow-xs">
+              {description}
             </p>
 
             {status === 'success' ? (
-              <div className="mt-6 p-4 rounded-xl bg-white/15 backdrop-blur-md border border-[#C9A34A]/60 flex items-center justify-center space-x-2 text-xs sm:text-sm text-[#FFF8ED] font-medium">
-                <CheckCircle2 size={18} className="text-[#E5C158]" />
+              <div className="mt-5 p-3.5 rounded-xl bg-black/40 backdrop-blur-md border border-[#C9A34A]/60 flex items-center justify-center space-x-2 text-xs sm:text-sm text-[#FFF8ED] font-medium">
+                <CheckCircle2 size={16} className="text-[#E5C158]" />
                 <span>{message}</span>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="mt-8 flex flex-col sm:flex-row items-center gap-3 max-w-lg mx-auto">
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full sm:flex-1 px-6 py-4 rounded-full bg-white text-[#191714] text-xs sm:text-sm placeholder-[#746D62] focus:outline-none focus:ring-2 focus:ring-[#C9A34A] shadow-md"
-                />
+              <form
+                onSubmit={handleSubmit}
+                className="mt-5 flex flex-col sm:flex-row items-center gap-2.5 max-w-md mx-auto pt-1"
+              >
+                <div className="relative w-full sm:flex-1">
+                  <Mail
+                    size={15}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#746D62]"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full pl-10 pr-4 py-3 rounded-full bg-[#FFF8ED] text-[#191714] text-xs sm:text-sm placeholder-[#746D62] focus:outline-none focus:ring-2 focus:ring-[#C9A34A] shadow-lg"
+                  />
+                </div>
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#C9A34A] hover:bg-[#E5C158] text-[#002D21] font-semibold text-xs tracking-widest uppercase transition-all duration-300 shadow-xl hover:shadow-[#C9A34A]/40 disabled:opacity-60 flex items-center justify-center space-x-2 group"
+                  className="w-full sm:w-auto px-6 py-3 rounded-full bg-gradient-to-r from-[#DFC37A] via-[#E5C158] to-[#C9A34A] hover:from-[#FFF2BD] hover:to-[#DFC37A] text-[#00251B] font-semibold text-xs tracking-wide transition-all duration-200 shadow-lg disabled:opacity-60 flex items-center justify-center space-x-1.5 shrink-0"
                 >
-                  <span>{status === 'loading' ? 'Joining...' : 'Join Privé'}</span>
-                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  <span>{status === 'loading' ? 'Joining...' : ctaText}</span>
+                  <ArrowRight size={13} />
                 </button>
               </form>
             )}
 
             {status === 'error' && (
-              <p className="text-xs text-red-300 font-medium pt-2">{message}</p>
+              <p className="text-xs text-red-300 font-medium pt-1">{message}</p>
             )}
-
-            <p className="text-[11px] text-white/50 pt-2">
-              We respect your privacy. No spam, only handpicked ethnic luxury.
-            </p>
           </div>
         </div>
       </div>

@@ -1,40 +1,50 @@
 import React from 'react';
 import { HeroBanner } from '../components/home/HeroBanner';
-import { CategoriesSection } from '../components/home/CategoriesSection';
 import { ShoppingBenefits } from '../components/home/ShoppingBenefits';
-import { CollectionsGrid } from '../components/home/CollectionsGrid';
-import { NewArrivals } from '../components/home/NewArrivals';
+import { CategoriesSection } from '../components/home/CategoriesSection';
 import { FestiveBanner } from '../components/home/FestiveBanner';
+import { NewArrivals } from '../components/home/NewArrivals';
 import { BrandBenefits } from '../components/home/BrandBenefits';
 import { Newsletter } from '../components/home/Newsletter';
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col w-full">
-      {/* 1. Large Editorial Fashion Hero Banner */}
-      <HeroBanner />
+    <div className="relative flex flex-col w-full bg-[#FDF8F0] overflow-hidden">
+      {/* Subtle Luxury Silk Weave & Warm Champagne Ambient Glow across the page */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.35]"
+        style={{
+          backgroundImage: `
+            radial-gradient(circle at 15% 25%, rgba(201, 163, 74, 0.10) 0%, transparent 45%),
+            radial-gradient(circle at 85% 60%, rgba(201, 163, 74, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 50% 90%, rgba(0, 61, 45, 0.04) 0%, transparent 45%)
+          `,
+        }}
+        aria-hidden="true"
+      />
 
-      {/* 2. Shop by Category (Dynamic from Admin Categories) */}
-      <CategoriesSection />
+      <div className="relative z-10 flex flex-col w-full">
+        {/* 1. Large Editorial Fashion Hero Banner */}
+        <HeroBanner />
 
-      {/* 3. Four Shopping Feature Blocks */}
-      <ShoppingBenefits />
+        {/* 2. Four Horizontal Shopping Benefits Bar */}
+        <ShoppingBenefits />
 
-      {/* 4. Shop by Collection (Dynamic from Admin Collections) */}
-      <CollectionsGrid />
+        {/* 3. Shop by Category (Royal Jharokha Arched Cards) */}
+        <CategoriesSection />
 
-      {/* 5. New Arrivals Product Showcase */}
-      <NewArrivals />
+        {/* 4. Festive Elegance Promotional Banner */}
+        <FestiveBanner />
 
-      {/* 6. Festive Edit Section */}
-      <FestiveBanner />
+        {/* 5. New Arrivals Product Showcase */}
+        <NewArrivals />
 
-      {/* 7. Four Brand Quality Blocks */}
-      <BrandBenefits />
+        {/* 6. Why Choose Rangoli & The Rangoli Hallmark */}
+        <BrandBenefits />
 
-      {/* 8. Newsletter Subscription Box */}
-      <Newsletter />
+        {/* 7. The Rangoli Prime Circle Newsletter */}
+        <Newsletter />
+      </div>
     </div>
   );
 }
-

@@ -60,15 +60,14 @@ async function main() {
 
   // 3. Homepage CMS Layout Sections
   const defaultSections = [
-    { sectionKey: 'announcement_bar', title: 'Announcement Bar', displayOrder: 1, isVisible: true },
-    { sectionKey: 'hero_banner', title: 'Hero Carousel', displayOrder: 2, isVisible: true },
-    { sectionKey: 'shopping_benefits', title: 'Shopping Benefits', displayOrder: 3, isVisible: true },
-    { sectionKey: 'shop_by_collection', title: 'Shop by Collection', displayOrder: 4, isVisible: true },
+    { sectionKey: 'hero_banner', title: 'Hero Banner', displayOrder: 1, isVisible: true },
+    { sectionKey: 'shopping_benefits', title: 'Shopping Benefits Bar', displayOrder: 2, isVisible: true },
+    { sectionKey: 'shop_by_category', title: 'Shop by Category', displayOrder: 3, isVisible: true },
+    { sectionKey: 'festive_edit', title: 'Festive Edit', displayOrder: 4, isVisible: true },
     { sectionKey: 'new_arrivals', title: 'New Arrivals', displayOrder: 5, isVisible: true },
-    { sectionKey: 'festive_edit', title: 'Festive Promotional Banner', displayOrder: 6, isVisible: true },
-    { sectionKey: 'brand_benefits', title: 'Brand Benefits', displayOrder: 7, isVisible: true },
-    { sectionKey: 'newsletter_signup', title: 'Newsletter Subscription', displayOrder: 8, isVisible: true },
-    { sectionKey: 'footer', title: 'Footer', displayOrder: 9, isVisible: true },
+    { sectionKey: 'why_choose_us', title: 'Why Choose Rangoli', displayOrder: 6, isVisible: true },
+    { sectionKey: 'brand_benefits', title: 'Designed with Devotion, Made to Cherish', displayOrder: 7, isVisible: true },
+    { sectionKey: 'rangoli_prime_circle', title: 'The Rangoli Prime Circle', displayOrder: 8, isVisible: true },
   ];
 
   for (const sec of defaultSections) {
