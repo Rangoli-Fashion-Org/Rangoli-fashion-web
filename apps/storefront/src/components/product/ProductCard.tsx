@@ -40,20 +40,40 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const displayPrice = salePrice || regularPrice;
   const originalPrice = salePrice ? regularPrice : null;
   const discount = discountPercentage || (salePrice && regularPrice ? Math.round(((regularPrice - salePrice) / regularPrice) * 100) : null);
-  const imageUrl = images[0]?.url || '/brand/rf-monogram.jpg';
+
+  // Primary cover image and secondary sub image
+  const primaryImg = images.find((img: any) => img.isPrimary) || images[0];
+  const secondaryImg = images.find((img: any) => img !== primaryImg);
+
+  const primaryUrl = primaryImg?.url || '/brand/rf-monogram.jpg';
+  const secondaryUrl = secondaryImg?.url || null;
 
   return (
-    <div className="group relative flex flex-col bg-white rounded-2xl border border-[#E8DFD0]/70 overflow-hidden hover:border-[#C9A34A]/60 shadow-2xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <div className="group relative flex flex-col bg-white rounded-2xl border border-[#E8DFD0] overflow-hidden shadow-2xs">
       {/* Product Image Frame */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#FAF6F0]">
-        <Link href={`/products/${slug}`} className="block w-full h-full">
+        <Link href={`/products/${slug}`} className="relative block w-full h-full">
+          {/* Primary Cover Image */}
           <Image
-            src={imageUrl}
+            src={primaryUrl}
             alt={name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover object-top group-hover:scale-106 transition-transform duration-700 ease-out"
+            className={`object-cover object-top transition-opacity duration-300 ${
+              secondaryUrl ? 'group-hover:opacity-0' : ''
+            }`}
           />
+
+          {/* Second Sub Image revealed on Hover */}
+          {secondaryUrl && (
+            <Image
+              src={secondaryUrl}
+              alt={`${name} secondary view`}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover object-top opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            />
+          )}
         </Link>
 
         {/* Floating Badges (New Arrival / Discount) */}

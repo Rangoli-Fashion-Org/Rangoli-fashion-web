@@ -70,7 +70,7 @@ export const CategoriesSection: React.FC = () => {
             <Link
               key={category.id}
               href={`/shop?category=${encodeURIComponent(category.slug)}`}
-              className="group relative aspect-[3/5] rounded-2xl sm:rounded-[22px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 block bg-[#002D21]"
+              className="relative aspect-[3/5] rounded-2xl sm:rounded-[22px] overflow-hidden shadow-sm block bg-[#002D21]"
             >
               {/* Full-Card Background Image */}
               {category.imageUrl ? (
@@ -79,7 +79,7 @@ export const CategoriesSection: React.FC = () => {
                   alt={category.name}
                   fill
                   sizes="(max-width: 768px) 50vw, 25vw"
-                  className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="object-cover object-top"
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-b from-[#003D2D] to-[#002018] flex flex-col items-center justify-center p-6 text-center">
@@ -101,9 +101,9 @@ export const CategoriesSection: React.FC = () => {
                   {category.name}
                 </h3>
 
-                <div className="inline-flex items-center space-x-1.5 text-white/95 group-hover:text-[#E5C158] text-xs sm:text-sm font-medium tracking-wide mt-2 sm:mt-2.5 transition-colors">
+                <div className="inline-flex items-center space-x-1.5 text-white/95 text-xs sm:text-sm font-medium tracking-wide mt-2 sm:mt-2.5">
                   <span>Explore</span>
-                  <ArrowRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-200" />
+                  <ArrowRight size={14} />
                 </div>
               </div>
             </Link>
