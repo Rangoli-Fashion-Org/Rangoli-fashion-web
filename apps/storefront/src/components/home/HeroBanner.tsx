@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 interface BannerItem {
   id: string;
@@ -127,7 +128,7 @@ export const HeroBanner: React.FC = () => {
           <div className="absolute inset-0 sm:hidden">
             <Image
               key={`hero-m-${activeBanner.id}-${currentIndex}`}
-              src={activeBanner.mobileImageUrl || activeBanner.desktopImageUrl}
+              src={getOptimizedImageUrl(activeBanner.mobileImageUrl || activeBanner.desktopImageUrl, { width: 900, quality: 'auto:good' })}
               alt={activeBanner.title}
               fill
               priority
@@ -144,7 +145,7 @@ export const HeroBanner: React.FC = () => {
           <div className="absolute inset-0 hidden sm:block">
             <Image
               key={`hero-d-${activeBanner.id}-${currentIndex}`}
-              src={activeBanner.desktopImageUrl}
+              src={getOptimizedImageUrl(activeBanner.desktopImageUrl, { width: 1920, quality: 'auto:good' })}
               alt={activeBanner.title}
               fill
               priority

@@ -21,6 +21,10 @@ export class PrismaService extends PrismaClient<Prisma.PrismaClientOptions, 'err
       const isHarmless =
         msg.includes('Closed') ||
         msg.includes('kind: Closed') ||
+        msg.includes('ConnectionReset') ||
+        msg.includes('10054') ||
+        msg.includes('forcibly closed by the remote host') ||
+        msg.includes("Can't reach database server") ||
         msg.includes('cause: None') ||
         msg.includes('57P01') ||
         msg.includes('E57P01') ||

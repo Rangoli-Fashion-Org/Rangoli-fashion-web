@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 interface CategoryItem {
   id: string;
@@ -104,7 +105,7 @@ export const CategoriesSection: React.FC = () => {
                   {/* Category Image */}
                   {category.imageUrl ? (
                     <Image
-                      src={category.imageUrl}
+                      src={getOptimizedImageUrl(category.imageUrl, { width: 600, quality: 'auto:good' })}
                       alt={category.name}
                       fill
                       sizes="(max-width: 768px) 50vw, 25vw"
@@ -121,18 +122,21 @@ export const CategoriesSection: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Bottom-Only Rich Espresso Vignette so model stays bright and text has high contrast */}
-                  <div className="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-[#140C08]/95 via-[#140C08]/65 to-transparent pointer-events-none" />
+                  {/* Bottom Gradient Overlay for optimal text contrast */}
+                  <div className="absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-[#0a1b14] via-[#0a1b14]/75 to-transparent pointer-events-none group-hover:from-[#05130e] transition-colors duration-300" />
 
-                  {/* Centered Editorial Category Title & Gold Circle Arrow */}
-                  <div className="absolute bottom-0 inset-x-0 px-2 sm:px-3 pb-2.5 sm:pb-4 pt-5 z-10 flex flex-col items-center justify-end text-center">
-                    <h3 className="font-serif text-sm sm:text-lg md:text-xl lg:text-[22px] text-[#FFF8ED] font-normal tracking-wide leading-[1.18] drop-shadow-[0_2px_6px_rgba(0,0,0,0.75)] whitespace-pre-line">
+                  {/* Centered Category Title & Luxury Floating Pill/Arrow */}
+                  <div className="absolute bottom-0 inset-x-0 px-2 sm:px-3 pb-3 sm:pb-4 pt-6 z-10 flex flex-col items-center justify-end text-center">
+                    <h3 className="font-serif text-sm sm:text-base md:text-lg lg:text-xl text-[#FFF8ED] font-normal tracking-wide leading-snug drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] whitespace-pre-line group-hover:text-[#E5C158] transition-colors duration-300">
                       {formatCategoryTitle(category.name)}
                     </h3>
 
-                    {/* Circular Gold Arrow Button */}
-                    <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-[#C9A34A] via-[#E5C158] to-[#F5DF98] text-[#00251B] flex items-center justify-center mt-1.5 sm:mt-2 shadow-md shrink-0">
-                      <ArrowRight size={11} className="sm:w-[13px] sm:h-[13px] stroke-[2.5]" />
+                    {/* Refined Gold Exploration Badge with Arrow */}
+                    <div className="mt-2 sm:mt-2.5 inline-flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-white/10 hover:bg-[#C9A34A] backdrop-blur-md border border-[#C9A34A]/50 text-[#E5C158] hover:text-[#002D21] transition-all duration-300 shadow-sm group-hover:scale-105 group-hover:bg-[#C9A34A] group-hover:text-[#002D21]">
+                      <span className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-wider">
+                        Explore
+                      </span>
+                      <ArrowRight size={11} className="sm:w-3 sm:h-3 stroke-[2.5] group-hover:translate-x-0.5 transition-transform" />
                     </div>
                   </div>
                 </div>
