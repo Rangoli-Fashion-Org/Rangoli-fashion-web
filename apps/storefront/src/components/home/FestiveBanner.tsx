@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 export const FestiveBanner: React.FC = () => {
   const [sectionData, setSectionData] = useState<any>(null);
@@ -46,7 +47,7 @@ export const FestiveBanner: React.FC = () => {
           {/* Mobile Top Image View - Guarantees the Festive Card Image is 100% visible on mobile */}
           <div className="relative w-full h-52 sm:hidden overflow-hidden bg-[#002D21]">
             <Image
-              src={imageUrl}
+              src={getOptimizedImageUrl(imageUrl, { width: 800, quality: 'auto:good' })}
               alt={title}
               fill
               priority
@@ -59,10 +60,9 @@ export const FestiveBanner: React.FC = () => {
           {/* Desktop/Tablet Full-Card Background Image */}
           <div className="hidden sm:block absolute inset-0">
             <Image
-              src={imageUrl}
+              src={getOptimizedImageUrl(imageUrl, { width: 1400, quality: 'auto:good' })}
               alt={title}
               fill
-              priority
               sizes="(max-width: 1280px) 100vw, 1280px"
               className="object-cover object-right"
             />

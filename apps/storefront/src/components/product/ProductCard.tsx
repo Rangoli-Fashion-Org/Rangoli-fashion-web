@@ -7,6 +7,7 @@ import { Heart, ShoppingBag } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
 import { formatINR } from '@rangoli/validation';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 export interface ProductCardProps {
   id: string;
@@ -45,8 +46,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const primaryImg = images.find((img: any) => img.isPrimary) || images[0];
   const secondaryImg = images.find((img: any) => img !== primaryImg);
 
-  const primaryUrl = primaryImg?.url || '/brand/rf-monogram.jpg';
-  const secondaryUrl = secondaryImg?.url || null;
+  const primaryUrl = getOptimizedImageUrl(primaryImg?.url, { width: 500, quality: 'auto:good' });
+  const secondaryUrl = secondaryImg ? getOptimizedImageUrl(secondaryImg.url, { width: 500, quality: 'auto:good' }) : null;
 
   return (
     <div className="group relative flex flex-col bg-white rounded-xl sm:rounded-2xl border border-[#E8DFD0] p-1.5 sm:p-2.5 shadow-2xs select-none">

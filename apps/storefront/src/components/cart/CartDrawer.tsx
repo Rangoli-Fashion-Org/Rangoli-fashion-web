@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { X, Trash2, ShoppingBag, ArrowRight, Tag } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { formatINR } from '@rangoli/validation';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -113,7 +114,7 @@ export const CartDrawer: React.FC = () => {
                   {/* Thumbnail */}
                   <div className="relative w-20 h-24 rounded-md overflow-hidden bg-[#FAF6F0] shrink-0 border border-[#E8DFD0]">
                     <Image
-                      src={item.product.images?.[0]?.url || '/brand/rf-monogram.jpg'}
+                      src={getOptimizedImageUrl(item.product.images?.[0]?.url, { width: 160, quality: 'auto:eco' })}
                       alt={item.product.name}
                       fill
                       className="object-cover object-center"
