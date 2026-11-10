@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ArrowRight, Crown, Mail, CheckCircle2 } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 export const Newsletter: React.FC = () => {
   const [sectionData, setSectionData] = useState<any>(null);
@@ -77,7 +78,7 @@ export const Newsletter: React.FC = () => {
           {imageUrl && (
             <>
               <Image
-                src={imageUrl}
+                src={getOptimizedImageUrl(imageUrl, { width: 1400, quality: 'auto:good' })}
                 alt={headline}
                 fill
                 priority

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Gem, Sparkles, Feather, Award, Crown, Scissors, Heart } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 export const BrandBenefits: React.FC = () => {
   const [whyChooseSection, setWhyChooseSection] = useState<any>(null);
@@ -111,7 +112,7 @@ export const BrandBenefits: React.FC = () => {
               {whyChooseImageUrl && (
                 <>
                   <Image
-                    src={whyChooseImageUrl}
+                    src={getOptimizedImageUrl(whyChooseImageUrl, { width: 1400, quality: 'auto:good' })}
                     alt={whyChooseTitle}
                     fill
                     sizes="(max-width: 1280px) 100vw, 1280px"
