@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ShoppingBag } from 'lucide-react';
@@ -34,6 +34,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isNewArrival,
   isBestSeller,
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
   const wishlisted = isInWishlist(id);
@@ -52,7 +53,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const secondaryUrl = secondaryImg ? getOptimizedImageUrl(secondaryImg.url, { width: 420, quality: 'auto:good' }) : null;
 
   return (
-    <div className="group relative flex flex-col bg-white rounded-xl sm:rounded-2xl border border-[#E8DFD0] p-1.5 sm:p-2.5 shadow-2xs select-none">
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      className="group relative flex flex-col bg-white rounded-xl sm:rounded-2xl border border-[#E8DFD0] p-1.5 sm:p-2.5 shadow-2xs select-none"
+    >
       {/* Product Image Frame */}
       <div className="relative aspect-[3/4] w-full rounded-lg sm:rounded-xl overflow-hidden bg-[#FAF6F0]">
         <Link href={`/products/${slug}`} className="relative block w-full h-full">
@@ -64,12 +68,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             loading="lazy"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className={`object-cover object-top transition-opacity duration-300 ${
-              secondaryUrl ? 'group-hover:opacity-0' : ''
+              secondaryUrl && isHovered ? 'group-hover:opacity-0' : ''
             }`}
           />
 
-          {/* Second Sub Image revealed on Hover (Desktop only, lazy-loaded) */}
-          {secondaryUrl && (
+          {/* Second Sub Image revealed on Hover (Desktop only, deferred until hover) */}
+          {secondaryUrl && isHovered && (
             <div className="hidden sm:block absolute inset-0">
               <Image
                 src={secondaryUrl}

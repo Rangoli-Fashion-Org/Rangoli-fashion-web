@@ -135,7 +135,7 @@ export const CategoriesSection: React.FC = () => {
                   {/* Category Image */}
                   {category.imageUrl ? (
                     <Image
-                      src={getOptimizedImageUrl(category.imageUrl, { width: 600, quality: 'auto:good' })}
+                      src={getOptimizedImageUrl(category.imageUrl, { width: 450, quality: 'auto:good' })}
                       alt={category.name}
                       fill
                       loading="lazy"
