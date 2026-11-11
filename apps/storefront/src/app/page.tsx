@@ -5,6 +5,7 @@ import { CategoriesSection } from '../components/home/CategoriesSection';
 import { FestiveBanner } from '../components/home/FestiveBanner';
 import { NewArrivals } from '../components/home/NewArrivals';
 import { BrandBenefits } from '../components/home/BrandBenefits';
+import { BestSellers } from '../components/home/BestSellers';
 import { Newsletter } from '../components/home/Newsletter';
 
 export default function HomePage() {
@@ -42,7 +43,10 @@ export default function HomePage() {
         {/* 6. Why Choose Rangoli & The Rangoli Hallmark */}
         <BrandBenefits />
 
-        {/* 7. The Rangoli Prime Circle Newsletter */}
+        {/* 7. Best Sellers Product Showcase (Positioned separately from New Arrivals) */}
+        <BestSellers />
+
+        {/* 8. The Rangoli Prime Circle Newsletter */}
         <Newsletter />
       </div>
     </div>
