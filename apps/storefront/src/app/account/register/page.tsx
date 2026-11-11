@@ -84,25 +84,25 @@ export default function CustomerRegisterPage() {
               aria-hidden="true"
             />
 
-            <div className="relative z-10 space-y-6">
-              {/* Official Brand Logo */}
-              <div className="relative w-48 h-20 sm:w-56 sm:h-24">
+            <div className="relative z-10 space-y-6 flex flex-col items-center text-center">
+              {/* Official Brand Logo - Centered */}
+              <div className="relative w-56 h-28 sm:w-64 sm:h-32 mx-auto flex items-center justify-center">
                 <Image
                   src="/brand/rangoli-brand-logo.png"
                   alt="Rangoli Fashions"
                   fill
-                  className="object-contain object-left"
+                  className="object-contain object-center"
                   priority
                 />
               </div>
 
               {/* Eyebrow */}
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#C9A34A]/20 border border-[#C9A34A]/40 text-[#E5C158] text-[10px] font-bold uppercase tracking-widest">
+              <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#C9A34A]/20 border border-[#C9A34A]/40 text-[#E5C158] text-[10px] font-bold uppercase tracking-widest mx-auto">
                 <Sparkles size={11} className="text-[#E5C158]" />
                 <span>Patron Circle</span>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 max-w-sm mx-auto">
                 <h2 className="font-serif text-2xl sm:text-3xl font-normal leading-snug">
                   Begin Your Journey of <span className="italic font-medium text-[#E5C158]">Pure Grace</span>
                 </h2>
@@ -112,7 +112,7 @@ export default function CustomerRegisterPage() {
               </div>
 
               {/* Privilege List */}
-              <div className="pt-4 space-y-3.5 border-t border-white/10 text-xs">
+              <div className="pt-4 space-y-3.5 border-t border-white/10 text-xs text-left w-full">
                 <div className="flex items-start space-x-3">
                   <div className="w-5 h-5 rounded-full bg-[#C9A34A]/20 border border-[#C9A34A]/40 flex items-center justify-center shrink-0 mt-0.5">
                     <CheckCircle size={12} className="text-[#E5C158]" />
@@ -146,7 +146,7 @@ export default function CustomerRegisterPage() {
             </div>
 
             {/* Bottom trust note */}
-            <div className="relative z-10 pt-6 mt-6 border-t border-white/10 flex items-center space-x-2 text-[11px] text-[#E8DFD0]/70">
+            <div className="relative z-10 pt-6 mt-6 border-t border-white/10 flex items-center justify-center space-x-2 text-[11px] text-[#E8DFD0]/70 text-center">
               <ShieldCheck size={14} className="text-[#C9A34A] shrink-0" />
               <span>100% Secure & Encrypted Personal Data</span>
             </div>
@@ -154,7 +154,22 @@ export default function CustomerRegisterPage() {
 
           {/* Right Column: Registration Form */}
           <div className="lg:col-span-7 p-6 sm:p-10 md:p-12 flex flex-col justify-center">
-            <div className="mb-6 space-y-1.5">
+            {/* Mobile centered logo banner */}
+            <div className="lg:hidden flex justify-center mb-6">
+              <div className="p-3 bg-gradient-to-r from-[#003D2D] to-[#00271D] rounded-2xl border border-[#C9A34A]/40 shadow-md">
+                <div className="relative w-44 h-18">
+                  <Image
+                    src="/brand/rangoli-brand-logo.png"
+                    alt="Rangoli Fashions"
+                    fill
+                    className="object-contain object-center"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-6 space-y-1.5 text-center sm:text-left">
               <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-[#FAF3E5] border border-[#C9A34A]/40 text-[#7A520C] text-[9px] font-bold uppercase tracking-widest">
                 <span>✦</span>
                 <span>Member Registration</span>
