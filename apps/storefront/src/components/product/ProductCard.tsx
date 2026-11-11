@@ -48,8 +48,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const primaryImg = images.find((img: any) => img.isPrimary) || images[0];
   const secondaryImg = images.find((img: any) => img !== primaryImg);
 
-  const primaryUrl = getOptimizedImageUrl(primaryImg?.url, { width: 500, quality: 'auto:good' });
-  const secondaryUrl = secondaryImg ? getOptimizedImageUrl(secondaryImg.url, { width: 500, quality: 'auto:good' }) : null;
+  const primaryUrl = getOptimizedImageUrl(primaryImg?.url, { width: 420, quality: 'auto:good' });
+  const secondaryUrl = secondaryImg ? getOptimizedImageUrl(secondaryImg.url, { width: 420, quality: 'auto:good' }) : null;
 
   return (
     <div className="group relative flex flex-col bg-white rounded-xl sm:rounded-2xl border border-[#E8DFD0] p-1.5 sm:p-2.5 shadow-2xs select-none">
@@ -61,21 +61,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             src={primaryUrl}
             alt={name}
             fill
+            loading="lazy"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className={`object-cover object-top transition-opacity duration-300 ${
               secondaryUrl ? 'group-hover:opacity-0' : ''
             }`}
           />
 
-          {/* Second Sub Image revealed on Hover */}
+          {/* Second Sub Image revealed on Hover (Desktop only, lazy-loaded) */}
           {secondaryUrl && (
-            <Image
-              src={secondaryUrl}
-              alt={`${name} secondary view`}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover object-top opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            />
+            <div className="hidden sm:block absolute inset-0">
+              <Image
+                src={secondaryUrl}
+                alt={`${name} secondary view`}
+                fill
+                loading="lazy"
+                sizes="(max-width: 1024px) 33vw, 25vw"
+                className="object-cover object-top opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              />
+            </div>
           )}
         </Link>
 
