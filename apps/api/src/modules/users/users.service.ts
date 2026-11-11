@@ -69,14 +69,14 @@ export class UsersService {
     return this.prisma.address.create({
       data: {
         userId,
-        fullName: dto.fullName,
-        phoneNumber: dto.phoneNumber,
-        street: dto.street,
-        apartment: dto.apartment,
-        city: dto.city,
-        state: dto.state,
-        postalCode: dto.postalCode,
-        country: dto.country || 'India',
+        fullName: dto.fullName?.trim(),
+        phoneNumber: dto.phoneNumber?.trim(),
+        street: dto.street?.trim(),
+        apartment: dto.apartment?.trim() || null,
+        city: dto.city?.trim(),
+        state: dto.state?.trim(),
+        postalCode: dto.postalCode?.trim(),
+        country: dto.country?.trim() || 'India',
         isDefaultShipping: dto.isDefaultShipping ?? false,
         isDefaultBilling: dto.isDefaultBilling ?? false,
       },
@@ -108,7 +108,18 @@ export class UsersService {
 
     return this.prisma.address.update({
       where: { id: addressId },
-      data: dto,
+      data: {
+        ...(dto.fullName ? { fullName: dto.fullName.trim() } : {}),
+        ...(dto.phoneNumber ? { phoneNumber: dto.phoneNumber.trim() } : {}),
+        ...(dto.street ? { street: dto.street.trim() } : {}),
+        ...(dto.apartment !== undefined ? { apartment: dto.apartment?.trim() || null } : {}),
+        ...(dto.city ? { city: dto.city.trim() } : {}),
+        ...(dto.state ? { state: dto.state.trim() } : {}),
+        ...(dto.postalCode ? { postalCode: dto.postalCode.trim() } : {}),
+        ...(dto.country ? { country: dto.country.trim() } : {}),
+        ...(dto.isDefaultShipping !== undefined ? { isDefaultShipping: dto.isDefaultShipping } : {}),
+        ...(dto.isDefaultBilling !== undefined ? { isDefaultBilling: dto.isDefaultBilling } : {}),
+      },
     });
   }
 

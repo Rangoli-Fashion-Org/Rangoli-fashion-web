@@ -1,5 +1,20 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
 
+export function getAuthToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('rf_token');
+}
+
+export function setAuthToken(token: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('rf_token', token);
+}
+
+export function removeAuthToken(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('rf_token');
+}
+
 export async function fetchApi<T = any>(
   endpoint: string,
   options: RequestInit = {},
@@ -9,6 +24,14 @@ export async function fetchApi<T = any>(
   const headers = new Headers(options.headers || {});
   if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
+  }
+
+  // Dual auth: Attach Bearer token header if available to ensure requests never fail if cookies are blocked
+  if (!headers.has('Authorization')) {
+    const token = getAuthToken();
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
   }
 
   try {
@@ -21,10 +44,15 @@ export async function fetchApi<T = any>(
     const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
+      // NestJS can return message as an array of validation strings
+      const errorMsg = Array.isArray(data?.message)
+        ? data.message.join('. ')
+        : data?.message || `Request failed with status ${res.status}`;
+
       return {
         success: false,
         data: null as any,
-        message: data?.message || `Request failed with status ${res.status}`,
+        message: errorMsg,
       };
     }
 

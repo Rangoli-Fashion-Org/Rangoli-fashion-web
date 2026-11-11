@@ -1,8 +1,16 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { fetchApi } from '../lib/api';
+import { fetchApi, setAuthToken, removeAuthToken } from '../lib/api';
 import { UserProfile } from '@rangoli/shared-types';
+
+interface AuthResponseData {
+  user: UserProfile;
+  tokens?: {
+    accessToken: string;
+    refreshToken?: string;
+  };
+}
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -46,12 +54,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await fetchApi<{ user: UserProfile }>('/auth/login', {
+    const res = await fetchApi<AuthResponseData>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
 
     if (res.success && res.data?.user) {
+      if (res.data.tokens?.accessToken) {
+        setAuthToken(res.data.tokens.accessToken);
+      }
       setUser(res.data.user);
       return { success: true };
     }
@@ -59,12 +70,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const register = async (fullName: string, email: string, password: string, phoneNumber?: string) => {
-    const res = await fetchApi<{ user: UserProfile }>('/auth/register', {
+    const res = await fetchApi<AuthResponseData>('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ fullName, email, password, phoneNumber }),
     });
 
     if (res.success && res.data?.user) {
+      if (res.data.tokens?.accessToken) {
+        setAuthToken(res.data.tokens.accessToken);
+      }
       setUser(res.data.user);
       return { success: true };
     }
@@ -72,8 +86,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    await fetchApi('/auth/logout', { method: 'POST' });
-    setUser(null);
+    try {
+      await fetchApi('/auth/logout', { method: 'POST' });
+    } finally {
+      removeAuthToken();
+      setUser(null);
+    }
   };
 
   return (
