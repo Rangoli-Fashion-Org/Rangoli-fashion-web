@@ -161,7 +161,7 @@ export const HeroBanner: React.FC = () => {
         onTouchEnd={handleTouchEnd}
       >
         {/* Top Image Showcase with Soft Bottom Gradient Fade */}
-        <div className="relative w-full h-[370px] xs:h-[410px] overflow-hidden bg-[#FAF4EB]">
+        <div className="relative w-full h-[440px] xs:h-[480px] overflow-hidden bg-[#FAF4EB]">
           {(activeBanner.mobileImageUrl || activeBanner.desktopImageUrl) && (
             <Image
               key={`hero-m-${activeBanner.id}-${currentIndex}`}
@@ -173,15 +173,15 @@ export const HeroBanner: React.FC = () => {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-top"
+              className="object-cover object-[center_15%]"
             />
           )}
-          {/* Seamless Bottom Gradient Fade into Solid Cream Card */}
-          <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#FAF4EB] via-[#FAF4EB]/85 to-transparent pointer-events-none" />
+          {/* Soft Bottom Gradient Fade: Placed low so the full embroidered green dress remains 100% visible */}
+          <div className="absolute inset-x-0 bottom-0 h-24 xs:h-28 bg-gradient-to-t from-[#FAF4EB] via-[#FAF4EB]/60 to-transparent pointer-events-none" />
         </div>
 
         {/* Bottom Content Area: Placed Down, Centered */}
-        <div className="relative z-10 px-6 pt-1 pb-7 flex flex-col items-center text-center space-y-3 -mt-8">
+        <div className="relative z-10 px-6 pt-1 pb-7 flex flex-col items-center text-center space-y-3 -mt-4">
           {/* Title - Serif Italic, 2 Lines, Elegant Charcoal */}
           <h1 className="font-serif italic text-[32px] xs:text-[36px] text-[#191714] font-normal tracking-tight leading-[1.15]">
             {activeBanner.title.includes('Occasion') ? (
