@@ -74,24 +74,24 @@ export default function CustomerLoginPage() {
               aria-hidden="true"
             />
 
-            <div className="relative z-10 space-y-6">
-              {/* Official Brand Logo */}
-              <div className="relative w-48 h-20 sm:w-56 sm:h-24">
+            <div className="relative z-10 space-y-6 flex flex-col items-center text-center">
+              {/* Official Brand Logo - Centered */}
+              <div className="relative w-56 h-28 sm:w-64 sm:h-32 mx-auto flex items-center justify-center">
                 <Image
                   src="/brand/rangoli-brand-logo.png"
                   alt="Rangoli Fashions"
                   fill
-                  className="object-contain object-left"
+                  className="object-contain object-center"
                   priority
                 />
               </div>
 
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#C9A34A]/20 border border-[#C9A34A]/40 text-[#E5C158] text-[10px] font-bold uppercase tracking-widest">
+              <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#C9A34A]/20 border border-[#C9A34A]/40 text-[#E5C158] text-[10px] font-bold uppercase tracking-widest mx-auto">
                 <Sparkles size={11} className="text-[#E5C158]" />
                 <span>Patron Sign In</span>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 max-w-sm mx-auto">
                 <h2 className="font-serif text-2xl sm:text-3xl font-normal leading-snug">
                   Welcome Back to <span className="italic font-medium text-[#E5C158]">Rangoli</span>
                 </h2>
@@ -100,7 +100,7 @@ export default function CustomerLoginPage() {
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 text-xs">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 text-xs text-left w-full">
                 <span className="font-serif font-semibold text-[#E5C158] block">Your Patron Privileges</span>
                 <p className="text-[11px] text-[#E8DFD0]/70">
                   Enjoy saved payment methods, complimentary blouse customization tracking, and one-click festive checkout.
@@ -108,7 +108,7 @@ export default function CustomerLoginPage() {
               </div>
             </div>
 
-            <div className="relative z-10 pt-6 mt-6 border-t border-white/10 flex items-center space-x-2 text-[11px] text-[#E8DFD0]/70">
+            <div className="relative z-10 pt-6 mt-6 border-t border-white/10 flex items-center justify-center space-x-2 text-[11px] text-[#E8DFD0]/70 text-center">
               <ShieldCheck size={14} className="text-[#C9A34A] shrink-0" />
               <span>Protected by 256-bit SSL Encryption</span>
             </div>
@@ -116,7 +116,22 @@ export default function CustomerLoginPage() {
 
           {/* Right Column: Sign In Form */}
           <div className="lg:col-span-7 p-6 sm:p-10 md:p-12 flex flex-col justify-center">
-            <div className="mb-6 space-y-1.5">
+            {/* Mobile centered logo banner */}
+            <div className="lg:hidden flex justify-center mb-6">
+              <div className="p-3 bg-gradient-to-r from-[#003D2D] to-[#00271D] rounded-2xl border border-[#C9A34A]/40 shadow-md">
+                <div className="relative w-44 h-18">
+                  <Image
+                    src="/brand/rangoli-brand-logo.png"
+                    alt="Rangoli Fashions"
+                    fill
+                    className="object-contain object-center"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-6 space-y-1.5 text-center sm:text-left">
               <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-[#FAF3E5] border border-[#C9A34A]/40 text-[#7A520C] text-[9px] font-bold uppercase tracking-widest">
                 <span>✦</span>
                 <span>Patron Access</span>
