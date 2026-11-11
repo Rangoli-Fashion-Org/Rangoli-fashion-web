@@ -163,10 +163,10 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Main Navbar */}
-      <nav className="bg-[#003D2D]/95 backdrop-blur-md text-white px-3 sm:px-4 lg:px-8 py-2 sm:py-2.5 border-b border-[#0B5940]/60 transition-all duration-200">
+      <nav className="relative bg-[#003D2D]/95 backdrop-blur-md text-white px-3 sm:px-4 lg:px-8 py-2 sm:py-2.5 border-b border-[#0B5940]/60">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Mobile Menu Button */}
-          <div className="flex items-center lg:hidden shrink-0">
+          <div className="flex items-center lg:hidden shrink-0 z-10">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-1.5 text-[#F5EBDD] hover:text-[#C9A34A] focus:outline-none rounded-lg hover:bg-white/5 transition-colors"
@@ -176,15 +176,30 @@ export const Header: React.FC = () => {
             </button>
           </div>
 
-          {/* Official Company Logo - Responsive visual scale */}
-          <Link href="/" className="flex items-center group py-0.5 shrink-0">
-            <div className="relative h-11 w-32 sm:h-16 sm:w-52 md:h-[68px] md:w-64 flex items-center -my-1.5 sm:-my-3">
+          {/* Mobile Centered Logo - Dead Center, Visually Bigger, Zero Navbar Expansion */}
+          <div className="lg:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-auto z-10">
+            <Link href="/" className="flex items-center group">
+              <div className="relative h-11 w-40 xs:w-44 flex items-center justify-center">
+                <Image
+                  src="/brand/company-logo.png"
+                  alt="Rangoli Fashions"
+                  fill
+                  priority
+                  className="object-contain object-center group-hover:brightness-110 transition-all drop-shadow-sm scale-125"
+                />
+              </div>
+            </Link>
+          </div>
+
+          {/* Desktop Official Logo - Left Aligned */}
+          <Link href="/" className="hidden lg:flex items-center group py-0.5 shrink-0">
+            <div className="relative h-16 w-52 md:h-[68px] md:w-64 flex items-center -my-3">
               <Image
                 src="/brand/company-logo.png"
                 alt="Rangoli Fashions"
                 fill
                 priority
-                className="object-contain object-left group-hover:brightness-110 transition-all drop-shadow-sm sm:scale-110 origin-left"
+                className="object-contain object-left group-hover:brightness-110 transition-all drop-shadow-sm scale-110 origin-left"
               />
             </div>
           </Link>
@@ -213,7 +228,7 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Right Action Icons */}
-          <div className="flex items-center space-x-1 sm:space-x-3 text-[#FFF8ED] shrink-0">
+          <div className="flex items-center space-x-1 sm:space-x-3 text-[#FFF8ED] shrink-0 z-10">
             {/* Search Trigger */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
@@ -223,10 +238,10 @@ export const Header: React.FC = () => {
               <Search size={18} className="sm:w-[19px] sm:h-[19px]" />
             </button>
 
-            {/* Account Icon */}
+            {/* Account Icon (Hidden on very narrow mobile screens to guarantee logo centering space) */}
             <Link
               href={user ? '/account' : '/account/login'}
-              className="p-1.5 sm:p-2 rounded-full hover:bg-white/10 hover:text-[#C9A34A] transition-colors"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-white/10 hover:text-[#C9A34A] transition-colors"
               aria-label="Customer account"
             >
               <User size={18} className="sm:w-[19px] sm:h-[19px]" />
@@ -260,45 +275,92 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Expandable Luxury Live Search Modal & Dropdown */}
+        {/* Live Search - Overlay (Zero Navbar Expansion, Zero Mobile Zoom) */}
         {isSearchOpen && (
-          <div ref={searchContainerRef} className="relative max-w-3xl mx-auto pt-3 pb-2 transition-all">
-            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search kurti sets, co-ords, tunics, sarees, festive wear..."
-                className="w-full pl-11 pr-14 py-3 bg-[#FAF6F0] rounded-full text-xs text-[#191714] placeholder-[#746D62] focus:outline-none focus:ring-2 focus:ring-[#C9A34A] shadow-xl border border-[#C9A34A]/30 transition-all"
-              />
-              <Search
-                size={16}
-                className="absolute left-4 text-[#746D62] pointer-events-none"
-              />
-              <div className="absolute right-3 flex items-center space-x-1.5">
-                {isSearching && (
-                  <Loader2 size={15} className="text-[#C9A34A] animate-spin" />
-                )}
-                {/* Single unified clean Close / Clear button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSearchResults([]);
-                    setIsSearchOpen(false);
-                  }}
-                  className="w-7 h-7 rounded-full bg-[#EFE7D8] hover:bg-[#003D2D] text-[#554E43] hover:text-[#FFF8ED] flex items-center justify-center transition-colors"
-                  aria-label="Close search"
-                  title="Close search"
-                >
-                  <X size={14} />
-                </button>
-              </div>
-            </form>
+          <div ref={searchContainerRef}>
+            {/* Mobile Header Overlay: Replaces navbar content seamlessly without changing navbar height */}
+            <div className="absolute inset-0 bg-[#003D2D] z-50 px-2.5 sm:px-4 flex items-center lg:hidden">
+              <form onSubmit={handleSearchSubmit} className="relative flex-1 flex items-center">
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search kurti sets, co-ords, tunics..."
+                  className="w-full pl-9 pr-10 py-2 bg-[#FAF6F0] rounded-full text-[16px] text-[#191714] placeholder-[#746D62] placeholder:text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A34A] shadow-md border border-[#C9A34A]/30"
+                />
+                <Search
+                  size={15}
+                  className="absolute left-3 text-[#746D62] pointer-events-none"
+                />
+                <div className="absolute right-2.5 flex items-center space-x-1">
+                  {isSearching && (
+                    <Loader2 size={13} className="text-[#C9A34A] animate-spin" />
+                  )}
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery('');
+                        setSearchResults([]);
+                      }}
+                      className="p-1 rounded-full text-[#746D62] hover:text-[#191714]"
+                      aria-label="Clear query"
+                    >
+                      <X size={13} />
+                    </button>
+                  )}
+                </div>
+              </form>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setSearchResults([]);
+                  setIsSearchOpen(false);
+                }}
+                className="ml-2 px-2.5 py-1 text-xs font-semibold text-[#DFC37A] hover:text-white shrink-0"
+              >
+                Cancel
+              </button>
+            </div>
+
+            {/* Desktop Floating Search Bar (Does NOT expand the navbar) */}
+            <div className="hidden lg:block absolute left-1/2 -translate-x-1/2 top-full mt-2 w-full max-w-2xl px-4 z-50">
+              <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search kurti sets, co-ords, tunics, sarees, festive wear..."
+                  className="w-full pl-11 pr-14 py-3 bg-[#FAF6F0] rounded-full text-xs text-[#191714] placeholder-[#746D62] focus:outline-none focus:ring-2 focus:ring-[#C9A34A] shadow-2xl border-2 border-[#C9A34A]/40"
+                />
+                <Search
+                  size={16}
+                  className="absolute left-4 text-[#746D62] pointer-events-none"
+                />
+                <div className="absolute right-3 flex items-center space-x-1.5">
+                  {isSearching && (
+                    <Loader2 size={15} className="text-[#C9A34A] animate-spin" />
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSearchResults([]);
+                      setIsSearchOpen(false);
+                    }}
+                    className="w-7 h-7 rounded-full bg-[#EFE7D8] hover:bg-[#003D2D] text-[#554E43] hover:text-[#FFF8ED] flex items-center justify-center transition-colors"
+                    aria-label="Close search"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              </form>
+            </div>
 
             {/* Live Dropdown Results - Fully Opaque Solid Background */}
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.35)] border-2 border-[#C9A34A]/40 overflow-hidden z-50 animate-fadeIn divide-y divide-[#F0E6D8] ring-1 ring-black/10">
+            <div className="absolute left-0 right-0 top-full mt-0 lg:mt-16 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-2xl bg-white lg:rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.35)] border-t-2 lg:border-2 border-[#C9A34A]/40 overflow-hidden z-50 divide-y divide-[#F0E6D8] ring-1 ring-black/10">
               {/* Case 1: When user has typed and results exist */}
               {searchResults.length > 0 && (
                 <div className="bg-white">
