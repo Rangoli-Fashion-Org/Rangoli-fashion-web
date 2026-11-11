@@ -168,7 +168,7 @@ export class ProductsService {
       take: limit,
       orderBy: { createdAt: 'desc' },
       include: {
-        images: { orderBy: { displayOrder: 'asc' } },
+        images: { orderBy: { displayOrder: 'asc' }, take: 2 },
         category: { select: { id: true, name: true, slug: true } },
         variants: true,
         reviews: {
@@ -198,7 +198,7 @@ export class ProductsService {
       take: limit,
       orderBy: { createdAt: 'desc' },
       include: {
-        images: { orderBy: { displayOrder: 'asc' } },
+        images: { orderBy: { displayOrder: 'asc' }, take: 2 },
         category: { select: { id: true, name: true, slug: true } },
         variants: true,
         reviews: {
@@ -218,7 +218,7 @@ export class ProductsService {
         take: limit - products.length,
         orderBy: { createdAt: 'desc' },
         include: {
-          images: { orderBy: { displayOrder: 'asc' } },
+          images: { orderBy: { displayOrder: 'asc' }, take: 2 },
           category: { select: { id: true, name: true, slug: true } },
           variants: true,
           reviews: {
