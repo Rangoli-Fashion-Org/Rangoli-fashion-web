@@ -660,7 +660,7 @@ export default function AccountDashboardPage() {
                             required
                             value={addrFullName}
                             onChange={(e) => setAddrFullName(e.target.value)}
-                            placeholder="e.g. Radhika Apte"
+                            placeholder="Recipient Full Name"
                             className="w-full px-3.5 py-2.5 border border-[#E8DFD0] rounded-xl text-[#191714] focus:outline-none focus:border-[#003D2D] focus:ring-1 focus:ring-[#003D2D] bg-[#FCFAF6]"
                           />
                         </div>

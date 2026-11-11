@@ -75,23 +75,15 @@ export default function CustomerLoginPage() {
             />
 
             <div className="relative z-10 space-y-6">
-              <div className="flex items-center space-x-3">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#C9A34A] shadow-md bg-[#FFF8ED]">
-                  <Image
-                    src="/favicon.png"
-                    alt="Rangoli Fashions Emblem"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <span className="block font-serif text-lg font-bold tracking-wider uppercase text-[#E5C158]">
-                    Rangoli
-                  </span>
-                  <span className="block text-[10px] tracking-[0.25em] text-[#C9A34A] uppercase">
-                    Haute Couture
-                  </span>
-                </div>
+              {/* Official Brand Logo */}
+              <div className="relative w-48 h-20 sm:w-56 sm:h-24">
+                <Image
+                  src="/brand/rangoli-brand-logo.png"
+                  alt="Rangoli Fashions"
+                  fill
+                  className="object-contain object-left"
+                  priority
+                />
               </div>
 
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#C9A34A]/20 border border-[#C9A34A]/40 text-[#E5C158] text-[10px] font-bold uppercase tracking-widest">
@@ -158,7 +150,7 @@ export default function CustomerLoginPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="patron@rangolifashions.com"
+                    placeholder="you@example.com"
                     className="w-full pl-10 pr-3.5 py-3 border border-[#E8DFD0] rounded-xl text-[#191714] placeholder-[#A49B8D] focus:outline-none focus:border-[#003D2D] focus:ring-2 focus:ring-[#003D2D]/10 bg-[#FCFAF6] transition-all"
                   />
                 </div>
