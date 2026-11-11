@@ -18,9 +18,21 @@ interface BannerItem {
 }
 
 export const HeroBanner: React.FC = () => {
-  const [banners, setBanners] = useState<BannerItem[]>([]);
+  const [banners, setBanners] = useState<BannerItem[]>([
+    {
+      id: '2eb1f108-a121-454e-a3bd-ecf067aa7c14',
+      title: 'Style for Every Occasion',
+      subtitle:
+        'Discover handcrafted ethnic elegance, luxury chanderi silk kurtis, and contemporary festive co-ords tailored to perfection.',
+      desktopImageUrl:
+        'https://res.cloudinary.com/ijivdhjz/image/upload/v1794040395/banners/tv02v3lbcmbcotvbgtr8.png',
+      mobileImageUrl:
+        'https://res.cloudinary.com/ijivdhjz/image/upload/v1794227508/banners/mobile/etlpb34xbb12aiz4ds5l.png',
+      ctaText: 'Shop the Collection',
+      ctaUrl: '/shop',
+    },
+  ]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -29,7 +41,6 @@ export const HeroBanner: React.FC = () => {
       if (res.success && res.data && res.data.length > 0) {
         setBanners(res.data);
       }
-      setIsLoading(false);
     });
   }, []);
 
@@ -61,7 +72,8 @@ export const HeroBanner: React.FC = () => {
     title: 'Style for Every Occasion',
     subtitle:
       'Discover handcrafted ethnic elegance, luxury chanderi silk kurtis, and contemporary festive co-ords tailored to perfection.',
-    desktopImageUrl: '/brand/festive-edit-banner.png',
+    desktopImageUrl: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794040395/banners/tv02v3lbcmbcotvbgtr8.png',
+    mobileImageUrl: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794227508/banners/mobile/etlpb34xbb12aiz4ds5l.png',
     ctaText: 'Shop the Collection',
     ctaUrl: '/shop',
   };
