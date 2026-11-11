@@ -165,6 +165,58 @@ export class ProductsService {
     });
   }
 
+  async findBestSellers(limit = 8) {
+    let products = await this.prisma.product.findMany({
+      where: { isActive: true, isFeatured: true },
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        images: { orderBy: { displayOrder: 'asc' } },
+        category: { select: { id: true, name: true, slug: true } },
+        variants: true,
+        reviews: {
+          where: { isApproved: true },
+          select: { rating: true },
+        },
+      },
+    });
+
+    if (products.length < limit) {
+      const existingIds = products.map((p) => p.id);
+      const additional = await this.prisma.product.findMany({
+        where: {
+          isActive: true,
+          id: { notIn: existingIds },
+        },
+        take: limit - products.length,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          images: { orderBy: { displayOrder: 'asc' } },
+          category: { select: { id: true, name: true, slug: true } },
+          variants: true,
+          reviews: {
+            where: { isApproved: true },
+            select: { rating: true },
+          },
+        },
+      });
+      products = [...products, ...additional];
+    }
+
+    return products.map((p) => {
+      const ratingSum = p.reviews.reduce((acc, r) => acc + r.rating, 0);
+      const averageRating = p.reviews.length > 0 ? Number((ratingSum / p.reviews.length).toFixed(1)) : 0;
+      return {
+        ...p,
+        regularPrice: Number(p.regularPrice),
+        salePrice: p.salePrice ? Number(p.salePrice) : null,
+        averageRating,
+        reviewCount: p.reviews.length,
+        reviews: undefined,
+      };
+    });
+  }
+
   async findOneBySlug(slug: string) {
     const product = await this.prisma.product.findUnique({
       where: { slug },

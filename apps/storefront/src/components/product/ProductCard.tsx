@@ -20,6 +20,7 @@ export interface ProductCardProps {
   averageRating?: number;
   reviewCount?: number;
   isNewArrival?: boolean;
+  isBestSeller?: boolean;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -31,6 +32,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   discountPercentage,
   images = [],
   isNewArrival,
+  isBestSeller,
 }) => {
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
@@ -77,9 +79,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </Link>
 
-        {/* Top-Left Badges (New & Discount) */}
+        {/* Top-Left Badges (Bestseller, New & Discount) */}
         <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 flex flex-col gap-1 pointer-events-none z-10">
-          {isNewArrival && (
+          {isBestSeller && (
+            <span className="px-1.5 sm:px-2.5 py-0.5 bg-gradient-to-r from-[#8B6B23] to-[#C9A34A] text-white text-[8px] sm:text-[10px] font-bold uppercase tracking-wider rounded shadow-xs text-center border border-[#E5C158]/50">
+              BESTSELLER
+            </span>
+          )}
+          {isNewArrival && !isBestSeller && (
             <span className="px-1.5 sm:px-2.5 py-0.5 bg-[#003D2D] text-[#FFF8ED] text-[8px] sm:text-[10px] font-bold uppercase tracking-wider rounded shadow-xs text-center">
               NEW
             </span>

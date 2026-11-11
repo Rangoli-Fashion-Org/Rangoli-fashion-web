@@ -36,6 +36,11 @@ export class ProductsController {
     return this.productsService.findNewArrivals(limit ? parseInt(limit, 10) : 8);
   }
 
+  @Get('best-sellers')
+  findBestSellers(@Query('limit') limit?: string) {
+    return this.productsService.findBestSellers(limit ? parseInt(limit, 10) : 8);
+  }
+
   @Get('slug/:slug')
   findOneBySlug(@Param('slug') slug: string) {
     return this.productsService.findOneBySlug(slug);

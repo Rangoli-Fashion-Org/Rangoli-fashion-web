@@ -6,14 +6,85 @@ import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { ProductCard } from '../product/ProductCard';
 import { fetchApi } from '../../lib/api';
 
+const DEFAULT_NEW_ARRIVALS = [
+  {
+    id: 'na-1',
+    name: 'Handcrafted Banarasi Raw Silk Saree',
+    slug: 'handcrafted-banarasi-raw-silk-saree',
+    regularPrice: 7299,
+    salePrice: 5899,
+    discountPercentage: 19,
+    isNewArrival: true,
+    averageRating: 4.9,
+    reviewCount: 18,
+    images: [
+      {
+        url: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794044221/categories/tqr5ayqaxciykqickcre.png',
+        isPrimary: true,
+      },
+    ],
+  },
+  {
+    id: 'na-2',
+    name: 'Embroidered Kashmiri Tilla Velvet Suit',
+    slug: 'embroidered-kashmiri-tilla-velvet-suit',
+    regularPrice: 6499,
+    salePrice: 5199,
+    discountPercentage: 20,
+    isNewArrival: true,
+    averageRating: 4.8,
+    reviewCount: 24,
+    images: [
+      {
+        url: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794044984/categories/p74heoman1gxeciylnzu.png',
+        isPrimary: true,
+      },
+    ],
+  },
+  {
+    id: 'na-3',
+    name: 'Mirror-Work Festive Flare Lehenga Set',
+    slug: 'mirror-work-festive-flare-lehenga-set',
+    regularPrice: 14500,
+    salePrice: 11999,
+    discountPercentage: 17,
+    isNewArrival: true,
+    averageRating: 5.0,
+    reviewCount: 31,
+    images: [
+      {
+        url: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794045186/categories/chowyzvouiqak6fko8dj.png',
+        isPrimary: true,
+      },
+    ],
+  },
+  {
+    id: 'na-4',
+    name: 'Mulberry Silk Floral Embroidered Kurti',
+    slug: 'mulberry-silk-floral-embroidered-kurti',
+    regularPrice: 3499,
+    salePrice: 2699,
+    discountPercentage: 22,
+    isNewArrival: true,
+    averageRating: 4.7,
+    reviewCount: 15,
+    images: [
+      {
+        url: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794045263/categories/iedqnkdzhaepjug2xpax.png',
+        isPrimary: true,
+      },
+    ],
+  },
+];
+
 export const NewArrivals: React.FC = () => {
-  const [products, setProducts] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>(DEFAULT_NEW_ARRIVALS);
+  const [isLoading, setIsLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(0);
 
   useEffect(() => {
     fetchApi<any[]>('/products/new-arrivals?limit=8').then((res) => {
-      if (res.success && res.data) {
+      if (res.success && res.data && res.data.length > 0) {
         setProducts(res.data);
       }
       setIsLoading(false);
