@@ -633,6 +633,24 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       </div>
 
       <SizeGuideModal isOpen={isSizeGuideOpen} onClose={() => setIsSizeGuideOpen(false)} />
+
+      {/* Mobile Sticky Bottom CTA Bar */}
+      <div className="sm:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md px-4 py-2.5 border-t border-[#E8DFD0] z-40 flex items-center justify-between gap-3 shadow-[0_-4px_15px_rgba(0,0,0,0.08)]">
+        <div>
+          <span className="text-[10px] uppercase tracking-wider text-[#746D62] block">Price</span>
+          <span className="text-base font-serif font-bold text-[#003D2D]">
+            {formatINR(currentPrice)}
+          </span>
+        </div>
+        <button
+          disabled={!isAvailable || isAdding}
+          onClick={handleAddToCart}
+          className="flex-1 py-2.5 px-4 bg-gradient-to-r from-[#003D2D] to-[#002219] hover:from-[#0B5940] hover:to-[#003D2D] text-[#FFF8ED] rounded-full font-semibold text-xs tracking-wider uppercase transition-all shadow-md disabled:opacity-50 flex items-center justify-center space-x-2"
+        >
+          <ShoppingBag size={14} />
+          <span>{isAdding ? 'Adding...' : isAvailable ? 'Add to Bag' : 'Out of Stock'}</span>
+        </button>
+      </div>
     </div>
   );
 }
