@@ -47,7 +47,9 @@ export default function AboutPage() {
   const vision =
     data?.vision ||
     'To stand as India’s most cherished modern ethnic fashion house, where heritage weaves and contemporary elegance gracefully coexist in every festive celebration and everyday moment.';
-  const heroImage = data?.imageUrl || '/brand/festive-edit-banner.png';
+  const heroImage =
+    data?.imageUrl ||
+    'https://res.cloudinary.com/ijivdhjz/image/upload/v1794211703/cms/festive/fxbewntsuzv8tzzd9p6q.png';
 
   const pillars = [
     {
