@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Search,
   User,
@@ -14,14 +14,20 @@ import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
+  Tag,
+  ChevronRight,
+  Loader2,
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useAuth } from '../../context/AuthContext';
 import { fetchApi } from '../../lib/api';
+import { formatINR } from '@rangoli/validation';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 export const Header: React.FC = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const { itemCount, openDrawer } = useCart();
   const { wishlistIds } = useWishlist();
   const { user } = useAuth();
@@ -29,7 +35,13 @@ export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [announcement, setAnnouncement] = useState('Complimentary Express Delivery on Orders Above ₹1,999');
+
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // Fetch store settings for announcement
@@ -39,6 +51,85 @@ export const Header: React.FC = () => {
       }
     });
   }, []);
+
+  // Live Search Debounce
+  useEffect(() => {
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      setIsSearching(false);
+      setHasSearched(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const timer = setTimeout(() => {
+      fetchApi<any>(`/products?search=${encodeURIComponent(searchQuery.trim())}&limit=6`).then((res) => {
+        if (res.success && res.data) {
+          const items = Array.isArray(res.data) ? res.data : res.data.data;
+          setSearchResults(Array.isArray(items) ? items : []);
+        } else {
+          setSearchResults([]);
+        }
+        setIsSearching(false);
+        setHasSearched(true);
+      });
+    }, 220);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Close search on escape or click outside
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+        setSearchQuery('');
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(e.target as Node)
+      ) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    if (isSearchOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('mousedown', handleClickOutside);
+      searchInputRef.current?.focus();
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchOpen]);
+
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (searchQuery.trim()) {
+      setIsSearchOpen(false);
+      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleSelectProduct = (slug: string) => {
+    setIsSearchOpen(false);
+    setSearchQuery('');
+    router.push(`/products/${slug}`);
+  };
+
+  const trendingTags = [
+    'Premium Kurti Set',
+    'Cotton Kurti Set',
+    'Cord Set',
+    'Tunic',
+    'Silk Saree',
+    'Festive Wear',
+  ];
 
   const navLinks = [
     { label: 'Home', href: '/' },
@@ -169,41 +260,204 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Expandable Luxury Search Drawer */}
+        {/* Expandable Luxury Live Search Modal & Dropdown */}
         {isSearchOpen && (
-          <div className="max-w-3xl mx-auto pt-3 pb-2 transition-all">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (searchQuery.trim()) {
-                  window.location.href = `/shop?search=${encodeURIComponent(searchQuery.trim())}`;
-                }
-              }}
-              className="relative flex items-center"
-            >
+          <div ref={searchContainerRef} className="relative max-w-3xl mx-auto pt-3 pb-2 transition-all">
+            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
               <input
+                ref={searchInputRef}
                 type="text"
-                autoFocus
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search kurti sets, co-ords, chanderi silks, festive wear..."
-                className="w-full pl-11 pr-12 py-3 bg-[#FAF6F0] rounded-full text-xs text-[#191714] placeholder-[#746D62] focus:outline-none focus:ring-2 focus:ring-[#C9A34A] shadow-lg"
+                placeholder="Search kurti sets, co-ords, tunics, sarees, festive wear..."
+                className="w-full pl-11 pr-14 py-3 bg-[#FAF6F0] rounded-full text-xs text-[#191714] placeholder-[#746D62] focus:outline-none focus:ring-2 focus:ring-[#C9A34A] shadow-xl border border-[#C9A34A]/30 transition-all"
               />
               <Search
                 size={16}
                 className="absolute left-4 text-[#746D62] pointer-events-none"
               />
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery('');
-                  setIsSearchOpen(false);
-                }}
-                className="absolute right-4 text-[#746D62] hover:text-[#191714] p-1"
-              >
-                <X size={15} />
-              </button>
+              <div className="absolute right-3.5 flex items-center space-x-1">
+                {isSearching && (
+                  <Loader2 size={15} className="text-[#C9A34A] animate-spin" />
+                )}
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSearchResults([]);
+                    }}
+                    className="text-[#746D62] hover:text-[#191714] p-1 rounded-full transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setIsSearchOpen(false);
+                  }}
+                  className="text-[#746D62] hover:text-[#191714] p-1 rounded-full transition-colors ml-0.5"
+                  aria-label="Close search"
+                >
+                  <X size={15} />
+                </button>
+              </div>
             </form>
+
+            {/* Live Dropdown Results */}
+            <div className="absolute left-0 right-0 top-full mt-2 bg-white/98 backdrop-blur-md rounded-2xl shadow-2xl border border-[#E8DFD0] overflow-hidden z-50 animate-fadeIn divide-y divide-[#F5EBDD]">
+              {/* Case 1: When user has typed and results exist */}
+              {searchResults.length > 0 && (
+                <div>
+                  <div className="px-4 py-2.5 bg-[#FAF6F0] border-b border-[#E8DFD0] flex items-center justify-between text-xs">
+                    <span className="font-semibold text-[#191714]">
+                      Found {searchResults.length} creations for &quot;{searchQuery}&quot;
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleSearchSubmit()}
+                      className="text-[#003D2D] hover:underline font-bold text-[11px] flex items-center space-x-0.5"
+                    >
+                      <span>View All</span>
+                      <ChevronRight size={12} />
+                    </button>
+                  </div>
+
+                  <div className="max-h-[60vh] overflow-y-auto divide-y divide-[#F5EBDD]">
+                    {searchResults.map((product) => {
+                      const primaryImg =
+                        product.images?.find((img: any) => img.isPrimary) ||
+                        product.images?.[0];
+                      const imgUrl = getOptimizedImageUrl(primaryImg?.url, {
+                        width: 150,
+                        quality: 'auto:good',
+                      });
+                      const displayPrice = product.salePrice || product.regularPrice;
+                      const hasDiscount =
+                        product.salePrice &&
+                        product.salePrice < product.regularPrice;
+
+                      return (
+                        <div
+                          key={product.id}
+                          onClick={() => handleSelectProduct(product.slug)}
+                          className="flex items-center space-x-3.5 p-3 hover:bg-[#FAF6F0] cursor-pointer transition-colors group"
+                        >
+                          <div className="relative w-12 h-16 sm:w-14 sm:h-18 rounded-lg overflow-hidden bg-[#F5EBDD] shrink-0 border border-[#E8DFD0]">
+                            <Image
+                              src={imgUrl}
+                              alt={product.name}
+                              fill
+                              className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-serif text-xs sm:text-sm font-medium text-[#191714] group-hover:text-[#003D2D] truncate transition-colors">
+                              {product.name}
+                            </h4>
+                            {product.category?.name && (
+                              <span className="inline-block text-[10px] uppercase tracking-wider text-[#746D62] mt-0.5">
+                                {product.category.name}
+                              </span>
+                            )}
+                            <div className="flex items-center space-x-2 mt-1">
+                              <span className="font-bold text-xs sm:text-sm text-[#003D2D]">
+                                {formatINR(displayPrice)}
+                              </span>
+                              {hasDiscount && (
+                                <>
+                                  <span className="text-[11px] text-[#A49B8D] line-through">
+                                    {formatINR(product.regularPrice)}
+                                  </span>
+                                  <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#FAF3E5] text-[#7A520C] border border-[#C9A34A]/40">
+                                    {product.discountPercentage ||
+                                      Math.round(
+                                        ((product.regularPrice - product.salePrice) /
+                                          product.regularPrice) *
+                                          100
+                                      )}
+                                    % OFF
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          <ArrowRight
+                            size={14}
+                            className="text-[#A49B8D] group-hover:text-[#003D2D] group-hover:translate-x-1 transition-all shrink-0"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="p-2.5 bg-[#FAF6F0] text-center border-t border-[#E8DFD0]">
+                    <button
+                      type="button"
+                      onClick={() => handleSearchSubmit()}
+                      className="inline-flex items-center space-x-1.5 text-xs font-semibold text-[#003D2D] hover:text-[#0A5640] transition-colors"
+                    >
+                      <span>Explore all matching collections in store</span>
+                      <ArrowRight size={13} />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Case 2: Searched with no results */}
+              {hasSearched && !isSearching && searchResults.length === 0 && (
+                <div className="p-6 text-center space-y-3">
+                  <p className="font-serif text-sm font-semibold text-[#191714]">
+                    No creations found for &quot;{searchQuery}&quot;
+                  </p>
+                  <p className="text-xs text-[#746D62]">
+                    Try checking your spelling or explore our popular categories below:
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
+                    {trendingTags.map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => {
+                          setSearchQuery(tag);
+                        }}
+                        className="px-2.5 py-1 rounded-full bg-[#FAF6F0] hover:bg-[#003D2D] text-[#191714] hover:text-[#FFF8ED] border border-[#E8DFD0] text-[11px] font-medium transition-colors"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Case 3: Empty query - Trending & quick suggestions */}
+              {!searchQuery.trim() && (
+                <div className="p-5 space-y-3">
+                  <div className="flex items-center space-x-1.5 text-[11px] font-bold uppercase tracking-wider text-[#7A520C]">
+                    <Sparkles size={12} className="text-[#C9A34A]" />
+                    <span>Popular &amp; Trending Searches</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {trendingTags.map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => {
+                          setSearchQuery(tag);
+                        }}
+                        className="px-3 py-1.5 rounded-full bg-[#FAF6F0] hover:bg-[#003D2D] text-[#191714] hover:text-[#FFF8ED] border border-[#E8DFD0] text-xs font-medium transition-colors flex items-center space-x-1"
+                      >
+                        <Tag size={11} className="text-[#C9A34A]" />
+                        <span>{tag}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </nav>
