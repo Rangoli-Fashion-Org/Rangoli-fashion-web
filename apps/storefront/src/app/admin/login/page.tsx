@@ -10,8 +10,8 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { user, isLoading: authLoading, login } = useAdminAuth();
 
-  const [username, setUsername] = useState('rangoliadmin');
-  const [password, setPassword] = useState('Rangolifashion@2026');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -92,15 +92,16 @@ export default function AdminLoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} autoComplete="off" className="space-y-4 text-xs">
           <div>
             <label className="block text-[#191714] font-semibold mb-1">Admin Username</label>
             <input
               type="text"
               required
+              autoComplete="off"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. rangoliadmin"
+              placeholder="Enter admin username"
               className="w-full bg-white border border-[#E8DFD0] rounded-lg p-3 text-[#191714] focus:outline-none focus:border-[#003D2D]"
             />
           </div>
@@ -110,9 +111,10 @@ export default function AdminLoginPage() {
             <input
               type="password"
               required
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••••••"
+              placeholder="Enter admin password"
               className="w-full bg-white border border-[#E8DFD0] rounded-lg p-3 text-[#191714] focus:outline-none focus:border-[#003D2D]"
             />
           </div>

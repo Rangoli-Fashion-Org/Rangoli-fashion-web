@@ -16,16 +16,46 @@ interface CategoryItem {
   displayOrder: number;
 }
 
+const DEFAULT_CATEGORIES: CategoryItem[] = [
+  {
+    id: '8929cbdc-97ce-49c0-902f-69869db999f5',
+    name: 'Premium Kurti Set',
+    slug: 'premium-kurti-set',
+    imageUrl: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794044221/categories/tqr5ayqaxciykqickcre.png',
+    displayOrder: 1,
+  },
+  {
+    id: 'cd71aad3-e52c-4f81-9cfc-aebb8f08d827',
+    name: 'Cotton Kurti Set',
+    slug: 'cotton-kurti-set',
+    imageUrl: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794044984/categories/p74heoman1gxeciylnzu.png',
+    displayOrder: 2,
+  },
+  {
+    id: '148b9440-9ef5-4b24-a99c-e5393e6fc57a',
+    name: 'Cord Set',
+    slug: 'cord-set',
+    imageUrl: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794045186/categories/chowyzvouiqak6fko8dj.png',
+    displayOrder: 3,
+  },
+  {
+    id: 'c3e5ccd3-b6a1-49ca-8839-ad715f524025',
+    name: 'Top & Kurties',
+    slug: 'top-kurties',
+    imageUrl: 'https://res.cloudinary.com/ijivdhjz/image/upload/v1794045263/categories/iedqnkdzhaepjug2xpax.png',
+    displayOrder: 4,
+  },
+];
+
 export const CategoriesSection: React.FC = () => {
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_CATEGORIES);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchApi<CategoryItem[]>('/categories').then((res) => {
       if (res.success && res.data && res.data.length > 0) {
         setCategories(res.data);
       }
-      setIsLoading(false);
     });
   }, []);
 
@@ -108,6 +138,7 @@ export const CategoriesSection: React.FC = () => {
                       src={getOptimizedImageUrl(category.imageUrl, { width: 600, quality: 'auto:good' })}
                       alt={category.name}
                       fill
+                      loading="lazy"
                       sizes="(max-width: 768px) 50vw, 25vw"
                       className="object-cover object-top"
                     />

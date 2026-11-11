@@ -35,7 +35,8 @@ export const FestiveBanner: React.FC = () => {
   const ctaText = sectionData?.customData?.ctaText || 'Explore the Edit';
   const ctaUrl = sectionData?.customData?.ctaUrl || '/shop';
   const imageUrl =
-    sectionData?.customData?.imageUrl || '/brand/festive-edit-banner.png';
+    sectionData?.customData?.imageUrl ||
+    'https://res.cloudinary.com/ijivdhjz/image/upload/v1794211703/cms/festive/fxbewntsuzv8tzzd9p6q.png';
 
   return (
     <section className="py-4 sm:py-6 md:py-7 bg-gradient-to-b from-[#F7EDE0] to-[#FFFDF9]">
@@ -50,7 +51,7 @@ export const FestiveBanner: React.FC = () => {
               src={getOptimizedImageUrl(imageUrl, { width: 800, quality: 'auto:good' })}
               alt={title}
               fill
-              priority
+              loading="lazy"
               sizes="100vw"
               className="object-cover object-right"
             />
@@ -63,6 +64,7 @@ export const FestiveBanner: React.FC = () => {
               src={getOptimizedImageUrl(imageUrl, { width: 1400, quality: 'auto:good' })}
               alt={title}
               fill
+              loading="lazy"
               sizes="(max-width: 1280px) 100vw, 1280px"
               className="object-cover object-right"
             />

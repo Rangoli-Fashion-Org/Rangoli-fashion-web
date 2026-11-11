@@ -6,6 +6,9 @@ import { ArrowRight, Crown, Mail, CheckCircle2 } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
 import { getOptimizedImageUrl } from '../../lib/image';
 
+const DEFAULT_NEWSLETTER_IMAGE =
+  'https://res.cloudinary.com/ijivdhjz/image/upload/v1794219095/cms/rangoli_prime_circle/l1k34dvad8t0bfnct1yv.png';
+
 export const Newsletter: React.FC = () => {
   const [sectionData, setSectionData] = useState<any>(null);
   const [isVisible, setIsVisible] = useState(true);
@@ -69,28 +72,40 @@ export const Newsletter: React.FC = () => {
   // even if an older CMS record still stores "Join Prime".
   const storedCta = (sectionData?.customData?.ctaText || '').trim();
   const ctaText = storedCta && !/join\s*prime/i.test(storedCta) ? storedCta : 'Subscribe';
-  const imageUrl = sectionData?.customData?.imageUrl || '';
+  const imageUrl = sectionData?.customData?.imageUrl || DEFAULT_NEWSLETTER_IMAGE;
 
   return (
     <section className="bg-gradient-to-b from-[#F7EDE0] to-[#F0E3D1] pt-4 pb-8 sm:pt-6 sm:pb-14">
       <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
-        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden min-h-[240px] sm:min-h-[320px] md:min-h-[370px] lg:min-h-[410px] flex items-center justify-center bg-gradient-to-r from-[#002219] via-[#003224] to-[#002219] text-[#FFF8ED] px-4 sm:px-12 md:px-16 py-8 sm:py-12 shadow-xl border border-[#C9A34A]/50 text-center">
-          {imageUrl && (
-            <>
-              <Image
-                src={getOptimizedImageUrl(imageUrl, { width: 1400, quality: 'auto:good' })}
-                alt={headline}
-                fill
-                priority
-                sizes="(max-width: 1280px) 100vw, 1280px"
-                className="object-cover object-center"
-              />
-              {/* Very light center vignette only so background artwork (vase & leaves) remains bright and fully visible */}
-              <div className="absolute inset-0 bg-black/15 pointer-events-none" />
-            </>
-          )}
+        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden min-h-[240px] sm:min-h-[320px] md:min-h-[370px] lg:min-h-[410px] flex flex-col sm:flex-row sm:items-center sm:justify-center bg-gradient-to-r from-[#002219] via-[#003224] to-[#002219] text-[#FFF8ED] shadow-xl border border-[#C9A34A]/50 text-center">
+          {/* Mobile Dedicated Visual Top Banner - Guarantees CTA Artwork is 100% visible on Mobile */}
+          <div className="relative w-full h-44 xs:h-52 sm:hidden overflow-hidden bg-[#00251B]">
+            <Image
+              src={getOptimizedImageUrl(imageUrl, { width: 800, quality: 'auto:good' })}
+              alt={headline}
+              fill
+              loading="lazy"
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+            <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#002219] via-[#002219]/75 to-transparent pointer-events-none" />
+          </div>
 
-          <div className="relative z-10 max-w-xl mx-auto md:pl-16 lg:pl-20 space-y-2.5 sm:space-y-4">
+          {/* Desktop/Tablet Full-Card Background Cover */}
+          <div className="hidden sm:block absolute inset-0">
+            <Image
+              src={getOptimizedImageUrl(imageUrl, { width: 1400, quality: 'auto:good' })}
+              alt={headline}
+              fill
+              loading="lazy"
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              className="object-cover object-center"
+            />
+            {/* Very light center vignette only so background artwork remains bright and fully visible */}
+            <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+          </div>
+
+          <div className="relative z-10 max-w-xl mx-auto px-4 pb-8 pt-3 sm:px-12 md:px-16 sm:py-12 md:pl-16 lg:pl-20 space-y-2.5 sm:space-y-4">
             <div className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-3.5 py-1 rounded-full bg-black/25 backdrop-blur-xs border border-[#C9A34A]/50 text-[#E5C158] text-[9px] sm:text-xs font-semibold uppercase tracking-widest">
               <Crown size={12} className="text-[#E5C158] shrink-0" />
               <span>{badgeText}</span>

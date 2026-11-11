@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { fetchApi } from '../../lib/api';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 interface CollectionItem {
   id: string;
@@ -79,9 +80,10 @@ export const CollectionsGrid: React.FC = () => {
             >
               {col.imageUrl ? (
                 <Image
-                  src={col.imageUrl}
+                  src={getOptimizedImageUrl(col.imageUrl, { width: 500, quality: 'auto:good' })}
                   alt={col.name}
                   fill
+                  loading="lazy"
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 25vw"
                   className="object-cover object-top group-hover:scale-106 transition-transform duration-700 ease-out"
                 />

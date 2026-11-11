@@ -38,10 +38,37 @@ export class ProductsService {
     }
 
     if (query.search) {
+      const searchTrimmed = query.search.trim();
+      const rawTerms = searchTrimmed.split(/\s+/).filter(Boolean);
+
+      // Build term variants (singular/plural, normalized)
+      const termVariants = new Set<string>();
+      termVariants.add(searchTrimmed);
+
+      for (const t of rawTerms) {
+        termVariants.add(t);
+        if (t.length > 3 && t.endsWith('s')) {
+          termVariants.add(t.slice(0, -1)); // e.g. "kurtis" -> "kurti", "tunics" -> "tunic", "suits" -> "suit"
+        }
+        if (t.length > 3 && t.endsWith('ies')) {
+          termVariants.add(t.slice(0, -3) + 'y'); // e.g. "parties" -> "party"
+        }
+      }
+
       where.OR = [
-        { name: { contains: query.search, mode: 'insensitive' } },
-        { description: { contains: query.search, mode: 'insensitive' } },
-        { sku: { contains: query.search, mode: 'insensitive' } },
+        { name: { contains: searchTrimmed, mode: 'insensitive' } },
+        { description: { contains: searchTrimmed, mode: 'insensitive' } },
+        { sku: { contains: searchTrimmed, mode: 'insensitive' } },
+        { category: { name: { contains: searchTrimmed, mode: 'insensitive' } } },
+        ...Array.from(termVariants).map((term) => ({
+          name: { contains: term, mode: 'insensitive' as const },
+        })),
+        ...Array.from(termVariants).map((term) => ({
+          description: { contains: term, mode: 'insensitive' as const },
+        })),
+        ...Array.from(termVariants).map((term) => ({
+          category: { name: { contains: term, mode: 'insensitive' as const } },
+        })),
       ];
     }
 
@@ -150,6 +177,58 @@ export class ProductsService {
         },
       },
     });
+
+    return products.map((p) => {
+      const ratingSum = p.reviews.reduce((acc, r) => acc + r.rating, 0);
+      const averageRating = p.reviews.length > 0 ? Number((ratingSum / p.reviews.length).toFixed(1)) : 0;
+      return {
+        ...p,
+        regularPrice: Number(p.regularPrice),
+        salePrice: p.salePrice ? Number(p.salePrice) : null,
+        averageRating,
+        reviewCount: p.reviews.length,
+        reviews: undefined,
+      };
+    });
+  }
+
+  async findBestSellers(limit = 8) {
+    let products = await this.prisma.product.findMany({
+      where: { isActive: true, isFeatured: true },
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        images: { orderBy: { displayOrder: 'asc' } },
+        category: { select: { id: true, name: true, slug: true } },
+        variants: true,
+        reviews: {
+          where: { isApproved: true },
+          select: { rating: true },
+        },
+      },
+    });
+
+    if (products.length < limit) {
+      const existingIds = products.map((p) => p.id);
+      const additional = await this.prisma.product.findMany({
+        where: {
+          isActive: true,
+          id: { notIn: existingIds },
+        },
+        take: limit - products.length,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          images: { orderBy: { displayOrder: 'asc' } },
+          category: { select: { id: true, name: true, slug: true } },
+          variants: true,
+          reviews: {
+            where: { isApproved: true },
+            select: { rating: true },
+          },
+        },
+      });
+      products = [...products, ...additional];
+    }
 
     return products.map((p) => {
       const ratingSum = p.reviews.reduce((acc, r) => acc + r.rating, 0);
