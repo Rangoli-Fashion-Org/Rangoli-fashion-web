@@ -152,36 +152,36 @@ export const HeroBanner: React.FC = () => {
     >
       {/* ============================================================ */}
       {/* 1. MOBILE HERO BANNER (Matches user's reference design)       */}
-      {/* Photo at top with soft gradient fade into cream background  */}
+      {/* Full dress visible with soft bottom gradient fade into cream  */}
       {/* Title, subtitle, CTA placed down, centered                  */}
       {/* ============================================================ */}
       <div
-        className="sm:hidden relative w-full bg-[#FAF4EB] flex flex-col justify-between overflow-hidden"
+        className="sm:hidden relative w-full bg-[#FAF4EB] flex flex-col justify-end overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Top Image Showcase with Soft Bottom Gradient Fade */}
-        <div className="relative w-full h-[440px] xs:h-[480px] overflow-hidden bg-[#FAF4EB]">
+        {/* Top Image Showcase: Height sized so the entire embroidered green kurti & sleeves are 100% visible */}
+        <div className="relative w-full h-[500px] xs:h-[540px] overflow-hidden bg-[#FAF4EB]">
           {(activeBanner.mobileImageUrl || activeBanner.desktopImageUrl) && (
             <Image
               key={`hero-m-${activeBanner.id}-${currentIndex}`}
               src={getOptimizedImageUrl(activeBanner.mobileImageUrl || activeBanner.desktopImageUrl, {
-                width: 900,
+                width: 750,
                 quality: 'auto:good',
               })}
               alt={activeBanner.title}
               fill
               priority
               sizes="100vw"
-              className="object-cover object-[center_15%]"
+              className="object-cover object-top"
             />
           )}
-          {/* Soft Bottom Gradient Fade: Placed low so the full embroidered green dress remains 100% visible */}
-          <div className="absolute inset-x-0 bottom-0 h-24 xs:h-28 bg-gradient-to-t from-[#FAF4EB] via-[#FAF4EB]/60 to-transparent pointer-events-none" />
+          {/* Gentle Bottom Fade: Sits low at the lap/waist line so dress bodice & embroidery remain 100% clear */}
+          <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#FAF4EB] via-[#FAF4EB]/70 to-transparent pointer-events-none" />
         </div>
 
-        {/* Bottom Content Area: Placed Down, Centered */}
-        <div className="relative z-10 px-6 pt-1 pb-7 flex flex-col items-center text-center space-y-3 -mt-4">
+        {/* Bottom Content Area: Overlapped and Centered on Warm Cream Base */}
+        <div className="relative z-10 px-6 pt-0 pb-7 flex flex-col items-center text-center space-y-3 -mt-16">
           {/* Title - Serif Italic, 2 Lines, Elegant Charcoal */}
           <h1 className="font-serif italic text-[32px] xs:text-[36px] text-[#191714] font-normal tracking-tight leading-[1.15]">
             {activeBanner.title.includes('Occasion') ? (
