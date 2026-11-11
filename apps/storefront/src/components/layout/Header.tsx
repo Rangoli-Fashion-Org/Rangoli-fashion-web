@@ -276,43 +276,33 @@ export const Header: React.FC = () => {
                 size={16}
                 className="absolute left-4 text-[#746D62] pointer-events-none"
               />
-              <div className="absolute right-3.5 flex items-center space-x-1">
+              <div className="absolute right-3 flex items-center space-x-1.5">
                 {isSearching && (
                   <Loader2 size={15} className="text-[#C9A34A] animate-spin" />
                 )}
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchQuery('');
-                      setSearchResults([]);
-                    }}
-                    className="text-[#746D62] hover:text-[#191714] p-1 rounded-full transition-colors"
-                    aria-label="Clear search"
-                  >
-                    <X size={14} />
-                  </button>
-                )}
+                {/* Single unified clean Close / Clear button */}
                 <button
                   type="button"
                   onClick={() => {
                     setSearchQuery('');
+                    setSearchResults([]);
                     setIsSearchOpen(false);
                   }}
-                  className="text-[#746D62] hover:text-[#191714] p-1 rounded-full transition-colors ml-0.5"
+                  className="w-7 h-7 rounded-full bg-[#EFE7D8] hover:bg-[#003D2D] text-[#554E43] hover:text-[#FFF8ED] flex items-center justify-center transition-colors"
                   aria-label="Close search"
+                  title="Close search"
                 >
-                  <X size={15} />
+                  <X size={14} />
                 </button>
               </div>
             </form>
 
-            {/* Live Dropdown Results */}
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white/98 backdrop-blur-md rounded-2xl shadow-2xl border border-[#E8DFD0] overflow-hidden z-50 animate-fadeIn divide-y divide-[#F5EBDD]">
+            {/* Live Dropdown Results - Fully Opaque Solid Background */}
+            <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.35)] border-2 border-[#C9A34A]/40 overflow-hidden z-50 animate-fadeIn divide-y divide-[#F0E6D8] ring-1 ring-black/10">
               {/* Case 1: When user has typed and results exist */}
               {searchResults.length > 0 && (
-                <div>
-                  <div className="px-4 py-2.5 bg-[#FAF6F0] border-b border-[#E8DFD0] flex items-center justify-between text-xs">
+                <div className="bg-white">
+                  <div className="px-4 py-2.5 bg-[#F7F2E7] border-b border-[#E8DFD0] flex items-center justify-between text-xs">
                     <span className="font-semibold text-[#191714]">
                       Found {searchResults.length} creations for &quot;{searchQuery}&quot;
                     </span>
@@ -321,12 +311,12 @@ export const Header: React.FC = () => {
                       onClick={() => handleSearchSubmit()}
                       className="text-[#003D2D] hover:underline font-bold text-[11px] flex items-center space-x-0.5"
                     >
-                      <span>View All</span>
+                      <span>View All in Store</span>
                       <ChevronRight size={12} />
                     </button>
                   </div>
 
-                  <div className="max-h-[60vh] overflow-y-auto divide-y divide-[#F5EBDD]">
+                  <div className="max-h-[60vh] overflow-y-auto divide-y divide-[#F0E6D8] bg-white">
                     {searchResults.map((product) => {
                       const primaryImg =
                         product.images?.find((img: any) => img.isPrimary) ||
@@ -344,7 +334,7 @@ export const Header: React.FC = () => {
                         <div
                           key={product.id}
                           onClick={() => handleSelectProduct(product.slug)}
-                          className="flex items-center space-x-3.5 p-3 hover:bg-[#FAF6F0] cursor-pointer transition-colors group"
+                          className="flex items-center space-x-3.5 p-3.5 bg-white hover:bg-[#FAF6F0] cursor-pointer transition-colors group"
                         >
                           <div className="relative w-12 h-16 sm:w-14 sm:h-18 rounded-lg overflow-hidden bg-[#F5EBDD] shrink-0 border border-[#E8DFD0]">
                             <Image
@@ -394,7 +384,7 @@ export const Header: React.FC = () => {
                     })}
                   </div>
 
-                  <div className="p-2.5 bg-[#FAF6F0] text-center border-t border-[#E8DFD0]">
+                  <div className="p-3 bg-[#F7F2E7] text-center border-t border-[#E8DFD0]">
                     <button
                       type="button"
                       onClick={() => handleSearchSubmit()}
@@ -409,7 +399,7 @@ export const Header: React.FC = () => {
 
               {/* Case 2: Searched with no results */}
               {hasSearched && !isSearching && searchResults.length === 0 && (
-                <div className="p-6 text-center space-y-3">
+                <div className="p-6 text-center space-y-3 bg-white">
                   <p className="font-serif text-sm font-semibold text-[#191714]">
                     No creations found for &quot;{searchQuery}&quot;
                   </p>
@@ -435,7 +425,7 @@ export const Header: React.FC = () => {
 
               {/* Case 3: Empty query - Trending & quick suggestions */}
               {!searchQuery.trim() && (
-                <div className="p-5 space-y-3">
+                <div className="p-5 space-y-3 bg-white">
                   <div className="flex items-center space-x-1.5 text-[11px] font-bold uppercase tracking-wider text-[#7A520C]">
                     <Sparkles size={12} className="text-[#C9A34A]" />
                     <span>Popular &amp; Trending Searches</span>
