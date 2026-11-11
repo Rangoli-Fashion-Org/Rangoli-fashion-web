@@ -8,6 +8,7 @@ import { ShieldCheck, Truck, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { fetchApi, getSessionId } from '../../lib/api';
+import { getOptimizedImageUrl } from '../../lib/image';
 import { formatINR, isValidEmail, isValidIndianPhone, isValidPostalCode } from '@rangoli/validation';
 
 export default function CheckoutPage() {
@@ -452,7 +453,7 @@ export default function CheckoutPage() {
                   <div key={item.id} className="flex space-x-3 text-xs">
                     <div className="relative w-14 h-18 rounded overflow-hidden bg-[#FAF6F0] shrink-0 border border-[#E8DFD0]">
                       <Image
-                        src={item.product.images?.[0]?.url || '/brand/rf-monogram.jpg'}
+                        src={getOptimizedImageUrl(item.product.images?.[0]?.url, { width: 120, quality: 'auto:good' })}
                         alt={item.product.name}
                         fill
                         className="object-cover"

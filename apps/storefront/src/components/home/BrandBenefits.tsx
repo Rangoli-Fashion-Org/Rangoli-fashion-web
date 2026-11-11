@@ -92,6 +92,7 @@ export const WhyChooseRangoli: React.FC = () => {
                 src={getOptimizedImageUrl(whyChooseImageUrl, { width: 1400, quality: 'auto:good' })}
                 alt={whyChooseTitle}
                 fill
+                loading="lazy"
                 sizes="(max-width: 1280px) 100vw, 1280px"
                 className="object-cover object-center"
               />

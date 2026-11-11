@@ -84,7 +84,7 @@ export const Newsletter: React.FC = () => {
               src={getOptimizedImageUrl(imageUrl, { width: 800, quality: 'auto:good' })}
               alt={headline}
               fill
-              priority
+              loading="lazy"
               sizes="100vw"
               className="object-cover object-center"
             />
@@ -97,7 +97,7 @@ export const Newsletter: React.FC = () => {
               src={getOptimizedImageUrl(imageUrl, { width: 1400, quality: 'auto:good' })}
               alt={headline}
               fill
-              priority
+              loading="lazy"
               sizes="(max-width: 1280px) 100vw, 1280px"
               className="object-cover object-center"
             />
