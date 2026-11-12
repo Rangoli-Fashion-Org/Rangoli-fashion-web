@@ -87,24 +87,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </Link>
 
-        {/* Top-Left Badges (Bestseller, New & Discount) */}
-        <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 flex flex-col gap-1 pointer-events-none z-10">
-          {isBestSeller && (
-            <span className="px-1.5 sm:px-2.5 py-0.5 bg-gradient-to-r from-[#8B6B23] to-[#C9A34A] text-white text-[8px] sm:text-[10px] font-bold uppercase tracking-wider rounded shadow-xs text-center border border-[#E5C158]/50">
-              BESTSELLER
-            </span>
-          )}
-          {isNewArrival && !isBestSeller && (
-            <span className="px-1.5 sm:px-2.5 py-0.5 bg-[#003D2D] text-[#FFF8ED] text-[8px] sm:text-[10px] font-bold uppercase tracking-wider rounded shadow-xs text-center">
-              NEW
-            </span>
-          )}
-          {discount && discount > 0 && (
-            <span className="px-1.5 sm:px-2 py-0.5 bg-[#DFC37A] text-[#191714] text-[8px] sm:text-[10px] font-bold uppercase tracking-wider rounded shadow-xs text-center">
-              {discount}% OFF
-            </span>
-          )}
-        </div>
+        {/* Top-Left Status Badge (Bestseller or New Arrival only, compact & never covers face) */}
+        {(isBestSeller || isNewArrival) && (
+          <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 pointer-events-none z-10">
+            {isBestSeller ? (
+              <span className="px-1.5 sm:px-2 py-0.5 bg-[#003828]/95 backdrop-blur-xs text-[#E5C158] text-[7.5px] sm:text-[9px] font-bold uppercase tracking-wider rounded border border-[#C9A34A]/50 shadow-xs">
+                BESTSELLER
+              </span>
+            ) : (
+              <span className="px-1.5 sm:px-2 py-0.5 bg-[#003828]/95 backdrop-blur-xs text-[#FFF8ED] text-[7.5px] sm:text-[9px] font-bold uppercase tracking-wider rounded border border-white/20 shadow-xs">
+                NEW
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Bottom-Left Discount Badge (Sits on lower fabric hem/backdrop, completely clear of face/neck) */}
+        {discount && discount > 0 ? (
+          <span className="absolute bottom-1.5 left-1.5 sm:bottom-2 sm:left-2 px-1.5 sm:px-2 py-0.5 bg-[#8B1E1E]/90 text-white text-[7.5px] sm:text-[9px] font-bold uppercase tracking-wider rounded shadow-xs pointer-events-none z-10">
+            {discount}% OFF
+          </span>
+        ) : null}
 
         {/* Top-Right Wishlist Button */}
         <button
@@ -140,6 +143,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {originalPrice && (
               <span className="line-through text-[#746D62] text-[10px] sm:text-xs">
                 {formatINR(originalPrice)}
+              </span>
+            )}
+            {discount && discount > 0 && (
+              <span className="text-[10px] sm:text-xs font-semibold text-[#8B1E1E]">
+                ({discount}% off)
               </span>
             )}
           </div>

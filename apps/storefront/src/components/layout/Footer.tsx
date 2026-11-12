@@ -183,20 +183,16 @@ export const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Legal & Payment Ribbon */}
+      {/* Bottom Legal & Attribution Ribbon */}
       <div className="border-t border-[#0B5940]/70 bg-[#001F17] py-5 sm:py-6 px-4 lg:px-8">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-[11px] sm:text-xs text-[#F5EBDD]/70 gap-4">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-[11px] sm:text-xs text-[#F5EBDD]/70 gap-3">
           <p className="text-center md:text-left leading-relaxed">
             © 2026 Rangoli Fashions. All rights reserved. Handcrafted with{' '}
             <Heart size={12} className="inline-block align-[-2px] text-[#C9A34A] fill-[#C9A34A]" /> in India.
           </p>
-          <div className="flex items-center gap-2 flex-wrap justify-center">
-            <span className="px-2 sm:px-2.5 py-1 bg-white/10 rounded-md text-[9px] sm:text-[10px] font-bold text-white tracking-widest">UPI</span>
-            <span className="px-2 sm:px-2.5 py-1 bg-white/10 rounded-md text-[9px] sm:text-[10px] font-bold text-white tracking-widest">VISA</span>
-            <span className="px-2 sm:px-2.5 py-1 bg-white/10 rounded-md text-[9px] sm:text-[10px] font-bold text-white tracking-widest">MASTERCARD</span>
-            <span className="px-2 sm:px-2.5 py-1 bg-white/10 rounded-md text-[9px] sm:text-[10px] font-bold text-white tracking-widest">RUPAY</span>
-            <span className="px-2 sm:px-2.5 py-1 bg-[#003D2D] border border-[#0B5940] rounded-md text-[9px] sm:text-[10px] font-semibold text-[#C9A34A] tracking-wider">RAZORPAY SECURED</span>
-          </div>
+          <p className="text-center md:text-right text-[11px] sm:text-xs tracking-wide text-[#F5EBDD]/80">
+            Crafted by <span className="font-semibold text-[#E5C158]">ekodrix</span>
+          </p>
         </div>
       </div>
     </footer>
