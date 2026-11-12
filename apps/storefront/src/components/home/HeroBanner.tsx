@@ -244,7 +244,7 @@ export const HeroBanner: React.FC = () => {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center"
+              className="object-cover object-[center_top]"
             />
           )}
 

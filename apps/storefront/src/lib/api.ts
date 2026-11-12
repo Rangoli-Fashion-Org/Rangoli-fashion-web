@@ -34,6 +34,8 @@ const CACHEABLE_PUBLIC_ENDPOINTS = [
   '/homepage/sections',
   '/products/new-arrivals',
   '/products/best-sellers',
+  '/settings/about-content',
+  '/settings/contact-info',
 ];
 
 function isCacheable(endpoint: string, options: RequestInit): boolean {
