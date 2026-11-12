@@ -104,8 +104,8 @@ function ShopContent() {
           </p>
         </div>
 
-        {/* Controls Bar */}
-        <div className="bg-white border border-[#E8DFD0] rounded-lg p-3 sm:p-4 mb-8 flex items-center justify-between shadow-xs">
+        {/* Controls Bar / Sticky Filter Bar */}
+        <div className="sticky top-[84px] sm:top-[96px] z-30 bg-white/95 backdrop-blur-md border border-[#E8DFD0] rounded-xl p-3 sm:p-4 mb-8 flex items-center justify-between shadow-xs transition-shadow">
           {/* Mobile Filter Button */}
           <button
             onClick={() => setIsFilterDrawerOpen(true)}
@@ -113,6 +113,9 @@ function ShopContent() {
           >
             <SlidersHorizontal size={14} className="text-[#003D2D]" />
             <span>Filters</span>
+            {(selectedCategory || selectedCollection || selectedSize || inStockOnly) && (
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C9A34A]" />
+            )}
           </button>
 
           <p className="text-xs text-[#746D62] hidden sm:block">
@@ -136,8 +139,8 @@ function ShopContent() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Desktop Filter Sidebar */}
-          <div className="hidden lg:block lg:col-span-1 space-y-6">
-            <div className="bg-white border border-[#E8DFD0] rounded-lg p-5 shadow-xs space-y-6">
+          <div className="hidden lg:block lg:col-span-1">
+            <div className="sticky top-[165px] bg-white border border-[#E8DFD0] rounded-xl p-5 shadow-xs space-y-6 max-h-[calc(100vh-185px)] overflow-y-auto">
               <div className="flex items-center justify-between pb-3 border-b border-[#E8DFD0]">
                 <h3 className="font-serif text-base font-semibold text-[#191714]">Filters</h3>
                 {(selectedCategory || selectedCollection || selectedSize || inStockOnly) && (

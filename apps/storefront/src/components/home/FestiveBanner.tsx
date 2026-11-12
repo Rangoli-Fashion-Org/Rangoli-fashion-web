@@ -45,20 +45,20 @@ export const FestiveBanner: React.FC = () => {
           href={ctaUrl}
           className="relative rounded-2xl sm:rounded-3xl overflow-hidden sm:min-h-[290px] md:min-h-[340px] lg:min-h-[370px] flex flex-col sm:flex-row sm:items-center shadow-lg border border-[#C9A34A]/40 bg-[#00251B] block group"
         >
-          {/* Mobile Top Image View - Guarantees the Festive Card Image is 100% visible on mobile */}
-          <div className="relative w-full h-52 sm:hidden overflow-hidden bg-[#002D21]">
+          {/* Mobile Top Image View - Headroom preserved with object-[right_top] */}
+          <div className="relative w-full h-64 xs:h-72 sm:hidden overflow-hidden bg-[#002D21]">
             <Image
               src={getOptimizedImageUrl(imageUrl, { width: 800, quality: 'auto:good' })}
               alt={title}
               fill
               loading="lazy"
               sizes="100vw"
-              className="object-cover object-right"
+              className="object-cover object-[right_top]"
             />
             <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#00251B] via-[#00251B]/60 to-transparent pointer-events-none" />
           </div>
 
-          {/* Desktop/Tablet Full-Card Background Image */}
+          {/* Desktop/Tablet Full-Card Background Image - Headroom preserved with object-[right_top] */}
           <div className="hidden sm:block absolute inset-0">
             <Image
               src={getOptimizedImageUrl(imageUrl, { width: 1400, quality: 'auto:good' })}
@@ -66,7 +66,7 @@ export const FestiveBanner: React.FC = () => {
               fill
               loading="lazy"
               sizes="(max-width: 1280px) 100vw, 1280px"
-              className="object-cover object-right"
+              className="object-cover object-[right_top]"
             />
             {/* Rich Emerald Gradient Overlay on the Left blending into the right image */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#00251B] via-[#002D21]/85 to-transparent sm:w-3/4 md:w-2/3 pointer-events-none" />
