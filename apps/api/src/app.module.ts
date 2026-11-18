@@ -19,6 +19,7 @@ import { HomepageModule } from './modules/homepage/homepage.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UploadModule } from './modules/upload/upload.module';
       envFilePath: ['.env.local', '.env'],
     }),
     PrismaModule,
+    HealthModule,
     AuthModule,
     UsersModule,
     AdminModule,
