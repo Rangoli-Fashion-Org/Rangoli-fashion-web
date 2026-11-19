@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { Heart, ShoppingBag, Loader2, Check } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
 import { formatINR } from '@rangoli/validation';
@@ -35,6 +35,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isBestSeller,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
   const wishlisted = isInWishlist(id);
@@ -61,6 +63,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isAdding) return;
+
+    setIsAdding(true);
+    try {
+      const res = await addToCart(id, null, 1, {
+        name,
+        slug,
+        regularPrice,
+        salePrice,
+        imageUrl: primaryImg?.url,
+      });
+
+      if (res.success) {
+        setJustAdded(true);
+        setTimeout(() => setJustAdded(false), 1500);
+      }
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   return (
@@ -167,11 +193,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Full-Width Add to Bag Pill Button */}
         <button
-          onClick={() => addToCart(id, null, 1)}
-          className="w-full py-1.5 sm:py-2 px-2 sm:px-3 rounded-md sm:rounded-lg bg-[#F5EADC] hover:bg-[#003D2D] text-[#191714] hover:text-[#FFF8ED] border border-[#E6D5BE] hover:border-[#003D2D] active:scale-[0.98] active:bg-[#EBDDC8] text-[11px] sm:text-xs font-semibold flex items-center justify-center space-x-1 sm:space-x-1.5 transition-all duration-200"
+          disabled={isAdding}
+          onClick={handleAddToCart}
+          className={`w-full py-1.5 sm:py-2 px-2 sm:px-3 rounded-md sm:rounded-lg border text-[11px] sm:text-xs font-semibold flex items-center justify-center space-x-1 sm:space-x-1.5 transition-all duration-200 active:scale-[0.98] ${
+            justAdded
+              ? 'bg-[#003D2D] text-[#FFF8ED] border-[#003D2D]'
+              : 'bg-[#F5EADC] hover:bg-[#003D2D] text-[#191714] hover:text-[#FFF8ED] border-[#E6D5BE] hover:border-[#003D2D] active:bg-[#EBDDC8]'
+          }`}
         >
-          <ShoppingBag size={12} className="shrink-0" />
-          <span>Add to Bag</span>
+          {isAdding ? (
+            <>
+              <Loader2 size={12} className="animate-spin shrink-0 text-[#003D2D]" />
+              <span>Adding...</span>
+            </>
+          ) : justAdded ? (
+            <>
+              <Check size={12} className="shrink-0 text-[#C9A34A]" />
+              <span>Added!</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag size={12} className="shrink-0" />
+              <span>Add to Bag</span>
+            </>
+          )}
         </button>
       </div>
     </div>
