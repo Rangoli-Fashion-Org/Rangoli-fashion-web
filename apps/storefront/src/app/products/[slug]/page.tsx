@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,8 @@ import {
   Heart,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   ShieldCheck,
   Truck,
   RotateCcw,
@@ -44,6 +46,20 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [isAdding, setIsAdding] = useState(false);
   const [addedToast, setAddedToast] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const thumbnailsRef = useRef<HTMLDivElement | null>(null);
+
+  // Auto-scroll the active thumbnail into view when swiping on mobile
+  useEffect(() => {
+    if (thumbnailsRef.current) {
+      const activeThumb = thumbnailsRef.current.children[selectedImageIndex] as HTMLElement;
+      if (activeThumb) {
+        activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [selectedImageIndex]);
 
   // Review submission
   const [reviewAuthor, setReviewAuthor] = useState('');
@@ -147,7 +163,13 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const handleAddToCart = async () => {
     setIsAdding(true);
-    await addToCart(product.id, selectedVariantId, quantity);
+    await addToCart(product.id, selectedVariantId, quantity, {
+      name: product.name,
+      slug: product.slug,
+      regularPrice: Number(product.regularPrice),
+      salePrice: product.salePrice ? Number(product.salePrice) : null,
+      imageUrl: images?.[0]?.url,
+    });
     setIsAdding(false);
     setAddedToast(true);
     setTimeout(() => setAddedToast(false), 3000);
@@ -206,6 +228,43 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       : [{ url: '/brand/rf-monogram.jpg', altText: product.name }];
   const currentImage = images[selectedImageIndex] || images[0];
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null || images.length <= 1) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+
+    // Minimum swipe distance of 40px, ensuring horizontal intent dominates vertical scroll
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX < 0) {
+        // Swipe Left -> Next image
+        setSelectedImageIndex((prev) => (prev + 1) % images.length);
+      } else {
+        // Swipe Right -> Previous image
+        setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
+      }
+    }
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
+  const handleNextImage = () => {
+    if (images.length > 1) {
+      setSelectedImageIndex((prev) => (prev + 1) % images.length);
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (images.length > 1) {
+      setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    }
+  };
+
   return (
     <div className="bg-[#FAF6F0] min-h-screen text-[#191714] py-6 sm:py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -235,7 +294,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             <div className="flex flex-col-reverse md:flex-row gap-3.5 sm:gap-4 items-start w-full">
               {/* Thumbnails without unsightly scrollbar slider line */}
               {images.length > 1 && (
-                <div className="flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto max-h-[640px] w-full md:w-20 shrink-0 no-scrollbar scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                <div
+                  ref={thumbnailsRef}
+                  className="flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto max-h-[640px] w-full md:w-20 shrink-0 no-scrollbar scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                >
                   {images.map((img: any, idx: number) => (
                     <button
                       key={idx}
@@ -257,9 +319,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 </div>
               )}
 
-              {/* Main Primary Image with Royal Frame */}
-              <div className="relative flex-1 w-full aspect-[3/4] max-h-[640px] rounded-2xl sm:rounded-3xl overflow-hidden bg-[#FFFDF9] border border-[#E6D5BE] shadow-xl group">
+              {/* Main Primary Image with Royal Frame & Swipe Gesture */}
+              <div
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                className="relative flex-1 w-full aspect-[3/4] max-h-[640px] rounded-2xl sm:rounded-3xl overflow-hidden bg-[#FFFDF9] border border-[#E6D5BE] shadow-xl group select-none touch-pan-y"
+              >
                 <Image
+                  key={currentImage.url}
                   src={getOptimizedImageUrl(currentImage.url, { width: 1000, quality: 'auto:good' })}
                   alt={currentImage.altText || product.name}
                   fill
@@ -267,6 +334,31 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   sizes="(max-width: 1024px) 100vw, 55vw"
                   className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                 />
+
+                {/* Left/Right Arrow Navigation Controls */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={handlePrevImage}
+                      className="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/85 hover:bg-white text-[#191714] shadow-md flex items-center justify-center transition-all z-10 opacity-80 sm:opacity-0 sm:group-hover:opacity-100 hover:scale-105 active:scale-95"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft size={18} />
+                    </button>
+                    <button
+                      onClick={handleNextImage}
+                      className="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/85 hover:bg-white text-[#191714] shadow-md flex items-center justify-center transition-all z-10 opacity-80 sm:opacity-0 sm:group-hover:opacity-100 hover:scale-105 active:scale-95"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight size={18} />
+                    </button>
+
+                    {/* Mobile Image Counter Badge */}
+                    <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 px-2.5 py-1 bg-black/60 backdrop-blur-xs text-white text-[11px] font-medium rounded-full z-10 select-none">
+                      {selectedImageIndex + 1} / {images.length}
+                    </div>
+                  </>
+                )}
 
                 {/* Floating Badges (Top Left) */}
                 <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex flex-col gap-1.5 pointer-events-none z-10">

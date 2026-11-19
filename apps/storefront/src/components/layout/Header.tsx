@@ -44,10 +44,15 @@ export const Header: React.FC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Fetch store settings for announcement
+    // Fetch store settings for announcement and shipping threshold
     fetchApi<Record<string, string>>('/settings/public').then((res) => {
-      if (res.success && res.data?.announcement_bar_text) {
-        setAnnouncement(res.data.announcement_bar_text);
+      if (res.success && res.data) {
+        if (res.data.announcement_bar_text) {
+          setAnnouncement(res.data.announcement_bar_text);
+        } else if (res.data.free_shipping_threshold) {
+          const val = parseInt(res.data.free_shipping_threshold, 10);
+          setAnnouncement(`Complimentary Express Delivery on Orders Above ${formatINR(isNaN(val) ? 1999 : val)}`);
+        }
       }
     });
   }, []);

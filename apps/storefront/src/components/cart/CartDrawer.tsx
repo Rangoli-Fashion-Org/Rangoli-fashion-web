@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { X, Trash2, ShoppingBag, ArrowRight, Tag } from 'lucide-react';
@@ -23,6 +23,36 @@ export const CartDrawer: React.FC = () => {
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState('');
 
+  // Lock background scroll when drawer is open and prevent scrollbar layout shift
+  useEffect(() => {
+    if (!isDrawerOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+
+    // Compensate for scrollbar disappearing to avoid page jumping
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    document.body.style.overflow = 'hidden';
+
+    // Close on Escape key press
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeDrawer();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isDrawerOpen, closeDrawer]);
+
   if (!isDrawerOpen) return null;
 
   const handleApplyCoupon = async (e: React.FormEvent) => {
@@ -39,7 +69,7 @@ export const CartDrawer: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div className="fixed inset-0 z-50 overflow-hidden overscroll-contain">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300"
