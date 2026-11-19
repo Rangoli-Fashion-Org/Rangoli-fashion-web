@@ -1,17 +1,38 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { Truck, RotateCcw, ShieldCheck, Award } from 'lucide-react';
+import { fetchApi } from '../../lib/api';
+import { formatINR } from '@rangoli/validation';
 
 export const ShoppingBenefits: React.FC = () => {
+  const [threshold, setThreshold] = useState<number>(1999);
+  const [returnDays, setReturnDays] = useState<string>('7');
+
+  useEffect(() => {
+    fetchApi<Record<string, string>>('/settings/public').then((res) => {
+      if (res.success && res.data) {
+        if (res.data.free_shipping_threshold) {
+          const val = parseInt(res.data.free_shipping_threshold, 10);
+          if (!isNaN(val)) setThreshold(val);
+        }
+        if (res.data.return_policy_days) {
+          setReturnDays(res.data.return_policy_days);
+        }
+      }
+    });
+  }, []);
+
   const benefits = [
     {
       icon: <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#003D2D]" />,
       title: 'Complimentary Delivery',
-      subtitle: 'On orders above ₹2,999',
+      subtitle: `On orders above ${formatINR(threshold)}`,
     },
     {
       icon: <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 text-[#003D2D]" />,
       title: 'Easy Returns',
-      subtitle: 'Hassle-free 7-day returns',
+      subtitle: `Hassle-free ${returnDays}-day returns`,
     },
     {
       icon: <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-[#003D2D]" />,
