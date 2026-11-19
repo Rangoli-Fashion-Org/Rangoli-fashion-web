@@ -2,8 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
-import * as express from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
@@ -11,7 +11,7 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true, // Needed for Razorpay webhook signature verification
   });
 
@@ -20,8 +20,21 @@ async function bootstrap() {
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
-  app.use('/uploads', express.static(uploadsDir));
-  app.use('/api/v1/uploads', express.static(uploadsDir));
+  app.useStaticAssets(uploadsDir, { prefix: '/uploads' });
+  app.useStaticAssets(uploadsDir, { prefix: '/api/v1/uploads' });
+
+  // Root /health alias for uptime monitors and health checks
+  app.use('/health', (req: any, res: any, next: any) => {
+    if (req.method === 'GET' && (req.path === '/' || req.path === '')) {
+      return res.status(200).json({
+        success: true,
+        status: 'UP',
+        message: 'Rangoli Fashion API is running',
+        timestamp: new Date().toISOString(),
+      });
+    }
+    next();
+  });
 
   const port = process.env.PORT || 4000;
 

@@ -52,9 +52,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const primaryUrl = getOptimizedImageUrl(primaryImg?.url, { width: 420, quality: 'auto:good' });
   const secondaryUrl = secondaryImg ? getOptimizedImageUrl(secondaryImg.url, { width: 420, quality: 'auto:good' }) : null;
 
+  const handleMouseEnter = () => {
+    // Only trigger hover state on devices that truly support hover with a fine pointer (desktop mouse)
+    if (typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      setIsHovered(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   return (
     <div
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className="group relative flex flex-col bg-white rounded-xl sm:rounded-2xl border border-[#E8DFD0] p-1.5 sm:p-2.5 shadow-2xs select-none"
     >
       {/* Product Image Frame */}
@@ -72,9 +84,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             }`}
           />
 
-          {/* Second Sub Image revealed on Hover (Desktop only, deferred until hover) */}
+          {/* Second Sub Image revealed on Hover (Desktop with fine pointer only) */}
           {secondaryUrl && isHovered && (
-            <div className="hidden sm:block absolute inset-0">
+            <div className="hidden [@media(hover:hover)]:block absolute inset-0 pointer-events-none">
               <Image
                 src={secondaryUrl}
                 alt={`${name} secondary view`}
@@ -115,7 +127,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             e.preventDefault();
             toggleWishlist(id);
           }}
-          className={`absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-colors shadow-xs z-10 ${
+          className={`absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xs z-10 active:scale-90 ${
             wishlisted
               ? 'bg-red-50 text-red-500 border border-red-200'
               : 'bg-white/90 hover:bg-white text-[#746D62] hover:text-red-500 border border-[#E8DFD0]'
@@ -153,10 +165,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </div>
 
-        {/* Full-Width Add to Bag Pill Button matching reference */}
+        {/* Full-Width Add to Bag Pill Button */}
         <button
           onClick={() => addToCart(id, null, 1)}
-          className="w-full py-1.5 sm:py-2 px-2 sm:px-3 rounded-md sm:rounded-lg bg-[#F5EADC] hover:bg-[#003D2D] text-[#191714] hover:text-[#FFF8ED] border border-[#E6D5BE] hover:border-[#003D2D] text-[11px] sm:text-xs font-semibold flex items-center justify-center space-x-1 sm:space-x-1.5 transition-colors duration-200"
+          className="w-full py-1.5 sm:py-2 px-2 sm:px-3 rounded-md sm:rounded-lg bg-[#F5EADC] hover:bg-[#003D2D] text-[#191714] hover:text-[#FFF8ED] border border-[#E6D5BE] hover:border-[#003D2D] active:scale-[0.98] active:bg-[#EBDDC8] text-[11px] sm:text-xs font-semibold flex items-center justify-center space-x-1 sm:space-x-1.5 transition-all duration-200"
         >
           <ShoppingBag size={12} className="shrink-0" />
           <span>Add to Bag</span>
